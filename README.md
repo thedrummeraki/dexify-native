@@ -1,79 +1,61 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Dexify
 
-# Getting Started
+![version](https://img.shields.io/badge/version-0.1-blue)
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+Welcome to [Dexify](https://www.akinyele.ca/projects/dexify-mobile). Discover and Read Manga from the comfort of your Android or iOS smartphone.
 
-## Step 1: Start the Metro Server
+<a href="https://play.google.com/store/apps/details?id=com.dexifymobile"><img alt="google play badge" src="https://raw.githubusercontent.com/steverichey/google-play-badge-svg/266d2b2df26f10d3c00b8129a0bd9f6da6b19f00/img/en_get.svg" width="150" /></a>
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## Usage
 
-To start Metro, run the following command from the _root_ of your React Native project:
+### Google Play
+
+The app is available in the following countries:
+
+- United States of America
+- Canada
+- United Kingdom
+- Australia
+
+You must be running Android 11 (API 31) or later in order to run the app.
+
+### Github releases
+
+If you wish to install the APK directly to your device, check the [Releases](https://github.com/thedrummeraki/dexify-mobile/releases) tag on this Github repository.
+
+> Note: the Github releases may not be always up to date with the `main` branch or the Google Play releases.
+
+### Locally
+
+This is a React Native app. You can run the app on your local computer. Requirements:
+
+- Yarn
+- Android SDK (must support version API 31 or later)
+- Android smartphone with development mode enabled
+
+The iOS version of the app has not been worked on at the moment so it cannot be ran on your local device. Support coming soon.
+
+Please follow React Native's [development environment setup](https://reactnative.dev/docs/environment-setup) steps if you haven't set up a React Native project yet.
+
+Once done, open two terminal windows:
 
 ```bash
-# using npm
+# window 1 -- starts Metro
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
 ```bash
-# using npm
+# window 2 -- builds and installs the app to your Android device
 npm run android
 
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
+# -- or your iOS device --
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+## About
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+**This is _not_ an official Mangadex mobile client**.
 
-## Step 3: Modifying your App
+The app uses [Mangadex](https://mangadex.org)'s services ([ref](https://api.mangadex.org)) to display information. Anime information is taken from [youranime.moe](https://youranime.moe) which itself comes from [Kitsu](https://kitsu.io) and [Anilist](https://anilist.co).
 
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+The ability to read manga on this app is provided by Mangadex where the ability to read from official is provided whenever possible. See [Mangadex](https://mangadex.org) to learn more how they manage their data.
