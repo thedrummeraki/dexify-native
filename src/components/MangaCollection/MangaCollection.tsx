@@ -1,38 +1,28 @@
-import React, {useEffect} from 'react';
-import {
-  Manga,
-  MangaRequestParams,
-  PagedResultsList,
-  isSuccess,
-} from '@app/api/mangadex/types';
-import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
-import {useGetRequest} from '@app/api/utils';
+import React from 'react';
+import {Manga} from '@app/api/mangadex/types';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import SimpleMangaThumbnail from '../SimpleMangaThumbnail';
 
 export interface Props {
-  params: MangaRequestParams;
-  onLoading(loading: boolean): void;
+  mangaList: Manga[];
+  loading?: boolean;
+  onEndReached?(): void;
 }
 
-export function MangaCollection({params, onLoading}: Props) {
-  const url = UrlBuilder.mangaList(params);
-  const {data, loading} = useGetRequest<PagedResultsList<Manga>>(url);
-  const manga = isSuccess(data) ? data.data : [];
-
-  useEffect(() => onLoading(loading), [onLoading, loading]);
-
+export function MangaCollection({mangaList, loading, onEndReached}: Props) {
   return (
     <FlatList
-      data={manga}
+      data={mangaList}
       numColumns={2}
       contentContainerStyle={styles.flatListContentContainer}
       columnWrapperStyle={styles.flatListColumnWrapper}
       style={styles.flatList}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={1}
       ListEmptyComponent={
         <View style={styles.flatListEmptyStateRoot}>
-          <Text>No manga was found.</Text>
+          <Text>{loading ? 'Please wait...' : 'No manga was found.'}</Text>
         </View>
       }
       renderItem={({item}) => <SimpleMangaThumbnail manga={item} />}

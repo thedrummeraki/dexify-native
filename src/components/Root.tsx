@@ -1,15 +1,15 @@
 import React from 'react';
-import {SafeAreaView} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
-import {QuickSearch} from './QuickSearch/QuickSearch';
+import ButtonNavigationScene from '@app/foundation/ButtonNavigationScene';
+import {View} from 'react-native';
 
 // type MangaSearchParams = Partial<FormState & {title: string}>;
 
 export function Root() {
   return (
-    <SafeAreaView style={sharedStyles.flex}>
-      <QuickSearch />
-    </SafeAreaView>
+    <View style={sharedStyles.flex}>
+      <ButtonNavigationScene />
+    </View>
   );
 }
 
