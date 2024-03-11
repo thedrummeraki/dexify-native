@@ -1,11 +1,12 @@
 import {useDebouncedEffect} from '@app/utils';
+import {spacing} from '@app/utils/styles';
 import React, {useCallback, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {IconButton, Searchbar} from 'react-native-paper';
 
 interface SearchBarProps {
   query: string;
-  loading: boolean;
+  loading?: boolean;
   placeholder?: string;
   onQueryChange(query: string): void;
   onShowFilters?(): void;
@@ -45,6 +46,10 @@ export default function SearchBar({
 }
 
 const styles = StyleSheet.create({
-  root: {flexDirection: 'row', alignItems: 'center', padding: 8},
+  root: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing(2),
+  },
   textInput: {flex: 1, borderRadius: 16},
 });

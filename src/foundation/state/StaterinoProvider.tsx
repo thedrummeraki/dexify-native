@@ -8,6 +8,11 @@ import {defaultState} from './base';
 import staterino from 'staterino';
 import merge from 'mergerino';
 import {TokenInfo, User} from './user';
+import {
+  FilterParamsState,
+  FilterSortState,
+  defaultFiltersStore,
+} from './filters';
 
 export type StaterinoProviderProps = PropsWithChildren<{}>;
 
@@ -34,9 +39,20 @@ export const useUserStore = () => {
 
   const login = (user: User, token: TokenInfo) => set({user: {user, token}});
   const logout = () => set({user: {user: null, token: null}});
-  const userInfo = useStore(userStore => userStore.user);
+  const userInfo = useStore(store => store.user);
 
   return {login, logout, ...userInfo};
+};
+
+export const useFiltersStore = () => {
+  const {set} = useStore;
+
+  const setParams = (params: FilterParamsState) => set({filters: {params}});
+  const setOrder = (sort: FilterSortState) => set({filters: {sort}});
+  const clear = () => set({filters: defaultFiltersStore});
+  const filtersInfo = useStore(store => store.filters);
+
+  return {setParams, setOrder, clear, ...filtersInfo};
 };
 
 export default function StaterinoProvider({children}: StaterinoProviderProps) {

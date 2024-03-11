@@ -1,12 +1,15 @@
 import React from 'react';
-import MangaQuickSearchCollection from '@app/components/MangaQuickSearchCollection';
 import {sharedStyles} from '@app/utils/styles';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {MangaSearchCollection} from '@app/components';
 
-export default function Home() {
+export default function Browse() {
   return (
     <SafeAreaView style={sharedStyles.flex}>
-      <MangaQuickSearchCollection />
+      <MangaSearchCollection
+        useFilters
+        searchBarPlaceholder="Browse manga..."
+      />
     </SafeAreaView>
   );
 }

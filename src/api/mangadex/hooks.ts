@@ -66,7 +66,10 @@ export function useLazyGetMangaList(
   options?: MangaRequestParams,
   showEverything?: boolean,
 ): readonly [
-  (params?: MangaRequestParams) => Promise<ManyManga | undefined>,
+  (
+    params?: MangaRequestParams,
+    overrideParams?: boolean,
+  ) => Promise<ManyManga | undefined>,
   RequestResult<ManyManga>,
 ] {
   const allContentRatings = [
@@ -86,11 +89,12 @@ export function useLazyGetMangaList(
   const [get, response] = useLazyGetRequest<ManyManga>();
 
   const getManga = useCallback(
-    (otherOptions?: MangaRequestParams) => {
+    (otherOptions?: MangaRequestParams, overrideParams?: boolean) => {
       const defaultOptions = {contentRating};
-      const url = UrlBuilder.mangaList(
-        Object.assign(defaultOptions, {...options, ...otherOptions}),
-      );
+      const params = overrideParams
+        ? otherOptions
+        : Object.assign(defaultOptions, {...options, ...otherOptions});
+      const url = UrlBuilder.mangaList(params);
       return get(url);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

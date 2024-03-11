@@ -1,9 +1,10 @@
-import {Browse, HomeScene} from '@app/scenes';
+import {Browse} from '@app/scenes';
 import React from 'react';
 import {useState} from 'react';
 import {BottomNavigation} from 'react-native-paper';
+import Home from './bottomNavScenes/Home';
 
-export default function ButtonNavigationScene() {
+export default function HomeScene() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {
@@ -21,10 +22,10 @@ export default function ButtonNavigationScene() {
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
-    home: HomeScene,
+    home: Home,
     browse: Browse,
-    lists: HomeScene,
-    login: HomeScene,
+    lists: Home,
+    login: Home,
   });
 
   return (

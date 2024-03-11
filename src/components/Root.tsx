@@ -1,42 +1,23 @@
 import React from 'react';
-import {sharedStyles} from '@app/utils/styles';
-import ButtonNavigationScene from '@app/foundation/ButtonNavigationScene';
-import {View} from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {FiltersScene, HomeScene} from '@app/scenes';
+import {RootStackParamList} from '@app/foundation/navigation';
 
-// type MangaSearchParams = Partial<FormState & {title: string}>;
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function Root() {
   return (
-    <View style={sharedStyles.flex}>
-      <ButtonNavigationScene />
-    </View>
+    <Stack.Navigator>
+      <Stack.Group>
+        <Stack.Screen
+          name="Home"
+          component={HomeScene}
+          options={{headerShown: false}}
+        />
+      </Stack.Group>
+      <Stack.Group screenOptions={{presentation: 'fullScreenModal'}}>
+        <Stack.Screen name="Filters" component={FiltersScene} />
+      </Stack.Group>
+    </Stack.Navigator>
   );
 }
-
-// const handleSubmit = useCallback((fields: Partial<FormState>) => {
-//   const entries = Object.entries(fields).filter(([_, value]) => {
-//     if (typeof value === 'string' || Array.isArray(value)) {
-//       return value.length > 0;
-//     } else if (typeof value === 'object') {
-//       return Object.keys(value).length > 0;
-//     } else {
-//       return value !== undefined && value !== null;
-//     }
-//   });
-
-//   const result = Object.fromEntries(entries) as FormState;
-//   setParams({...result});
-//   setShowFilters(false);
-// }, []);
-
-// useDebouncedEffect(() => {
-//   // handleSubmit(params);
-//   if (title.length > 0 || Object.keys(params)) {
-//     console.log('submitting on change', {title, params});
-//     // fetchManga(UrlBuilder.mangaList({...params, title})).then(result => {
-//     //   if (isSuccess(result)) {
-//     //     setManga(result.data);
-//     //   }
-//     // });
-//   }
-// }, [title, params]);

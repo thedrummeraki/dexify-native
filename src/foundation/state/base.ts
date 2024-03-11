@@ -2,14 +2,17 @@ import staterino from 'staterino';
 import merge from 'mergerino';
 import {useLayoutEffect, useReducer} from 'react';
 import {UserStore, defaultUserStore} from './user';
+import {FiltersStore, defaultFiltersStore} from './filters';
 
 export interface AppState {
   user: UserStore;
+  filters: FiltersStore;
 }
 
 export function defaultState(): AppState {
   return {
     user: defaultUserStore,
+    filters: defaultFiltersStore,
   };
 }
 

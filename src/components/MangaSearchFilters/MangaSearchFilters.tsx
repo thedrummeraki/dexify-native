@@ -1,63 +1,44 @@
 import {
   ContentRating,
   Manga,
-  MangaRequestParams,
   PublicationDemographic,
-  TagMode,
 } from '@app/api/mangadex/types';
 
 import staterino from 'staterino';
 import merge from 'mergerino';
-import React, {useCallback, useLayoutEffect, useReducer} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
-import {sharedStyles} from '@app/utils/styles';
+import React, {useCallback, useLayoutEffect, useMemo, useReducer} from 'react';
+import {ScrollView, View} from 'react-native';
+import {sharedStyles, spacing} from '@app/utils/styles';
 import {useTags} from '@app/providers/TagsProvider';
 import TagsFields from './components/TagsField';
 import {preferredTagName} from '@app/api/mangadex/utils';
 import PublicationDemographicsField from './components/PublicationDemographicsField';
 import ContentRatingField from './components/ContentRatingField';
-import {Button, Text} from 'react-native-paper';
+import {Button, useTheme} from 'react-native-paper';
+import {FilterParamsState} from '@app/foundation/state/filters';
+import {useFiltersStore} from '@app/foundation/state/StaterinoProvider';
 
-export interface SearchFormProps {
-  visible: boolean;
-  onSubmit(params: FormState): void;
+export interface MangaSearchFiltersProps {
+  onSubmit(params: FilterParamsState): void;
 }
 
-export type FormState = Required<
-  Pick<
-    MangaRequestParams,
-    | 'availableTranslatedLanguage'
-    | 'contentRating'
-    | 'publicationDemographic'
-    | 'includedTags'
-    | 'excludedTags'
-    | 'includedTagsMode'
-    | 'excludedTagsMode'
-    | 'title'
-    | 'status'
-  >
->;
+export default function MangaSearchFilters({
+  onSubmit,
+}: MangaSearchFiltersProps) {
+  const {params: state} = useFiltersStore();
 
-const defaultState = (): FormState => ({
-  availableTranslatedLanguage: [],
-  contentRating: [ContentRating.safe, ContentRating.suggestive],
-  publicationDemographic: [],
-  includedTags: [],
-  excludedTags: [],
-  includedTagsMode: TagMode.AND,
-  excludedTagsMode: TagMode.OR,
-  title: '',
-  status: [],
-});
+  const useStore = useMemo(() => {
+    return staterino({
+      hooks: {useLayoutEffect, useReducer},
+      merge,
+      state,
+    });
+  }, [state]);
 
-const useStore = staterino({
-  hooks: {useLayoutEffect, useReducer},
-  merge,
-  state: defaultState(),
-});
-
-export default function SearchForm({visible, onSubmit}: SearchFormProps) {
   const allTags = useTags();
+  const {
+    colors: {background: backgroundColor, backdrop},
+  } = useTheme();
 
   const {set} = useStore;
 
@@ -81,31 +62,13 @@ export default function SearchForm({visible, onSubmit}: SearchFormProps) {
     [set],
   );
 
-  // const handleSubmit = useCallback(
-  //   (fields: FormState) => {
-  //     const entries = Object.entries(fields).filter(([_, value]) => {
-  //       if (typeof value === 'string' || Array.isArray(value)) {
-  //         return value.length > 0;
-  //       } else if (typeof value === 'object') {
-  //         return Object.keys(value).length > 0;
-  //       } else {
-  //         return value !== undefined && value !== null;
-  //       }
-  //     });
-
-  //     const result = Object.fromEntries(entries) as FormState;
-  //     onSubmit(result);
-  //   },
-  //   [onSubmit],
-  // );
-
   const fields = useStore();
 
   return (
-    <View style={visible ? styles.visibleRoot : styles.hiddenRoot}>
+    <View style={[sharedStyles.flex, {backgroundColor}]}>
       <ScrollView style={sharedStyles.flex}>
-        <View style={{flex: 1, gap: 16, padding: 8}}>
-          <Text variant="titleLarge">Filters</Text>
+        <View
+          style={[sharedStyles.flex, {gap: spacing(4), padding: spacing(2)}]}>
           <ContentRatingField
             values={[
               ContentRating.safe,
@@ -138,7 +101,11 @@ export default function SearchForm({visible, onSubmit}: SearchFormProps) {
           />
         </View>
       </ScrollView>
-      <Button onPress={() => onSubmit(fields)}>Save</Button>
+      <View style={{padding: spacing(2), backgroundColor: backdrop}}>
+        <Button mode="contained" onPress={() => onSubmit(fields)}>
+          Save
+        </Button>
+      </View>
     </View>
   );
 }
@@ -146,8 +113,3 @@ export default function SearchForm({visible, onSubmit}: SearchFormProps) {
 function tagValueAsKey(value: Manga.Tag) {
   return value.id;
 }
-
-const styles = StyleSheet.create({
-  visibleRoot: {display: 'flex', flex: 1},
-  hiddenRoot: {display: 'none'},
-});
