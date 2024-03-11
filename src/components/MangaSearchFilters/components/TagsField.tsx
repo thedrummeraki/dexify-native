@@ -96,18 +96,14 @@ export default function TagsFields({
   const onChipSelect = (value: Manga.Tag) => {
     const key = valueAsKey(value);
     if (isIncluded(value)) {
-      console.log('excluding', value);
       // then exclude
       setIncludedValues(prev => prev.filter(x => x !== key));
       setExcludedValues(prev => [...prev, key]);
     } else if (isExcluded(value)) {
-      console.log('deselecting', value);
       // then deselect
       onDeselectChip(value);
     } else {
       // then include
-      console.log('including', value);
-
       setExcludedValues(prev => prev.filter(x => x !== key));
       setIncludedValues(prev => [...prev, key]);
     }

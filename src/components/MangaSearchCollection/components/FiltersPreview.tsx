@@ -1,0 +1,124 @@
+import React, {useMemo} from 'react';
+import {useFiltersStore} from '@app/foundation/state/StaterinoProvider';
+import {Chip} from 'react-native-paper';
+import {sanitizeFilters} from '@app/foundation/state/filters';
+import {
+  ContentRating,
+  MangaRequestParams,
+  PublicationDemographic,
+} from '@app/api/mangadex/types';
+import {ScrollView, StyleSheet} from 'react-native';
+import {spacing} from '@app/utils/styles';
+import {useTags} from '@app/providers/TagsProvider';
+import {preferredTagName} from '@app/api/mangadex/utils';
+import {contentRatingHumanReadable} from '@app/components/MangaSearchFilters/components/ContentRatingField';
+import {publicationDemographicsHumanReadableValue} from '@app/components/MangaSearchFilters/components/PublicationDemographicsField';
+
+type PreviewableParams = Pick<
+  MangaRequestParams,
+  'includedTags' | 'excludedTags' | 'contentRating' | 'publicationDemographic'
+>;
+
+type ValueOf<T> = T[keyof T];
+
+type PreviewableParamsKey = keyof PreviewableParams;
+
+const previewableParamsKeys: PreviewableParamsKey[] = [
+  'includedTags',
+  'excludedTags',
+  'contentRating',
+  'publicationDemographic',
+];
+
+type PreviewableParamsNamesMap = {
+  [key in PreviewableParamsKey]: string;
+};
+
+const previewableParamsNamesMap: PreviewableParamsNamesMap = {
+  contentRating: 'Rating',
+  excludedTags: 'Without tags',
+  includedTags: 'Tags',
+  publicationDemographic: 'Demographics',
+};
+
+export default function FiltersPreview() {
+  const {params} = useFiltersStore();
+  const sanitized = useMemo(() => sanitizeFilters(params), [params]);
+
+  const validEntries: [PreviewableParamsKey, ValueOf<PreviewableParams>][] = [];
+  Object.entries(sanitized).map(([key, value]) => {
+    if (previewableParamsKeys.includes(key as PreviewableParamsKey)) {
+      validEntries.push([
+        key as PreviewableParamsKey,
+        value as ValueOf<PreviewableParams>,
+      ]);
+    }
+  });
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.scrollViewContentContainer}
+      style={styles.root}>
+      {validEntries.map(([key, value]) => (
+        <PreviewChip key={key} clef={key} value={value} />
+      ))}
+    </ScrollView>
+  );
+}
+
+interface PreviewChipProps {
+  // clef = key in french :p (key is a special prop in React)
+  clef: PreviewableParamsKey;
+  value: ValueOf<PreviewableParams>;
+  onClose?(): void;
+}
+
+function PreviewChip({clef, value, onClose}: PreviewChipProps) {
+  const name = previewableParamsNamesMap[clef];
+  const values = useHumanReadableValues(clef, value);
+
+  return (
+    <Chip onClose={onClose}>
+      {name}: {values}
+    </Chip>
+  );
+}
+
+function useHumanReadableValues(
+  key: PreviewableParamsKey,
+  value: ValueOf<PreviewableParams>,
+) {
+  const allTags = useTags();
+
+  switch (key) {
+    case 'excludedTags':
+    case 'includedTags':
+      const tagIds = value as string[];
+      const tags = allTags.filter(tag => tagIds.includes(tag.id));
+      return tags.map(preferredTagName).join(', ');
+    case 'contentRating':
+      const contentRatings = value as ContentRating[];
+      return contentRatings.map(contentRatingHumanReadable).join(', ');
+    case 'publicationDemographic':
+      const publicationDemographics = value as PublicationDemographic[];
+      return publicationDemographics
+        .map(publicationDemographicsHumanReadableValue)
+        .join(', ');
+    default:
+      return String(value);
+  }
+}
+
+const styles = StyleSheet.create({
+  root: {
+    flexDirection: 'row',
+    gap: spacing(1),
+  },
+  scrollViewContentContainer: {
+    gap: spacing(2),
+    marginLeft: spacing(2),
+    paddingRight: spacing(4),
+  },
+});

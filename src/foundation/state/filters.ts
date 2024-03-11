@@ -1,23 +1,18 @@
-import {
-  ContentRating,
-  MangaRequestParams,
-  TagMode,
-} from '@app/api/mangadex/types';
+import {MangaRequestParams, TagMode} from '@app/api/mangadex/types';
 
-export type FilterParamsState = Required<
-  Pick<
-    MangaRequestParams,
-    | 'availableTranslatedLanguage'
-    | 'contentRating'
-    | 'publicationDemographic'
-    | 'includedTags'
-    | 'excludedTags'
-    | 'includedTagsMode'
-    | 'excludedTagsMode'
-    | 'title'
-    | 'status'
-  >
+export type PartialFilterParamsState = Pick<
+  MangaRequestParams,
+  | 'availableTranslatedLanguage'
+  | 'contentRating'
+  | 'publicationDemographic'
+  | 'includedTags'
+  | 'excludedTags'
+  | 'includedTagsMode'
+  | 'excludedTagsMode'
+  | 'title'
+  | 'status'
 >;
+export type FilterParamsState = Required<PartialFilterParamsState>;
 
 export type FilterSortState = Required<Pick<MangaRequestParams, 'order'>>;
 
@@ -29,7 +24,7 @@ export interface FiltersStore {
 export const defaultFiltersStore: FiltersStore = {
   params: {
     availableTranslatedLanguage: [],
-    contentRating: [ContentRating.safe, ContentRating.suggestive],
+    contentRating: [],
     publicationDemographic: [],
     includedTags: [],
     excludedTags: [],

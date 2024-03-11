@@ -40,7 +40,6 @@ export function useMangadexPagination(resetsWhenChanged: readonly any[]) {
       setPage(1);
     } else {
       setOffset((page - 1) * limit);
-      console.log('updated offset');
     }
   }, [page, limit]);
 

@@ -32,7 +32,7 @@ export function MangaCollection({mangaList, loading, onEndReached}: Props) {
 }
 
 const styles = StyleSheet.create({
-  flatListContentContainer: {padding: 8, gap: 8},
+  flatListContentContainer: {paddingHorizontal: 8, gap: 8},
   flatListColumnWrapper: {gap: 8},
   flatList: {flex: 1},
   flatListEmptyStateRoot: {flex: 1, alignItems: 'center'},

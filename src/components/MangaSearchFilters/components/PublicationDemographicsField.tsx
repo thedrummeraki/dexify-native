@@ -13,13 +13,15 @@ export default function PublicationDemographicsField(
   return (
     <MultiSelectSimpleField
       title="Publication demographics"
-      humanReadableValue={humanReadableValue}
+      humanReadableValue={publicationDemographicsHumanReadableValue}
       {...props}
     />
   );
 }
 
-function humanReadableValue(value: PublicationDemographic): string {
+export function publicationDemographicsHumanReadableValue(
+  value: PublicationDemographic,
+): string {
   switch (value) {
     case 'shounen':
       return 'Shonen';

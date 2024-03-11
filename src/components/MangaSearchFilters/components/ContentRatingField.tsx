@@ -16,7 +16,7 @@ export default function ContentRatingField(props: ContentRatingFieldProps) {
   );
 }
 
-function contentRatingHumanReadable(value: ContentRating): string {
+export function contentRatingHumanReadable(value: ContentRating): string {
   switch (value) {
     case 'safe':
       return 'Safe';

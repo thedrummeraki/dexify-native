@@ -28,16 +28,12 @@ export default function MultiSelectSimpleField<T>({
   const onChipSelect = (value: T) => {
     setSelectedValues(existingValues => {
       let res: T[];
-      let start = performance.now();
 
       if (existingValues.includes(value)) {
         res = existingValues.filter(existingValue => existingValue !== value);
       } else {
         res = [...existingValues, value];
       }
-      let end = performance.now();
-
-      console.log(`${end - start} ms`);
 
       return res;
     });

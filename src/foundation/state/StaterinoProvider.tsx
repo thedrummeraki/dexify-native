@@ -49,10 +49,13 @@ export const useFiltersStore = () => {
 
   const setParams = (params: FilterParamsState) => set({filters: {params}});
   const setOrder = (sort: FilterSortState) => set({filters: {sort}});
+  const removeFilter = (key: keyof FilterParamsState) => {
+    set({filters: {[key]: defaultFiltersStore.params[key]}});
+  };
   const clear = () => set({filters: defaultFiltersStore});
   const filtersInfo = useStore(store => store.filters);
 
-  return {setParams, setOrder, clear, ...filtersInfo};
+  return {setParams, setOrder, clear, removeFilter, ...filtersInfo};
 };
 
 export default function StaterinoProvider({children}: StaterinoProviderProps) {

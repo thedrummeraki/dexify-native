@@ -15,15 +15,21 @@ import {preferredTagName} from '@app/api/mangadex/utils';
 import PublicationDemographicsField from './components/PublicationDemographicsField';
 import ContentRatingField from './components/ContentRatingField';
 import {Button, useTheme} from 'react-native-paper';
-import {FilterParamsState} from '@app/foundation/state/filters';
+import {
+  FilterParamsState,
+  PartialFilterParamsState,
+  sanitizeFilters,
+} from '@app/foundation/state/filters';
 import {useFiltersStore} from '@app/foundation/state/StaterinoProvider';
 
 export interface MangaSearchFiltersProps {
-  onSubmit(params: FilterParamsState): void;
+  onSubmit?(params: FilterParamsState): void;
+  onClose?(): void;
 }
 
 export default function MangaSearchFilters({
   onSubmit,
+  onClose,
 }: MangaSearchFiltersProps) {
   const {params: state} = useFiltersStore();
 
@@ -63,6 +69,47 @@ export default function MangaSearchFilters({
   );
 
   const fields = useStore();
+  const dirty = useMemo(() => {
+    const currentState: PartialFilterParamsState = sanitizeFilters(state);
+    const newState: PartialFilterParamsState = sanitizeFilters(fields);
+
+    const currentKeys = Object.keys(currentState);
+    const newKeys = Object.keys(newState);
+
+    const currentInNew = currentKeys.every(key => newKeys.includes(key));
+    const newInCurrent = newKeys.every(key => currentKeys.includes(key));
+
+    console.log({currentInNew, newInCurrent});
+
+    if (!currentInNew || !newInCurrent) {
+      return true;
+    }
+
+    // At this point, we know that current and new have the same keys.
+    // Now, ensure all values actually match.
+    const someValuesMismatch = Object.entries(currentState).some(
+      ([key, value]) => {
+        const newValue = newState[key as keyof PartialFilterParamsState];
+
+        if (Array.isArray(newValue) && Array.isArray(value)) {
+          const strValues = value.map(String);
+          const strNewValues = newValue.map(String);
+
+          console.log({strValues, strNewValues});
+
+          return !(
+            strValues.every(strkey => strNewValues.includes(strkey)) &&
+            strNewValues.every(strkey => strValues.includes(strkey))
+          );
+        } else {
+          console.log({newValue, value});
+          return newValue !== value;
+        }
+      },
+    );
+
+    return someValuesMismatch;
+  }, [state, fields]);
 
   return (
     <View style={[sharedStyles.flex, {backgroundColor}]}>
@@ -102,9 +149,15 @@ export default function MangaSearchFilters({
         </View>
       </ScrollView>
       <View style={{padding: spacing(2), backgroundColor: backdrop}}>
-        <Button mode="contained" onPress={() => onSubmit(fields)}>
-          Save
-        </Button>
+        {dirty ? (
+          <Button mode="contained" onPress={() => onSubmit?.(fields)}>
+            Save
+          </Button>
+        ) : (
+          <Button mode="outlined" onPress={onClose}>
+            Close
+          </Button>
+        )}
       </View>
     </View>
   );

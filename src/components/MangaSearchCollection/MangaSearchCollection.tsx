@@ -9,13 +9,18 @@ import {sanitizeFilters} from '@app/foundation/state/filters';
 import {useDexifyNavigation} from '@app/foundation/navigation';
 import {useLazyGetRequest} from '@app/api/utils';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
+import {FiltersPreview} from './components';
+import {View} from 'react-native';
+import {sharedStyles, spacing} from '@app/utils/styles';
 
 export interface QuickSearchProps {
+  hidePreview?: boolean;
   useFilters?: boolean;
   searchBarPlaceholder?: string;
 }
 
 export function MangaSearchCollection({
+  hidePreview,
   useFilters,
   searchBarPlaceholder,
 }: QuickSearchProps) {
@@ -41,13 +46,10 @@ export function MangaSearchCollection({
     [params, offset],
   );
 
-  // console.log({options, params, filters});
-
   const [get, {loading, data}] = useLazyGetRequest<PagedResultsList<Manga>>();
 
   const fetchManga = useCallback(() => {
-    console.log({options});
-    get(UrlBuilder.mangaList(options));
+    get(UrlBuilder.mangaList({...options, order: {followedCount: 'desc'}}));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options]);
 
@@ -84,14 +86,17 @@ export function MangaSearchCollection({
   }, [data, nextOffset]);
 
   return (
-    <>
-      <SearchBar
-        loading={loading}
-        query={title}
-        placeholder={searchBarPlaceholder}
-        onQueryChange={setTitle}
-        onShowFilters={() => navigation.navigate('Filters')}
-      />
+    <View style={sharedStyles.flex}>
+      <View style={{marginBottom: spacing(2)}}>
+        <SearchBar
+          loading={loading}
+          query={title}
+          placeholder={searchBarPlaceholder}
+          onQueryChange={setTitle}
+          onShowFilters={() => navigation.navigate('Filters')}
+        />
+        {hidePreview ? null : <FiltersPreview />}
+      </View>
       <MangaCollection
         mangaList={mangaList}
         loading={loading}
@@ -101,6 +106,6 @@ export function MangaSearchCollection({
           }
         }}
       />
-    </>
+    </View>
   );
 }

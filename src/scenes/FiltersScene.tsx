@@ -13,6 +13,7 @@ export default function FiltersScene() {
         setParams(params);
         navigation.goBack();
       }}
+      onClose={navigation.goBack}
     />
   );
 }
