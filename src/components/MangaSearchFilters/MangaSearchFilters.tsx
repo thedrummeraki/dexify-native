@@ -79,8 +79,6 @@ export default function MangaSearchFilters({
     const currentInNew = currentKeys.every(key => newKeys.includes(key));
     const newInCurrent = newKeys.every(key => currentKeys.includes(key));
 
-    console.log({currentInNew, newInCurrent});
-
     if (!currentInNew || !newInCurrent) {
       return true;
     }
@@ -94,8 +92,6 @@ export default function MangaSearchFilters({
         if (Array.isArray(newValue) && Array.isArray(value)) {
           const strValues = value.map(String);
           const strNewValues = newValue.map(String);
-
-          console.log({strValues, strNewValues});
 
           return !(
             strValues.every(strkey => strNewValues.includes(strkey)) &&
