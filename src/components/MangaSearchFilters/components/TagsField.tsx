@@ -35,7 +35,7 @@ export default function TagsFields({
   const [excludedValues, setExcludedValues] = useState(excluded);
 
   const [query, setQuery] = useState('');
-  const [showNValues, setShowNValues] = useState(15);
+  const [showNValues, setShowNValues] = useState(4);
 
   const trimmedQuery = query.trim();
   const canShowMore = showNValues < values.length;

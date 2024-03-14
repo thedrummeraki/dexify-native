@@ -2,12 +2,14 @@ import React from 'react';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {useTheme} from 'react-native-paper';
+import {Button, useTheme} from 'react-native-paper';
 import {useDimensions} from '@app/utils';
 import HomeSection from './components/HomeSection';
+import {useUserStore} from '@app/foundation/state/StaterinoProvider';
 
 export default function Home() {
   const data = Array.from({length: 10}, (_, index) => index);
+  const {user, logout} = useUserStore();
 
   const {height: windowHeight} = useDimensions();
   const {
@@ -37,6 +39,7 @@ export default function Home() {
             <View style={[styles.skeletonItem, {backgroundColor}]} />
           )}
         />
+        {user ? <Button onPress={logout}>Log out</Button> : null}
       </ScrollView>
     </SafeAreaView>
   );

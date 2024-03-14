@@ -8,6 +8,8 @@ import {
   SimpleRequestParams,
 } from './types';
 import {useCallback, useEffect, useState} from 'react';
+import {useUserStore} from '@app/foundation/state/StaterinoProvider';
+import {isSessionValid} from '@app/foundation/state/user';
 
 export function useGetRequest<T>(
   url: string,
@@ -40,6 +42,24 @@ export function useLazyGetRequest<T, Body = any>(
   return useAxiosRequest<T>(options);
 }
 
+export function usePostRequest<T, Body = any>(
+  hookUrl?: string,
+  params?: SimpleRequestParams<Body>,
+) {
+  const options = Object.assign(
+    {
+      hookUrl,
+      method: AxiosRequestType.Post,
+      refreshSession: true,
+      forceRefresh: true,
+      throwIfRefreshFails: true,
+    },
+    params,
+  );
+
+  return useAxiosRequest<T, Body>(options);
+}
+
 export function useAxiosRequest<T, Body = any>(
   params: RequestParams<Body>,
 ): LazyRequestResponse<T> {
@@ -48,6 +68,8 @@ export function useAxiosRequest<T, Body = any>(
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<AxiosError<T>>();
   const [status, setStatus] = useState(ResponseStatus.Pending);
+
+  const {token} = useUserStore();
 
   const callback = useCallback(
     async (callbackUrl?: string, body?: Body) => {
@@ -63,6 +85,18 @@ export function useAxiosRequest<T, Body = any>(
       //   : `[?${params.method}]`;
       const requestMethod = `[${params.method}]`;
       const config: AxiosRequestConfig = {};
+      if (token) {
+        if (!isSessionValid(token.session)) {
+          console.log(
+            'Warning: The token may be invalid at this time. Expired at:',
+            new Date(token.session.validUntil),
+          );
+        }
+
+        config.headers = {
+          Authorization: `Bearer ${token.session.value}`,
+        };
+      }
 
       // if (session) {
       //   // At this point, if the refreshResponse is undefined and the session
@@ -112,7 +146,7 @@ export function useAxiosRequest<T, Body = any>(
         setLoading(false);
       }
     },
-    [params],
+    [params, token],
   );
 
   return [callback, {data, loading, error, response, status}];

@@ -16,7 +16,12 @@ import {publicationDemographicsHumanReadableValue} from '@app/components/MangaSe
 
 type PreviewableParams = Pick<
   MangaRequestParams,
-  'includedTags' | 'excludedTags' | 'contentRating' | 'publicationDemographic'
+  | 'includedTags'
+  | 'excludedTags'
+  | 'contentRating'
+  | 'publicationDemographic'
+  | 'artists'
+  | 'authors'
 >;
 
 type ValueOf<T> = T[keyof T];
@@ -28,6 +33,8 @@ const previewableParamsKeys: PreviewableParamsKey[] = [
   'excludedTags',
   'contentRating',
   'publicationDemographic',
+  'artists',
+  'artists',
 ];
 
 type PreviewableParamsNamesMap = {
@@ -39,6 +46,8 @@ const previewableParamsNamesMap: PreviewableParamsNamesMap = {
   excludedTags: 'Without tags',
   includedTags: 'Tags',
   publicationDemographic: 'Demographics',
+  artists: 'Artists',
+  authors: 'Authors',
 };
 
 export default function FiltersPreview() {
@@ -98,6 +107,11 @@ function useHumanReadableValues(
       const tagIds = value as string[];
       const tags = allTags.filter(tag => tagIds.includes(tag.id));
       return tags.map(preferredTagName).join(', ');
+    case 'artists':
+    case 'authors':
+      const count = (value as string[]).length;
+      const singularKey = key.substring(0, key.length - 1);
+      return count === 1 ? `1 ${singularKey}` : `${count} ${key}`;
     case 'contentRating':
       const contentRatings = value as ContentRating[];
       return contentRatings.map(contentRatingHumanReadable).join(', ');

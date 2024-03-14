@@ -7,12 +7,12 @@ interface BasicResponse {
   result: 'ok' | 'error';
 }
 
-interface SuccessAuthResponse extends BasicResponse {
+export interface SuccessAuthResponse extends BasicResponse {
   result: 'ok';
   token: Token;
 }
 
-interface ErrorAuthResponse extends BasicResponse {
+export interface ErrorAuthResponse extends BasicResponse {
   result: 'error';
 }
 

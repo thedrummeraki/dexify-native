@@ -3,7 +3,12 @@ import {useState} from 'react';
 import SearchBar from '../SearchBar';
 import MangaCollection from '../MangaCollection';
 import {useMangadexPagination} from '@app/api/mangadex/hooks';
-import {Manga, PagedResultsList, isSuccess} from '@app/api/mangadex/types';
+import {
+  Manga,
+  MangaRequestParams,
+  PagedResultsList,
+  isSuccess,
+} from '@app/api/mangadex/types';
 import {useFiltersStore} from '@app/foundation/state/StaterinoProvider';
 import {sanitizeFilters} from '@app/foundation/state/filters';
 import {useDexifyNavigation} from '@app/foundation/navigation';
@@ -15,14 +20,18 @@ import {sharedStyles, spacing} from '@app/utils/styles';
 
 export interface QuickSearchProps {
   hidePreview?: boolean;
+  hideSearchbar?: boolean;
   useFilters?: boolean;
   searchBarPlaceholder?: string;
+  override?: MangaRequestParams;
 }
 
 export function MangaSearchCollection({
   hidePreview,
+  hideSearchbar,
   useFilters,
   searchBarPlaceholder,
+  override,
 }: QuickSearchProps) {
   const navigation = useDexifyNavigation();
 
@@ -35,11 +44,11 @@ export function MangaSearchCollection({
   const {params: filters} = useFiltersStore();
   const params = useMemo(() => {
     if (useFilters) {
-      return {...sanitizeFilters(filters), title};
+      return {...sanitizeFilters(filters), title, ...override};
     } else {
-      return {title};
+      return {title, ...override};
     }
-  }, [title, filters, useFilters]);
+  }, [title, filters, useFilters, override]);
 
   const options = useMemo(
     () => ({...params, limit: 50, offset}),
@@ -51,7 +60,7 @@ export function MangaSearchCollection({
   const fetchManga = useCallback(() => {
     get(UrlBuilder.mangaList({...options, order: {followedCount: 'desc'}}));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options]);
+  }, [options, override]);
 
   useEffect(() => {
     fetchManga();
@@ -87,21 +96,23 @@ export function MangaSearchCollection({
 
   return (
     <View style={sharedStyles.flex}>
-      <View style={{marginBottom: spacing(2)}}>
-        <SearchBar
-          loading={loading}
-          query={title}
-          placeholder={searchBarPlaceholder}
-          onQueryChange={setTitle}
-          onShowFilters={() => navigation.navigate('Filters')}
-        />
-        {hidePreview ? null : <FiltersPreview />}
-      </View>
+      {hideSearchbar ? null : (
+        <View style={{marginBottom: spacing(2)}}>
+          <SearchBar
+            loading={loading}
+            query={title}
+            placeholder={searchBarPlaceholder}
+            onQueryChange={setTitle}
+            onShowFilters={() => navigation.navigate('Filters')}
+          />
+          {hidePreview ? null : <FiltersPreview />}
+        </View>
+      )}
       <MangaCollection
         mangaList={mangaList}
         loading={loading}
         onEndReached={() => {
-          if (hasMore) {
+          if (!loading && hasMore) {
             nextPage();
           }
         }}

@@ -1,6 +1,7 @@
 import {
   ContentRating,
   Manga,
+  MangaStatus,
   PublicationDemographic,
 } from '@app/api/mangadex/types';
 
@@ -20,7 +21,11 @@ import {
   PartialFilterParamsState,
   sanitizeFilters,
 } from '@app/foundation/state/filters';
-import {useFiltersStore} from '@app/foundation/state/StaterinoProvider';
+import {
+  useFiltersStore,
+  useUserStore,
+} from '@app/foundation/state/StaterinoProvider';
+import MangaStatusField from './components/MangaStatusField';
 
 export interface MangaSearchFiltersProps {
   onSubmit?(params: FilterParamsState): void;
@@ -32,6 +37,20 @@ export default function MangaSearchFilters({
   onClose,
 }: MangaSearchFiltersProps) {
   const {params: state} = useFiltersStore();
+  const {user} = useUserStore();
+
+  const contentRatings = useMemo(() => {
+    const values = [
+      ContentRating.safe,
+      ContentRating.suggestive,
+      ContentRating.erotica,
+    ];
+    if (user) {
+      values.push(ContentRating.pornographic);
+    }
+
+    return values;
+  }, [user]);
 
   const useStore = useMemo(() => {
     return staterino({
@@ -58,6 +77,13 @@ export default function MangaSearchFilters({
   const onPublicationDemographicsChange = useCallback(
     (publicationDemographic: PublicationDemographic[]) => {
       set({publicationDemographic});
+    },
+    [set],
+  );
+
+  const onMangaStatusChange = useCallback(
+    (status: MangaStatus[]) => {
+      set({status});
     },
     [set],
   );
@@ -113,14 +139,18 @@ export default function MangaSearchFilters({
         <View
           style={[sharedStyles.flex, {gap: spacing(4), padding: spacing(2)}]}>
           <ContentRatingField
-            values={[
-              ContentRating.safe,
-              ContentRating.suggestive,
-              ContentRating.erotica,
-              ContentRating.pornographic,
-            ]}
+            values={contentRatings}
             onChange={onContentFieldChange}
             selected={fields.contentRating}
+          />
+          <TagsFields
+            values={allTags}
+            title="Tags"
+            onSelectionChange={onTagsChange}
+            included={fields.includedTags}
+            excluded={fields.excludedTags}
+            humanReadableValue={preferredTagName}
+            valueAsKey={tagValueAsKey}
           />
           <PublicationDemographicsField
             values={[
@@ -133,14 +163,10 @@ export default function MangaSearchFilters({
             onChange={onPublicationDemographicsChange}
             selected={fields.publicationDemographic}
           />
-          <TagsFields
-            values={allTags}
-            title="Tags"
-            onSelectionChange={onTagsChange}
-            included={fields.includedTags}
-            excluded={fields.excludedTags}
-            humanReadableValue={preferredTagName}
-            valueAsKey={tagValueAsKey}
+          <MangaStatusField
+            values={Object.values(MangaStatus)}
+            onChange={onMangaStatusChange}
+            selected={fields.status}
           />
         </View>
       </ScrollView>

@@ -7,5 +7,5 @@ export function spacing(n: number): number {
 
 export const sharedStyles = StyleSheet.create({
   flex: {flex: 1},
-  container: {padding: defaultSpacing * 2},
+  container: {padding: defaultSpacing * 2, gap: spacing(2)},
 });

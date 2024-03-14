@@ -12,7 +12,7 @@ export default function PublicationDemographicsField(
 ) {
   return (
     <MultiSelectSimpleField
-      title="Publication demographics"
+      title="Magazine demographic"
       humanReadableValue={publicationDemographicsHumanReadableValue}
       {...props}
     />

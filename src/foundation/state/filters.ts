@@ -1,4 +1,4 @@
-import {MangaRequestParams, TagMode} from '@app/api/mangadex/types';
+import {Artist, MangaRequestParams, TagMode} from '@app/api/mangadex/types';
 
 export type PartialFilterParamsState = Pick<
   MangaRequestParams,
@@ -11,14 +11,21 @@ export type PartialFilterParamsState = Pick<
   | 'excludedTagsMode'
   | 'title'
   | 'status'
+  | 'artists'
+  | 'authors'
 >;
 export type FilterParamsState = Required<PartialFilterParamsState>;
 
 export type FilterSortState = Required<Pick<MangaRequestParams, 'order'>>;
 
+export interface FiltersMiscObjects {
+  artists: Artist[];
+}
+
 export interface FiltersStore {
   params: FilterParamsState;
   sort: FilterSortState;
+  objects: FiltersMiscObjects;
 }
 
 export const defaultFiltersStore: FiltersStore = {
@@ -32,11 +39,16 @@ export const defaultFiltersStore: FiltersStore = {
     excludedTagsMode: TagMode.OR,
     title: '',
     status: [],
+    artists: [],
+    authors: [],
   },
   sort: {
     order: {
       followedCount: 'desc',
     },
+  },
+  objects: {
+    artists: [],
   },
 };
 

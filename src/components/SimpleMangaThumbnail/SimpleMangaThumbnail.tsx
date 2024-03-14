@@ -1,19 +1,41 @@
 import React from 'react';
 import {Manga} from '@app/api/mangadex/types';
 import {StyleSheet, View} from 'react-native';
-import {Card} from 'react-native-paper';
+import {Card, useTheme} from 'react-native-paper';
 import Text from '@app/foundation/theme/components/Text';
 import {mangaImage, preferredMangaTitle} from '@app/api/mangadex/utils';
-import {sharedStyles} from '@app/utils/styles';
+import {sharedStyles, spacing} from '@app/utils/styles';
 
 export interface SimpleMangaThumbnailProps {
   manga: Manga;
+  selected?: boolean;
+  onPress?(manga: Manga): void;
+  onLongPress?(manga: Manga): void;
 }
 
-export function SimpleMangaThumbnail({manga}: SimpleMangaThumbnailProps) {
+export function SimpleMangaThumbnail({
+  manga,
+  selected,
+  onPress,
+  onLongPress,
+}: SimpleMangaThumbnailProps) {
+  const {
+    colors: {primary},
+  } = useTheme();
+
   return (
-    <View style={styles.root}>
-      <Card>
+    <View
+      style={[
+        styles.root,
+        {
+          borderColor: primary,
+          borderWidth: spacing(selected ? 1 : 0),
+          borderRadius: spacing(4),
+        },
+      ]}>
+      <Card
+        onLongPress={() => onLongPress?.(manga)}
+        onPress={() => onPress?.(manga)}>
         <Card.Cover source={{uri: mangaImage(manga)}} style={styles.image} />
       </Card>
       <View style={styles.container}>
