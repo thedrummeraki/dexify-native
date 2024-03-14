@@ -64,6 +64,10 @@ export default function FiltersPreview() {
     }
   });
 
+  if (validEntries.length === 0) {
+    return null;
+  }
+
   return (
     <ScrollView
       horizontal
@@ -129,6 +133,7 @@ const styles = StyleSheet.create({
   root: {
     flexDirection: 'row',
     gap: spacing(1),
+    marginBottom: spacing(2),
   },
   scrollViewContentContainer: {
     gap: spacing(2),

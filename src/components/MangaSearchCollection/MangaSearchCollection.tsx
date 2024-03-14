@@ -16,7 +16,7 @@ import {useLazyGetRequest} from '@app/api/utils';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import {FiltersPreview} from './components';
 import {View} from 'react-native';
-import {sharedStyles, spacing} from '@app/utils/styles';
+import {sharedStyles} from '@app/utils/styles';
 
 export interface QuickSearchProps {
   hidePreview?: boolean;
@@ -97,7 +97,7 @@ export function MangaSearchCollection({
   return (
     <View style={sharedStyles.flex}>
       {hideSearchbar ? null : (
-        <View style={{marginBottom: spacing(2)}}>
+        <View>
           <SearchBar
             loading={loading}
             query={title}
