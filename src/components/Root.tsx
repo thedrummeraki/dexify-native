@@ -1,6 +1,11 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {FiltersScene, HomeScene} from '@app/scenes';
+import {
+  FiltersScene,
+  HomeScene,
+  ShowMangaDetailsModalScene,
+  ShowMangaScene,
+} from '@app/scenes';
 import {RootStackParamList} from '@app/foundation/navigation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -14,9 +19,19 @@ export function Root() {
           component={HomeScene}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="ShowManga"
+          component={ShowMangaScene}
+          options={{headerShown: false}}
+        />
       </Stack.Group>
-      <Stack.Group screenOptions={{presentation: 'fullScreenModal'}}>
+      <Stack.Group
+        screenOptions={{presentation: 'fullScreenModal', headerShown: false}}>
         <Stack.Screen name="Filters" component={FiltersScene} />
+        <Stack.Screen
+          name="ShowMangaDetailsModal"
+          component={ShowMangaDetailsModalScene}
+        />
       </Stack.Group>
     </Stack.Navigator>
   );

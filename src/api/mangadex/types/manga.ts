@@ -107,8 +107,14 @@ export namespace Manga {
     distribution: {[rating: string]: string};
   }
 
+  export interface StatisticComments {
+    threadId: number;
+    repliesCount: number;
+  }
+
   export interface Statistic {
     rating: StatisticRating;
+    comments: StatisticComments | null;
     follows: number;
   }
 

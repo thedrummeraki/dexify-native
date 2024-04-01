@@ -24,6 +24,23 @@ export function preferredMangaTitle(manga: Manga) {
   );
 }
 
+export function secondaryMangaTitle(manga: Manga) {
+  const englishTitle = manga.attributes.altTitles.find(title => {
+    const lang = Object.keys(title)[0];
+    return lang.startsWith('en');
+  });
+  if (englishTitle) {
+    return preferredTitle(englishTitle);
+  }
+
+  const originalTitle =
+    manga.attributes.altTitles.find(title => {
+      const lang = Object.keys(title)[0];
+      return lang.startsWith(manga.attributes.originalLanguage);
+    }) || manga.attributes.altTitles[0];
+  return preferredTitle(originalTitle);
+}
+
 export function preferredTagName(tag: Manga.Tag) {
   return preferredTitle(tag.attributes.name);
 }

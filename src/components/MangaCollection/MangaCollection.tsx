@@ -9,6 +9,7 @@ type ViewMode = 'view' | 'select';
 export interface Props {
   mangaList: Manga[];
   loading?: boolean;
+  numColumns?: number;
   onMangaPress?(manga: Manga): void;
   onEndReached?(): void;
 }
@@ -16,6 +17,7 @@ export interface Props {
 export function MangaCollection({
   mangaList,
   loading,
+  numColumns = 2,
   onMangaPress,
   onEndReached,
 }: Props) {
@@ -48,27 +50,33 @@ export function MangaCollection({
     }
   }, [selectedMangaIds.length]);
 
+  if (numColumns < 1) {
+    throw new Error('Must at least have on column');
+  }
+
   return (
     <FlatList
       data={mangaList}
-      numColumns={2}
-      contentContainerStyle={styles.flatListContentContainer}
-      columnWrapperStyle={styles.flatListColumnWrapper}
-      style={styles.flatList}
+      numColumns={numColumns}
+      contentContainerStyle={styles.contentContainer}
+      columnWrapperStyle={styles.columnWrapper}
+      style={styles.root}
       onEndReached={onEndReached}
       onEndReachedThreshold={1}
       ListEmptyComponent={
-        <View style={styles.flatListEmptyStateRoot}>
+        <View style={styles.emptyStateRoot}>
           <Text>{loading ? 'Please wait...' : 'No manga was found.'}</Text>
         </View>
       }
       renderItem={({item}) => (
-        <SimpleMangaThumbnail
-          selected={selectedMangaIds.includes(item.id)}
-          manga={item}
-          onPress={handleMangaPress}
-          onLongPress={handleMangaSelection}
-        />
+        <View style={{flex: 1 / numColumns}}>
+          <SimpleMangaThumbnail
+            selected={selectedMangaIds.includes(item.id)}
+            manga={item}
+            onPress={handleMangaPress}
+            onLongPress={handleMangaSelection}
+          />
+        </View>
       )}
       keyExtractor={item => item.id}
     />
@@ -76,8 +84,8 @@ export function MangaCollection({
 }
 
 const styles = StyleSheet.create({
-  flatListContentContainer: {paddingHorizontal: 8, gap: 8},
-  flatListColumnWrapper: {gap: 8},
-  flatList: {flex: 1},
-  flatListEmptyStateRoot: {flex: 1, alignItems: 'center'},
+  contentContainer: {paddingHorizontal: 8, gap: 8},
+  columnWrapper: {gap: 8},
+  root: {flex: 1},
+  emptyStateRoot: {flex: 1, alignItems: 'center'},
 });

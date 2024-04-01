@@ -18,7 +18,7 @@ import {FiltersPreview} from './components';
 import {View} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
 
-export interface QuickSearchProps {
+export interface MangaSearchCollectionProps {
   hidePreview?: boolean;
   hideSearchbar?: boolean;
   useFilters?: boolean;
@@ -32,7 +32,7 @@ export function MangaSearchCollection({
   useFilters,
   searchBarPlaceholder,
   override,
-}: QuickSearchProps) {
+}: MangaSearchCollectionProps) {
   const navigation = useDexifyNavigation();
 
   const [title, setTitle] = useState('');
@@ -111,6 +111,8 @@ export function MangaSearchCollection({
       <MangaCollection
         mangaList={mangaList}
         loading={loading}
+        numColumns={2}
+        onMangaPress={manga => navigation.navigate('ShowManga', {...manga})}
         onEndReached={() => {
           if (!loading && hasMore) {
             nextPage();

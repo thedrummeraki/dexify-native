@@ -5,9 +5,8 @@ import {
   PublicationDemographic,
 } from '@app/api/mangadex/types';
 
-import staterino from 'staterino';
-import merge from 'mergerino';
-import React, {useCallback, useLayoutEffect, useMemo, useReducer} from 'react';
+import merge, {MultipleTopLevelPatch} from 'mergerino';
+import React, {useCallback, useMemo, useReducer} from 'react';
 import {ScrollView, View} from 'react-native';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import {useTags} from '@app/providers/TagsProvider';
@@ -52,20 +51,25 @@ export default function MangaSearchFilters({
     return values;
   }, [user]);
 
-  const useStore = useMemo(() => {
-    return staterino({
-      hooks: {useLayoutEffect, useReducer},
-      merge,
-      state,
-    });
-  }, [state]);
+  // const useStore = useMemo(() => {
+  //   return staterino({
+  //     hooks: {useLayoutEffect, useReducer},
+  //     merge,
+  //     state,
+  //   });
+  // }, [state]);
+
+  const [fields, set] = useReducer(
+    (a: typeof state, p: MultipleTopLevelPatch<typeof state>) => merge(a, p),
+    state,
+  );
 
   const allTags = useTags();
   const {
     colors: {background: backgroundColor, backdrop},
   } = useTheme();
 
-  const {set} = useStore;
+  // const {set} = useStore;
 
   const onContentFieldChange = useCallback(
     (contentRating: ContentRating[]) => {
@@ -94,7 +98,7 @@ export default function MangaSearchFilters({
     [set],
   );
 
-  const fields = useStore();
+  // const fields = useStore();
   const dirty = useMemo(() => {
     const currentState: PartialFilterParamsState = sanitizeFilters(state);
     const newState: PartialFilterParamsState = sanitizeFilters(fields);

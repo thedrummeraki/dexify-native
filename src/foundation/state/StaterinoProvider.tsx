@@ -56,9 +56,12 @@ export const useUserStore = () => {
   };
   const logout = () => {
     const emptyUserStore = {user: {user: null, token: null}};
-    storeSession(emptyUserStore.user);
+    // storeSession(emptyUserStore.user);
+    blastSession();
     set(emptyUserStore);
   };
+
+  // TODO: maybe too specific here
   const userInfo = useStore(store => store.user);
 
   useEffect(() => {
@@ -119,6 +122,16 @@ export default function StaterinoProvider({children}: StaterinoProviderProps) {
       {children}
     </StaterinoContext.Provider>
   );
+}
+
+async function blastSession() {
+  try {
+    await EncryptedStorage.removeItem('user_session');
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 async function storeSession(session: UserStore) {

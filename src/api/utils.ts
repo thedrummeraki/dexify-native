@@ -8,8 +8,12 @@ import {
   SimpleRequestParams,
 } from './types';
 import {useCallback, useEffect, useState} from 'react';
-import {useUserStore} from '@app/foundation/state/StaterinoProvider';
-import {isSessionValid} from '@app/foundation/state/user';
+import {useStore} from '@app/foundation/state/StaterinoProvider';
+import {
+  isSessionValid,
+  tokenInfoFromAuthResponse,
+} from '@app/foundation/state/user';
+import {AuthResponse} from './mangadex/types';
 
 export function useGetRequest<T>(
   url: string,
@@ -69,7 +73,8 @@ export function useAxiosRequest<T, Body = any>(
   const [error, setError] = useState<AxiosError<T>>();
   const [status, setStatus] = useState(ResponseStatus.Pending);
 
-  const {token} = useUserStore();
+  const {set} = useStore;
+  const {user, token} = useStore(store => store.user);
 
   const callback = useCallback(
     async (callbackUrl?: string, body?: Body) => {
@@ -85,16 +90,48 @@ export function useAxiosRequest<T, Body = any>(
       //   : `[?${params.method}]`;
       const requestMethod = `[${params.method}]`;
       const config: AxiosRequestConfig = {};
+      let bearerToken: string | undefined;
+
       if (token) {
         if (!isSessionValid(token.session)) {
           console.log(
             'Warning: The token may be invalid at this time. Expired at:',
             new Date(token.session.validUntil),
+            'Refreshing token...',
           );
+
+          const refreshResponse = await axios.post<AuthResponse>(
+            'https://api.mangadex.org/auth/refresh',
+            {
+              token: token.refresh.value,
+            },
+          );
+
+          if (refreshResponse.status < 300 && refreshResponse.status >= 200) {
+            const {data: refreshData} = refreshResponse;
+            if (refreshData.result === 'ok') {
+              console.log('successfully refreshed token.');
+              const tokenInfo = tokenInfoFromAuthResponse(refreshData);
+              set({user: {user, token: tokenInfo}});
+              bearerToken = tokenInfo.session.value;
+            } else {
+              console.warn(
+                'Could not refresh token. Details:',
+                refreshResponse,
+              );
+            }
+          } else {
+            console.warn(
+              'Could not refresh token. HTTP code:',
+              refreshResponse.status,
+            );
+          }
+        } else {
+          bearerToken = token.session.value;
         }
 
         config.headers = {
-          Authorization: `Bearer ${token.session.value}`,
+          Authorization: `Bearer ${bearerToken}`,
         };
       }
 
@@ -111,7 +148,9 @@ export function useAxiosRequest<T, Body = any>(
       const requestConfig = config || {};
 
       console.log(
-        requestMethod,
+        user && token
+          ? `[By ${user.username}] ${requestMethod}`
+          : requestMethod,
         url,
         'with header keys',
         Object.keys(config.headers || {}),
@@ -146,7 +185,7 @@ export function useAxiosRequest<T, Body = any>(
         setLoading(false);
       }
     },
-    [params, token],
+    [params, token, set, user],
   );
 
   return [callback, {data, loading, error, response, status}];

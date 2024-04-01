@@ -6,15 +6,30 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
 import {Chip, Text} from 'react-native-paper';
 import LibraryMangaCollection from './LibraryMangaCollection';
+import {useUserStore} from '@app/foundation/state/StaterinoProvider';
 
 export default function Library() {
-  const readingStatuses = Object.values(ReadingStatus);
+  const allReadingStatuses = Object.values(ReadingStatus);
+  const [readingStatuses, setReadingStatuses] =
+    useState<ReadingStatus[]>(allReadingStatuses);
   const [currentReadingStatus, setCurrentReadingStatus] = useState(
-    ReadingStatus.Completed,
+    ReadingStatus.Reading,
   );
 
-  const [fetchReadingStatus, {data: mapping, loading}] =
+  const {token} = useUserStore();
+
+  const handleReadingStatusSelection = (readingStatus: ReadingStatus) => {
+    // setReadingStatuses((current) => {
+    //   const unselected = current.filter(x => x !== readingStatus);
+    //   return [readingStatus, ...unselected]
+    // });
+    setCurrentReadingStatus(readingStatus);
+  };
+
+  const [fetchReadingStatus, {data: mapping, loading, error}] =
     useLazyGetRequest<AllReadingStatusResponse>();
+
+  console.log({mapping, error});
 
   useEffect(() => {
     fetchReadingStatus(UrlBuilder.readingStatusMangaIds(currentReadingStatus));
@@ -35,7 +50,7 @@ export default function Library() {
               showSelectedCheck
               showSelectedOverlay
               selected={currentReadingStatus === item}
-              onPress={() => setCurrentReadingStatus(item)}>
+              onPress={() => handleReadingStatusSelection(item)}>
               {readingStatusName(item)}
             </Chip>
           )}
