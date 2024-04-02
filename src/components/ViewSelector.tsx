@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {IconButton, IconButtonProps} from 'react-native-paper';
 import {StyleSheet, View} from 'react-native';
+import {spacing} from '@app/utils/styles';
 
 export type ViewSelectorOption<T> = {
   value: T;
@@ -42,6 +43,7 @@ export default function ViewSelector<T>({
             mode={mode}
             selected={isSelected}
             onPress={() => setCurrentValue(option.value)}
+            style={{marginHorizontal: 0}}
             {...option}
           />
         );
@@ -53,6 +55,6 @@ export default function ViewSelector<T>({
 const styles = StyleSheet.create({
   root: {
     flexDirection: 'row',
-    flexShrink: 1,
+    marginRight: spacing(-1),
   },
 });

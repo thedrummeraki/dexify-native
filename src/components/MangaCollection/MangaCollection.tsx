@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Manga} from '@app/api/mangadex/types';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {FlatList, Image, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import SimpleMangaThumbnail from '../SimpleMangaThumbnail';
 

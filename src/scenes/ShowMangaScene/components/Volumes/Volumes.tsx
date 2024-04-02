@@ -1,7 +1,7 @@
-import {Text} from 'react-native-paper';
+import {ProgressBar, Text} from 'react-native-paper';
 import {StyleSheet, View} from 'react-native';
 import {useEffect, useMemo, useState} from 'react';
-import {ViewSelector} from '@app/components';
+import {PaddingHorizontal, ViewSelector} from '@app/components';
 import {useMangaDetails} from '../MangaProvider';
 import {Manga} from '@app/api/mangadex/types';
 import {useLazyGetRequest} from '@app/api/utils';
@@ -53,19 +53,22 @@ export default function Volumes(props: VolumesProps) {
   const ListHeaderComponent = (
     <>
       {props.ListHeaderComponent}
-      <View style={styles.header}>
-        <View style={styles.headerPrimary}>
-          <Text variant="titleMedium">Volumes</Text>
+      <PaddingHorizontal>
+        <View style={styles.header}>
+          <View style={styles.headerPrimary}>
+            <Text variant="titleMedium">Volumes</Text>
+          </View>
+          <ViewSelector
+            options={[
+              // {icon: 'format-list-bulleted', value: VolumeView.List},
+              {icon: 'grid-large', value: VolumeView.Grid},
+            ]}
+            value={volumeView}
+            onValueChange={setVolumeView}
+          />
         </View>
-        <ViewSelector
-          options={[
-            {icon: 'format-list-bulleted', value: VolumeView.List},
-            {icon: 'grid-large', value: VolumeView.Grid},
-          ]}
-          value={volumeView}
-          onValueChange={setVolumeView}
-        />
-      </View>
+      </PaddingHorizontal>
+      {loading && <ProgressBar indeterminate />}
     </>
   );
 

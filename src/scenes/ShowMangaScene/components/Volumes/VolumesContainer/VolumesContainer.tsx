@@ -74,6 +74,7 @@ function VolumesGrid({
       data={volumeInfoList}
       numColumns={numColums}
       columnWrapperStyle={{gap: spacing(2)}}
+      contentContainerStyle={{padding: spacing(1)}}
       renderItem={({item}) => (
         <View style={{flex: 1 / numColums}}>
           <VolumeGridItem volumeInfo={item} />

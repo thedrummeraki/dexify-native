@@ -24,10 +24,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   minor: {
-    flexShrink: 1,
-    flexDirection: 'row',
+    display: 'none',
+    flex: 1,
   },
   major: {
-    flexGrow: 1,
+    flex: 1,
   },
 });

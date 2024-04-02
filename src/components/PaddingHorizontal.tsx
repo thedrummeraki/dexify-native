@@ -12,8 +12,12 @@ export default function PaddingHorizontal({
   children,
   ...viewProps
 }: PaddingHorizontalProps) {
+  const style = Object.assign(viewProps.style || {}, {
+    paddingHorizontal: computeSpacing(spacing),
+  });
+
   return (
-    <View style={{paddingHorizontal: computeSpacing(spacing)}} {...viewProps}>
+    <View style={style} {...viewProps}>
       {children}
     </View>
   );

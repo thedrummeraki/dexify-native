@@ -17,6 +17,7 @@ import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import {FiltersPreview} from './components';
 import {View} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
+import {useDimensions} from '@app/utils';
 
 export interface MangaSearchCollectionProps {
   hidePreview?: boolean;
@@ -34,6 +35,8 @@ export function MangaSearchCollection({
   override,
 }: MangaSearchCollectionProps) {
   const navigation = useDexifyNavigation();
+  const {width} = useDimensions();
+  const numColumns = width < 350 ? 2 : 3;
 
   const [title, setTitle] = useState('');
   const [mangaList, setMangaList] = useState<Manga[]>([]);
@@ -111,7 +114,7 @@ export function MangaSearchCollection({
       <MangaCollection
         mangaList={mangaList}
         loading={loading}
-        numColumns={2}
+        numColumns={numColumns}
         onMangaPress={manga => navigation.navigate('ShowManga', {...manga})}
         onEndReached={() => {
           if (!loading && hasMore) {

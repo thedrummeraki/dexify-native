@@ -12,6 +12,7 @@ import {
   Publication,
   Poster,
   Volumes,
+  Description,
 } from './components';
 import MangaProvider from './components/MangaProvider';
 import {Text} from 'react-native-paper';
@@ -28,19 +29,20 @@ export default function ShowMangaSceneDetails({
   const navigation = useDexifyNavigation();
 
   const VolumesListHeaderComponent = (
-    <>
+    <View style={{marginHorizontal: spacing(-1), gap: spacing(3)}}>
       <Poster />
-      <View>
+      <PaddingHorizontal style={{gap: spacing(1)}}>
         <Text variant="titleLarge">{preferredMangaTitle(manga)}</Text>
         <Text variant="titleSmall">{secondaryMangaTitle(manga)}</Text>
         <AuthorsArtists />
-      </View>
-      <View>
+      </PaddingHorizontal>
+      <PaddingHorizontal style={{gap: spacing(2)}}>
         <Publication />
         <Stats />
         <MainActions />
-      </View>
-    </>
+        <Description />
+      </PaddingHorizontal>
+    </View>
   );
 
   return (

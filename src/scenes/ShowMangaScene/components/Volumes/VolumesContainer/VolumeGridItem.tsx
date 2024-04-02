@@ -22,7 +22,10 @@ export default function VolumeGridItem({volumeInfo}: VolumeGridItemProps) {
 
   return (
     <View style={styles.gridItemRoot}>
-      <Image source={{uri: coverArtUri}} style={styles.gridItemImage} />
+      <Image
+        source={{uri: coverArtUri}}
+        style={[styles.gridItemImage, {backgroundColor: theme.colors.surface}]}
+      />
       <Text
         variant="bodySmall"
         numberOfLines={1}
@@ -36,10 +39,11 @@ export default function VolumeGridItem({volumeInfo}: VolumeGridItemProps) {
 const styles = StyleSheet.create({
   gridItemRoot: {
     marginBottom: spacing(2),
+    gap: spacing(1),
   },
   gridItemImage: {
     flex: 1,
-    aspectRatio: 0.8,
+    aspectRatio: 0.95,
     borderRadius: spacing(2),
   },
 });
