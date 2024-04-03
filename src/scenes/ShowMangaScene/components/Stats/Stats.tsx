@@ -21,6 +21,9 @@ export default function Stats() {
 
   if (data?.result === 'ok') {
     const mangaStatistics = data.statistics[manga.id];
+    if (!mangaStatistics) {
+      return <StatsDetails.Loading />;
+    }
     return <StatsDetails statistics={mangaStatistics} />;
   }
 

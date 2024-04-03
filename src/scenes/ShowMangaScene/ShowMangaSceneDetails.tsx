@@ -3,8 +3,8 @@ import {
   preferredMangaTitle,
   secondaryMangaTitle,
 } from '@app/api/mangadex/utils';
-import {PaddingHorizontal, SceneContainer} from '@app/components';
-import {FlatList, SafeAreaView, ScrollView, View} from 'react-native';
+import {PaddingHorizontal} from '@app/components';
+import {SafeAreaView, View} from 'react-native';
 import {
   AuthorsArtists,
   MainActions,
@@ -17,7 +17,6 @@ import {
 import MangaProvider from './components/MangaProvider';
 import {Text} from 'react-native-paper';
 import {spacing} from '@app/utils/styles';
-import {useDexifyNavigation} from '@app/foundation/navigation';
 
 export interface ShowMangaSceneDetailsProps {
   manga: Manga;
@@ -26,8 +25,6 @@ export interface ShowMangaSceneDetailsProps {
 export default function ShowMangaSceneDetails({
   manga,
 }: ShowMangaSceneDetailsProps) {
-  const navigation = useDexifyNavigation();
-
   const VolumesListHeaderComponent = (
     <View style={{marginHorizontal: spacing(-1), gap: spacing(3)}}>
       <Poster />

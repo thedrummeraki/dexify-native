@@ -2,11 +2,13 @@ import {StyleSheet, View} from 'react-native';
 import {useManga} from './MangaProvider';
 import {findRelationships} from '@app/api/mangadex/utils';
 import {Artist, Author} from '@app/api/mangadex/types';
-import {Text, useTheme} from 'react-native-paper';
+import {useTheme} from 'react-native-paper';
 import {spacing} from '@app/utils/styles';
 import TextBadge from '@app/components/TextBadge';
+import {useDexifyNavigation} from '@app/foundation/navigation';
 
 export default function AuthorsArtists() {
+  const navigation = useDexifyNavigation();
   const styles = useStyles();
   const manga = useManga();
 
@@ -26,6 +28,7 @@ export default function AuthorsArtists() {
             key={author.id}
             content={author.attributes.name}
             icon={icon}
+            onPress={() => navigation.navigate('ShowArtist', author)}
           />
         );
       })}

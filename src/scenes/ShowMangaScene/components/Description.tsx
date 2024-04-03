@@ -4,6 +4,7 @@ import {preferredMangaDescription} from '@app/api/mangadex/utils';
 import {useEffect, useState} from 'react';
 import TextBadge from '@app/components/TextBadge';
 import {View} from 'react-native';
+import {spacing} from '@app/utils/styles';
 
 export interface DescriptionProps {
   numberOfLines?: number;
@@ -15,20 +16,21 @@ export default function Description({numberOfLines = 3}: DescriptionProps) {
 
   const [shouldShowMore, setShouldShowMore] = useState(false);
   const [lines, setLines] = useState(-1);
-  const [visibleNumberOfLines, setVisibleNumberOfLines] =
-    useState(numberOfLines);
+  const [visibleNumberOfLines, setVisibleNumberOfLines] = useState<
+    number | undefined
+  >(numberOfLines);
   const [showingMore, setShowingMore] = useState(false);
 
   useEffect(() => {
     if (showingMore) {
-      setVisibleNumberOfLines(lines);
+      setVisibleNumberOfLines(undefined);
     } else {
       setVisibleNumberOfLines(numberOfLines);
     }
   }, [showingMore, lines, numberOfLines]);
 
   return (
-    <View style={{justifyContent: 'center', flex: 1}}>
+    <View style={{justifyContent: 'center', flex: 1, gap: spacing(2)}}>
       <Text
         numberOfLines={visibleNumberOfLines}
         style={{color: theme.colors.outline}}
@@ -39,7 +41,7 @@ export default function Description({numberOfLines = 3}: DescriptionProps) {
         }}>
         {preferredMangaDescription(manga)}
       </Text>
-      {shouldShowMore !== null ? (
+      {shouldShowMore !== null && lines > numberOfLines ? (
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           <TextBadge
             icon={showingMore ? 'minus' : 'plus'}

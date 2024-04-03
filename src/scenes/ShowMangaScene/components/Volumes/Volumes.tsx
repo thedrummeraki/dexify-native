@@ -1,4 +1,4 @@
-import {ProgressBar, Text} from 'react-native-paper';
+import {Banner, ProgressBar, Text} from 'react-native-paper';
 import {StyleSheet, View} from 'react-native';
 import {useEffect, useMemo, useState} from 'react';
 import {PaddingHorizontal, ViewSelector} from '@app/components';
@@ -80,6 +80,9 @@ export default function Volumes(props: VolumesProps) {
           volumeView={volumeView}
           {...props}
           ListHeaderComponent={ListHeaderComponent}
+          ListEmptyComponent={
+            <Banner visible>No volumes can be read from Mangadex.</Banner>
+          }
         />
       </View>
     </View>

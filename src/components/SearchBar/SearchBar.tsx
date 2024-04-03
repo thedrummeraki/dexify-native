@@ -1,8 +1,8 @@
-import { useDebouncedEffect } from '@app/utils';
-import { spacing } from '@app/utils/styles';
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { IconButton, Searchbar } from 'react-native-paper';
+import {useDebouncedEffect} from '@app/utils';
+import {spacing} from '@app/utils/styles';
+import React, {useCallback, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {IconButton, Searchbar} from 'react-native-paper';
 
 interface SearchBarProps {
   query: string;
@@ -51,5 +51,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: spacing(2),
   },
-  textInput: { flex: 1, borderRadius: 16, minHeight: 36 },
+  textInput: {flex: 1, borderRadius: 16, minHeight: 36},
 });

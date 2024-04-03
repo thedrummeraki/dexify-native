@@ -1,6 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
+  AuthorArtistScene,
   FiltersScene,
   HomeScene,
   ShowMangaDetailsModalScene,
@@ -32,6 +33,7 @@ export function Root() {
           name="ShowMangaDetailsModal"
           component={ShowMangaDetailsModalScene}
         />
+        <Stack.Screen name="ShowArtist" component={AuthorArtistScene} />
       </Stack.Group>
     </Stack.Navigator>
   );

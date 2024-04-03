@@ -1,5 +1,5 @@
 import {Chapter, CoverArt} from '@app/api/mangadex/types';
-import {Text} from 'react-native-paper';
+import {Banner, Text} from 'react-native-paper';
 import {FlatList, FlatListProps, Image, StyleSheet, View} from 'react-native';
 import {useDimensions} from '@app/utils';
 import {ComponentProps} from 'react';

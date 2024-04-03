@@ -4,18 +4,38 @@ import {PropsWithChildren} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {Appbar, IconButton, Text, useTheme} from 'react-native-paper';
 
-export type SceneHeaderProps = PropsWithChildren<{
+export interface SceneContainerHeaderProps {
   title?: string;
   onBackPress?(): void;
   onDetailsPress?(): void;
-}>;
+}
+
+export type SceneContainerProps = PropsWithChildren<
+  SceneContainerHeaderProps & {canScroll?: boolean}
+>;
 
 export default function SceneContainer({
+  children,
+  canScroll,
+  ...headerProps
+}: SceneContainerProps) {
+  const ContainerComponent = canScroll ? ScrollView : View;
+
+  return (
+    <View style={styles.root}>
+      <Header {...headerProps} />
+      <ContainerComponent style={[styles.container]}>
+        {children}
+      </ContainerComponent>
+    </View>
+  );
+}
+
+function Header({
   title,
   onBackPress,
   onDetailsPress,
-  children,
-}: SceneHeaderProps) {
+}: Omit<SceneContainerProps, 'children'>) {
   const navigation = useDexifyNavigation();
   const handleBackPress = () => {
     onBackPress?.();
@@ -23,29 +43,25 @@ export default function SceneContainer({
   };
 
   const theme = useTheme();
-
   return (
-    <View style={styles.root}>
-      <Appbar.Header
-        elevated
-        theme={theme}
-        style={[styles.header, {borderBottomColor: theme.colors.primary}]}>
-        <View style={styles.headerLeft}>
-          <IconButton icon="close" onPress={handleBackPress} />
-          {title ? (
-            <Text numberOfLines={1} variant="titleSmall">
-              {title}
-            </Text>
-          ) : null}
-        </View>
-        <View style={styles.headerRight}>
-          {onDetailsPress ? (
-            <IconButton icon="information-outline" onPress={onDetailsPress} />
-          ) : null}
-        </View>
-      </Appbar.Header>
-      <ScrollView style={[styles.container]}>{children}</ScrollView>
-    </View>
+    <Appbar.Header
+      elevated
+      theme={theme}
+      style={[styles.header, {borderBottomColor: theme.colors.primary}]}>
+      <View style={styles.headerLeft}>
+        <IconButton icon="close" onPress={handleBackPress} />
+        {title ? (
+          <Text numberOfLines={1} variant="titleSmall">
+            {title}
+          </Text>
+        ) : null}
+      </View>
+      <View style={styles.headerRight}>
+        {onDetailsPress ? (
+          <IconButton icon="information-outline" onPress={onDetailsPress} />
+        ) : null}
+      </View>
+    </Appbar.Header>
   );
 }
 

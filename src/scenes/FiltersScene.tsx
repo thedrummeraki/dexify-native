@@ -8,7 +8,7 @@ export default function FiltersScene() {
   const {setParams} = useFiltersStore();
 
   return (
-    <SceneContainer title="Filters">
+    <SceneContainer canScroll title="Filters">
       <MangaSearchFilters
         onSubmit={params => {
           setParams(params);

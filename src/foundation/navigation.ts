@@ -1,8 +1,9 @@
-import {Manga} from '@app/api/mangadex/types';
+import {Artist, Author, Manga} from '@app/api/mangadex/types';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type MangaParams = Partial<Omit<Manga, 'type' | 'id'>> & {id: string};
+type AuthorArtistParams = Partial<Omit<Author | Artist, 'id'>> & {id: string};
 
 export type RootStackParamList = {
   Home: undefined;
@@ -11,7 +12,7 @@ export type RootStackParamList = {
   ShowMangaDetailsModal: MangaParams;
   // ShowMangaGallery: {manga: Manga; number?: number};
   // ShowChapter: {id: string; jumpToPage?: number};
-  // ShowArtist: {id: string; allowHentai?: boolean};
+  ShowArtist: AuthorArtistParams & {allowHentai?: boolean};
   // ShowScanlationGroup: {id: string; allowHentai?: boolean};
   // ShowMangaList: {
   //   title?: string;
@@ -41,4 +42,8 @@ export function useShowMangaRoute() {
 
 export function useShowMangaDetailsModalRoute() {
   return useRoute<RouteProp<RootStackParamList, 'ShowMangaDetailsModal'>>();
+}
+
+export function useShowArtistRoute() {
+  return useRoute<RouteProp<RootStackParamList, 'ShowArtist'>>();
 }

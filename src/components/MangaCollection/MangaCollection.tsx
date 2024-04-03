@@ -3,6 +3,7 @@ import {Manga} from '@app/api/mangadex/types';
 import {FlatList, Image, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import SimpleMangaThumbnail from '../SimpleMangaThumbnail';
+import {spacing} from '@app/utils/styles';
 
 type ViewMode = 'view' | 'select';
 
@@ -85,7 +86,7 @@ export function MangaCollection({
 
 const styles = StyleSheet.create({
   contentContainer: {paddingHorizontal: 8, gap: 8},
-  columnWrapper: {gap: 8},
+  columnWrapper: {gap: 8, marginBottom: spacing(1)},
   root: {flex: 1},
   emptyStateRoot: {flex: 1, alignItems: 'center'},
 });
