@@ -16,8 +16,6 @@ export default function Library() {
     ReadingStatus.Reading,
   );
 
-  const {token} = useUserStore();
-
   const handleReadingStatusSelection = (readingStatus: ReadingStatus) => {
     // setReadingStatuses((current) => {
     //   const unselected = current.filter(x => x !== readingStatus);
@@ -28,8 +26,6 @@ export default function Library() {
 
   const [fetchReadingStatus, {data: mapping, loading, error}] =
     useLazyGetRequest<AllReadingStatusResponse>();
-
-  console.log({mapping, error});
 
   useEffect(() => {
     fetchReadingStatus(UrlBuilder.readingStatusMangaIds(currentReadingStatus));

@@ -1,38 +1,54 @@
-import { CustomList, PagedResultsList, isSuccess } from '@app/api/mangadex/types';
+import {
+  CoverArt,
+  CustomList,
+  PagedResultsList,
+  isSuccess,
+} from '@app/api/mangadex/types';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
-import { useLazyGetRequest } from '@app/api/utils';
-import React, { useEffect, useMemo } from 'react';
-import { FlatList, SafeAreaView } from 'react-native';
-import { Card, Text } from 'react-native-paper';
+import {useLazyGetRequest} from '@app/api/utils';
+import React, {useEffect, useMemo, useState} from 'react';
+import MDListsDetails from './MDListsDetails';
+import {findRelationship} from '@app/api/mangadex/utils';
 
 export default function MDLists() {
-  const [getCustomLists, { loading, data }] = useLazyGetRequest<
+  const [getCustomLists, {loading, data}] = useLazyGetRequest<
     PagedResultsList<CustomList>
-  >(UrlBuilder.currentUserCustomLists({ limit: 100 }));
+  >(UrlBuilder.currentUserCustomLists({limit: 100}));
 
-  const customLists: CustomList[] = useMemo(() => {
-    if (isSuccess(data)) {
-      return data.data;
-    } else {
-      return [];
-    }
-  }, [data]);
+  const [mdLists, setMDLists] = useState<CustomList[]>([]);
+  const [coverArts, setCoverArts] = useState<CoverArt[]>([]);
+
+  const [getCovers, {loading: coversLoading}] =
+    useLazyGetRequest<PagedResultsList<CoverArt>>();
 
   useEffect(() => {
-    getCustomLists();
+    getCustomLists().then(data => {
+      if (isSuccess(data)) {
+        const mdLists = data.data;
+        setMDLists(mdLists);
+
+        const relevantMangaIdsList = mdLists
+          .filter(mdList => findRelationship(mdList, 'manga'))
+          .map(mdList => {
+            return findRelationship(mdList, 'manga')!.id;
+          });
+
+        getCovers(UrlBuilder.covers({manga: relevantMangaIdsList})).then(
+          data => {
+            if (isSuccess(data)) {
+              setCoverArts(data.data);
+            }
+          },
+        );
+      }
+    });
   }, []);
 
   return (
-    <SafeAreaView>
-      <Text>MD Lists</Text>
-      <FlatList
-        data={customLists}
-        renderItem={({ item }) => (
-          <Card>
-            <Card.Title title={item.attributes.name} />
-          </Card>
-        )}
-      />
-    </SafeAreaView>
+    <MDListsDetails
+      loading={loading || coversLoading}
+      mdLists={mdLists}
+      coverArts={coverArts}
+    />
   );
 }

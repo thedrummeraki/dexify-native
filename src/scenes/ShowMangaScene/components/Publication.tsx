@@ -12,10 +12,14 @@ export default function Publication() {
 
   return (
     <View style={styles.root}>
-      <Text variant="bodySmall" style={{color: theme.colors.outline}}>
-        {year}
-      </Text>
-      <Text>-</Text>
+      {year ? (
+        <>
+          <Text variant="bodySmall" style={{color: theme.colors.outline}}>
+            {year}
+          </Text>
+          <Text>-</Text>
+        </>
+      ) : null}
       <Text variant="bodySmall">{status.toLocaleUpperCase()}</Text>
     </View>
   );

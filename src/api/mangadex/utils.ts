@@ -38,10 +38,17 @@ export function secondaryMangaTitle(manga: Manga) {
       const lang = Object.keys(title)[0];
       return lang.startsWith(manga.attributes.originalLanguage);
     }) || manga.attributes.altTitles[0];
+
+  if (!originalTitle) {
+    return null;
+  }
   return preferredTitle(originalTitle);
 }
 
 export function preferredTagName(tag: Manga.Tag) {
+  if (tag.attributes.name === undefined) {
+    console.log('TAG:!!!!', {tag});
+  }
   return preferredTitle(tag.attributes.name);
 }
 
