@@ -5,16 +5,16 @@ import {
   PublicationDemographic,
 } from '@app/api/mangadex/types';
 
-import merge, {MultipleTopLevelPatch} from 'mergerino';
-import React, {useCallback, useMemo, useReducer} from 'react';
-import {ScrollView, View} from 'react-native';
-import {sharedStyles, spacing} from '@app/utils/styles';
-import {useTags} from '@app/providers/TagsProvider';
+import merge, { MultipleTopLevelPatch } from 'mergerino';
+import React, { useCallback, useMemo, useReducer } from 'react';
+import { ScrollView, View } from 'react-native';
+import { sharedStyles, spacing } from '@app/utils/styles';
+import { useTags } from '@app/providers/TagsProvider';
 import TagsFields from './components/TagsField';
-import {preferredTagName} from '@app/api/mangadex/utils';
+import { preferredTagName } from '@app/api/mangadex/utils';
 import PublicationDemographicsField from './components/PublicationDemographicsField';
 import ContentRatingField from './components/ContentRatingField';
-import {Button, useTheme} from 'react-native-paper';
+import { Button, useTheme } from 'react-native-paper';
 import {
   FilterParamsState,
   PartialFilterParamsState,
@@ -35,8 +35,8 @@ export default function MangaSearchFilters({
   onSubmit,
   onClose,
 }: MangaSearchFiltersProps) {
-  const {params: state} = useFiltersStore();
-  const {user} = useUserStore();
+  const { params: state } = useFiltersStore();
+  const { user } = useUserStore();
 
   const contentRatings = useMemo(() => {
     const values = [
@@ -66,35 +66,35 @@ export default function MangaSearchFilters({
 
   const allTags = useTags();
   const {
-    colors: {background: backgroundColor, backdrop},
+    colors: { background: backgroundColor, backdrop },
   } = useTheme();
 
   // const {set} = useStore;
 
   const onContentFieldChange = useCallback(
     (contentRating: ContentRating[]) => {
-      set({contentRating});
+      set({ contentRating });
     },
     [set],
   );
 
   const onPublicationDemographicsChange = useCallback(
     (publicationDemographic: PublicationDemographic[]) => {
-      set({publicationDemographic});
+      set({ publicationDemographic });
     },
     [set],
   );
 
   const onMangaStatusChange = useCallback(
     (status: MangaStatus[]) => {
-      set({status});
+      set({ status });
     },
     [set],
   );
 
   const onTagsChange = useCallback(
     (includedTags: string[], excludedTags: string[]) =>
-      set({includedTags, excludedTags}),
+      set({ includedTags, excludedTags }),
     [set],
   );
 
@@ -128,7 +128,6 @@ export default function MangaSearchFilters({
             strNewValues.every(strkey => strValues.includes(strkey))
           );
         } else {
-          console.log({newValue, value});
           return newValue !== value;
         }
       },
@@ -138,10 +137,10 @@ export default function MangaSearchFilters({
   }, [state, fields]);
 
   return (
-    <View style={[sharedStyles.flex, {backgroundColor}]}>
+    <View style={[sharedStyles.flex, { backgroundColor }]}>
       <ScrollView style={sharedStyles.flex}>
         <View
-          style={[sharedStyles.flex, {gap: spacing(4), padding: spacing(2)}]}>
+          style={[sharedStyles.flex, { gap: spacing(4), padding: spacing(2) }]}>
           <ContentRatingField
             values={contentRatings}
             onChange={onContentFieldChange}
@@ -174,7 +173,7 @@ export default function MangaSearchFilters({
           />
         </View>
       </ScrollView>
-      <View style={{padding: spacing(2), backgroundColor: backdrop}}>
+      <View style={{ padding: spacing(2), backgroundColor: backdrop }}>
         {dirty ? (
           <Button mode="contained" onPress={() => onSubmit?.(fields)}>
             Save

@@ -1,19 +1,19 @@
-import {Manga} from '@app/api/mangadex/types';
+import { Manga } from '@app/api/mangadex/types';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
-import {useLazyGetRequest} from '@app/api/utils';
-import {useEffect} from 'react';
-import {useManga} from '../MangaProvider';
+import { useLazyGetRequest } from '@app/api/utils';
+import { useEffect } from 'react';
+import { useManga } from '../MangaProvider';
 import StatsDetails from './StatsDetails';
 
 export default function Stats() {
   const manga = useManga();
-  const [get, {data, loading}] = useLazyGetRequest<Manga.StatisticsResponse>(
+  const [get, { data, loading }] = useLazyGetRequest<Manga.StatisticsResponse>(
     UrlBuilder.mangaStatistics(manga.id),
   );
 
   useEffect(() => {
     get();
-  }, []);
+  }, [manga.id]);
 
   if (loading) {
     return <StatsDetails.Loading />;

@@ -1,35 +1,43 @@
-import {CoverSize, coverImage} from '@app/api/mangadex/utils';
-import {spacing} from '@app/utils/styles';
-import {Text, useTheme} from 'react-native-paper';
-import {Image, StyleSheet, View} from 'react-native';
-import {VolumeInfo} from '.';
-import {useManga} from '../../MangaProvider';
+import { CoverSize, coverImage } from '@app/api/mangadex/utils';
+import { spacing } from '@app/utils/styles';
+import { Text, useTheme } from 'react-native-paper';
+import { Image, StyleSheet, View } from 'react-native';
+import { VolumeInfo } from '.';
+import { useManga } from '../../MangaProvider';
+import { useState } from 'react';
 
 export interface VolumeGridItemProps {
   volumeInfo: VolumeInfo;
 }
 
-export default function VolumeGridItem({volumeInfo}: VolumeGridItemProps) {
+const DEFAULT_COVER_ART_URI = 'https://mangadex.org/img/avatar.png';
+
+export default function VolumeGridItem({ volumeInfo }: VolumeGridItemProps) {
   const manga = useManga();
   const theme = useTheme();
 
-  const {volume, coverArt} = volumeInfo;
+  const { volume, coverArt } = volumeInfo;
   const coverArtUri = coverArt
-    ? coverImage(coverArt, manga.id, {size: CoverSize.Small})
-    : 'https://mangadex.org/img/avatar.png';
+    ? coverImage(coverArt, manga.id, { size: CoverSize.Small })
+    : DEFAULT_COVER_ART_URI;
+
+  const [uri, setUri] = useState(coverArtUri);
 
   const volumeName = volume ? `Vol. ${volume}` : '- No volume -';
 
   return (
     <View style={styles.gridItemRoot}>
       <Image
-        source={{uri: coverArtUri}}
-        style={[styles.gridItemImage, {backgroundColor: theme.colors.surface}]}
+        source={{ uri }}
+        style={[styles.gridItemImage, { backgroundColor: theme.colors.surface }]}
+        onError={() => {
+          setUri(DEFAULT_COVER_ART_URI);
+        }}
       />
       <Text
         variant="bodySmall"
         numberOfLines={1}
-        style={{color: theme.colors.outline}}>
+        style={{ color: theme.colors.outline }}>
         {volumeName}
       </Text>
     </View>

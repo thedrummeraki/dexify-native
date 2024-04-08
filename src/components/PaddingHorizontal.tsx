@@ -1,6 +1,6 @@
-import {spacing as computeSpacing} from '@app/utils/styles';
-import {PropsWithChildren} from 'react';
-import {View, ViewProps} from 'react-native';
+import { spacing as computeSpacing } from '@app/utils/styles';
+import { PropsWithChildren } from 'react';
+import { View, ViewProps } from 'react-native';
 
 export type PaddingHorizontalProps = PropsWithChildren<{
   spacing?: number;
