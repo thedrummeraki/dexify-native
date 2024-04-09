@@ -1,10 +1,10 @@
 import { CoverSize, coverImage } from '@app/api/mangadex/utils';
 import { spacing } from '@app/utils/styles';
-import { Text, useTheme } from 'react-native-paper';
+import { Surface, Text, useTheme } from 'react-native-paper';
 import { Image, StyleSheet, View } from 'react-native';
 import { VolumeInfo } from '.';
 import { useManga } from '../../MangaProvider';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface VolumeGridItemProps {
   volumeInfo: VolumeInfo;
@@ -17,23 +17,29 @@ export default function VolumeGridItem({ volumeInfo }: VolumeGridItemProps) {
   const theme = useTheme();
 
   const { volume, coverArt } = volumeInfo;
-  const coverArtUri = coverArt
-    ? coverImage(coverArt, manga.id, { size: CoverSize.Small })
-    : DEFAULT_COVER_ART_URI;
 
-  const [uri, setUri] = useState(coverArtUri);
+  const [uri, setUri] = useState(DEFAULT_COVER_ART_URI);
+
+  useEffect(() => {
+    if (coverArt) {
+      setUri(coverImage(coverArt, manga.id, { size: CoverSize.Small }));
+    }
+  }, [coverArt, manga.id])
 
   const volumeName = volume ? `Vol. ${volume}` : '- No volume -';
 
   return (
     <View style={styles.gridItemRoot}>
-      <Image
-        source={{ uri }}
-        style={[styles.gridItemImage, { backgroundColor: theme.colors.surface }]}
-        onError={() => {
-          setUri(DEFAULT_COVER_ART_URI);
-        }}
-      />
+      <Surface style={{ borderRadius: spacing(2) }}>
+        <Image
+          source={{ uri }}
+          style={[styles.gridItemImage, { backgroundColor: theme.colors.surface }]}
+          onError={(e) => {
+            console.log({ e })
+            setUri(DEFAULT_COVER_ART_URI);
+          }}
+        />
+      </Surface>
       <Text
         variant="bodySmall"
         numberOfLines={1}
