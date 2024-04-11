@@ -182,7 +182,7 @@ export default class UrlBuilder {
     let urlParts = [host, path.startsWith('/') ? path : `/${path}`];
 
     if (params) {
-      urlParts = urlParts.concat('/?', this.paramsToString(params));
+      urlParts = urlParts.concat('?', this.paramsToString(params));
     }
     return urlParts.join('');
   }

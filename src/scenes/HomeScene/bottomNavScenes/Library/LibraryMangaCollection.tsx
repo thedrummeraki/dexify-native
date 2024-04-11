@@ -19,7 +19,7 @@ export default function LibraryMangaCollection({
   readingStatus,
   mapping,
 }: LibraryMangaCollectionProps) {
-  const mangaIds = Object.entries(mapping.statuses)
+  const mangaIds = Object.entries(mapping?.statuses || [])
     .filter(([_, status]) => status === readingStatus)
     .map(([mangaId, _]) => mangaId);
 

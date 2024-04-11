@@ -35,8 +35,9 @@ export default function Login() {
         if (result?.result === 'ok') {
           const tokenInfo = tokenInfoFromAuthResponse(result);
 
+
           login({username}, tokenInfo);
-        } else {
+        } else if (result?.result === 'error') {
           setSnackbarVisible(true);
           setSnackbardMessage('Invalid login credentials.');
           setSubmitEnabled(true);

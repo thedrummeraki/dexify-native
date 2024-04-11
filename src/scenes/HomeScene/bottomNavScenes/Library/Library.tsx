@@ -6,31 +6,28 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
 import {Chip, Text} from 'react-native-paper';
 import LibraryMangaCollection from './LibraryMangaCollection';
-import {useUserStore} from '@app/foundation/state/StaterinoProvider';
 
 export default function Library() {
-  const allReadingStatuses = Object.values(ReadingStatus);
-  const [readingStatuses, setReadingStatuses] =
-    useState<ReadingStatus[]>(allReadingStatuses);
+  const readingStatuses = Object.values(ReadingStatus);
   const [currentReadingStatus, setCurrentReadingStatus] = useState(
     ReadingStatus.Reading,
   );
 
   const handleReadingStatusSelection = (readingStatus: ReadingStatus) => {
-    // setReadingStatuses((current) => {
-    //   const unselected = current.filter(x => x !== readingStatus);
-    //   return [readingStatus, ...unselected]
-    // });
     setCurrentReadingStatus(readingStatus);
   };
 
-  const [fetchReadingStatus, {data: mapping, loading, error}] =
-    useLazyGetRequest<AllReadingStatusResponse>();
+  const [fetchReadingStatus, {data: mapping, loading}] =
+    useLazyGetRequest<AllReadingStatusResponse>(
+      UrlBuilder.readingStatusMangaIds(),
+      {
+        requireSession: true,
+      },
+    );
 
   useEffect(() => {
-    fetchReadingStatus(UrlBuilder.readingStatusMangaIds(currentReadingStatus));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentReadingStatus]);
+    fetchReadingStatus();
+  }, []);
 
   return (
     <SafeAreaView style={[sharedStyles.flex]}>

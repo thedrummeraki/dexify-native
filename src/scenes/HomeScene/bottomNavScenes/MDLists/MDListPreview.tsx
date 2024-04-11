@@ -36,7 +36,7 @@ export function MDListPreview({mdList, coverArt}: MDListPreviewProps) {
       style={[
         styles.root,
         {
-          backgroundColor: theme.colors.backdrop,
+          backgroundColor: theme.colors.surfaceDisabled,
         },
       ]}>
       <Image source={{uri: coverUri}} style={styles.image} />

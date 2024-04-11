@@ -8,7 +8,7 @@ import {
   SimpleRequestParams,
 } from './types';
 import {useCallback, useEffect, useState} from 'react';
-import {useStore} from '@app/foundation/state/StaterinoProvider';
+import {useStore, useUserStore} from '@app/foundation/state/StaterinoProvider';
 import {
   isSessionValid,
   tokenInfoFromAuthResponse,
@@ -61,7 +61,77 @@ export function usePostRequest<T, Body = any>(
     params,
   );
 
-  return useAxiosRequest<T, Body>(options);
+  return useFetch<T>(options, {method: 'POST'});
+}
+
+export function useFetch<T, Body = any>(
+  params: RequestParams<Body>,
+  init?: RequestInit,
+): LazyRequestResponse<T> {
+  const [data, setData] = useState<T>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<any>();
+  const [status, setStatus] = useState(ResponseStatus.Pending);
+  const {token} = useUserStore();
+
+  const callback = useCallback(
+    async (callbackUrl?: string, body?: Body) => {
+      const url = params.hookUrl || callbackUrl;
+      if (!url) {
+        throw new Error(
+          'Missing url. Must be passed in from the hook or the callback',
+        );
+      }
+
+      setStatus(ResponseStatus.Initiated);
+      setLoading(true);
+
+      try {
+        console.log(`[fetch] [${init?.method || 'GET'}] ${url}`);
+        const headers: RequestInit = {};
+        if (params.requireSession) {
+          if (token && isSessionValid(token.session)) {
+            headers['headers'] = {
+              Authorization: `Bearer ${token.session.value}`,
+            };
+          }
+        }
+        if (body) {
+          headers['headers'] = {
+            ...headers['headers'],
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          };
+        }
+        console.log('headers', headers.headers);
+        const requestInit = Object.assign(init || {}, {
+          body: JSON.stringify(body),
+          headers,
+        });
+        const response = await fetch(url, requestInit);
+        if (requestInit) {
+          console.log({requestInit});
+        }
+        setStatus(ResponseStatus.Pending);
+
+        const data = (await response.json()) as T;
+        setStatus(ResponseStatus.Successful);
+        console.log({data});
+        setData(data);
+        return data;
+      } catch (error) {
+        setError(error);
+        setStatus(ResponseStatus.Error);
+      } finally {
+        setLoading(false);
+      }
+
+      return data;
+    },
+    [init, JSON.stringify(params)],
+  );
+
+  return [callback, {data, loading, error, status}];
 }
 
 export function useAxiosRequest<T, Body = any>(
@@ -132,6 +202,7 @@ export function useAxiosRequest<T, Body = any>(
 
         config.headers = {
           Authorization: `Bearer ${bearerToken}`,
+          'Content-Type': 'application/json',
         };
       }
 
@@ -148,6 +219,7 @@ export function useAxiosRequest<T, Body = any>(
       const requestConfig = config || {};
 
       console.log(
+        '[axios]',
         user && token
           ? `[By ${user.username}] ${requestMethod}`
           : requestMethod,
