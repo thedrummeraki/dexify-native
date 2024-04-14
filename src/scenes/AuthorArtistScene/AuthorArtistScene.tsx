@@ -4,7 +4,6 @@ import {useShowArtistRoute} from '@app/foundation/navigation';
 
 export default function AuthorArtistScene() {
   const route = useShowArtistRoute();
-  const author = route.params;
 
   if (route.params.attributes) {
     const author = route.params as Author;

@@ -1,4 +1,4 @@
-import {Artist, Author, Manga} from '@app/api/mangadex/types';
+import {Artist, Author, CustomList, Manga} from '@app/api/mangadex/types';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
@@ -22,7 +22,7 @@ export type RootStackParamList = {
   // };
   // ShowAnimeSimulcastMangaList: undefined;
   // ShowReadingStatusLibrary: {readingStatus: ReadingStatus};
-  // ShowCustomList: {id: string};
+  ShowCustomList: Partial<Omit<CustomList, 'id'>> & {id: string};
   // ShowMangaByTags: {tags: Manga.Tag[]};
   // ShowSettings: undefined;
 };
@@ -46,4 +46,8 @@ export function useShowMangaDetailsModalRoute() {
 
 export function useShowArtistRoute() {
   return useRoute<RouteProp<RootStackParamList, 'ShowArtist'>>();
+}
+
+export function useShowCustomListRoute() {
+  return useRoute<RouteProp<RootStackParamList, 'ShowCustomList'>>();
 }

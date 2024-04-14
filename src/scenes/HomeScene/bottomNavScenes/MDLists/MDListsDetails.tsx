@@ -1,25 +1,9 @@
-import {
-  CoverArt,
-  CustomList,
-  Manga,
-  PagedResultsList,
-  isSuccess,
-} from '@app/api/mangadex/types';
-import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
-import {findRelationship, findRelationships} from '@app/api/mangadex/utils';
-import {useLazyGetRequest} from '@app/api/utils';
-import {Padding} from '@app/components';
+import {CoverArt, CustomList} from '@app/api/mangadex/types';
+import {findRelationship} from '@app/api/mangadex/utils';
 import {sharedStyles, spacing} from '@app/utils/styles';
-import React, {useEffect, useMemo} from 'react';
-import {FlatList, Image, SafeAreaView, View} from 'react-native';
-import {
-  Caption,
-  Card,
-  List,
-  ProgressBar,
-  Text,
-  useTheme,
-} from 'react-native-paper';
+import React from 'react';
+import {FlatList, SafeAreaView, View} from 'react-native';
+import {ProgressBar, Text} from 'react-native-paper';
 import {MDListPreview} from './MDListPreview';
 
 export interface MDListsDetailsProps {
@@ -41,7 +25,7 @@ export default function MDListsDetails({
       </View>
       <FlatList
         data={mdLists}
-        contentContainerStyle={{gap: spacing(1), paddingHorizontal: spacing(2)}}
+        contentContainerStyle={{gap: spacing(2), paddingHorizontal: spacing(2)}}
         renderItem={({item}) => {
           const mangaId = findRelationship(item, 'manga')?.id;
           const coverArt = mangaId

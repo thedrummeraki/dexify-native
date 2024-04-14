@@ -2,6 +2,7 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   AuthorArtistScene,
+  CustomListScene,
   FiltersScene,
   HomeScene,
   ShowMangaDetailsModalScene,
@@ -14,17 +15,10 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export function Root() {
   return (
     <Stack.Navigator>
-      <Stack.Group>
-        <Stack.Screen
-          name="Home"
-          component={HomeScene}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="ShowManga"
-          component={ShowMangaScene}
-          options={{headerShown: false}}
-        />
+      <Stack.Group screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Home" component={HomeScene} />
+        <Stack.Screen name="ShowManga" component={ShowMangaScene} />
+        <Stack.Screen name="ShowCustomList" component={CustomListScene} />
       </Stack.Group>
       <Stack.Group
         screenOptions={{presentation: 'fullScreenModal', headerShown: false}}>

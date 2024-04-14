@@ -25,6 +25,7 @@ export interface MangaSearchCollectionProps {
   useFilters?: boolean;
   searchBarPlaceholder?: string;
   override?: MangaRequestParams;
+  requireIds?: boolean;
 }
 
 export function MangaSearchCollection({
@@ -33,6 +34,7 @@ export function MangaSearchCollection({
   useFilters,
   searchBarPlaceholder,
   override,
+  requireIds,
 }: MangaSearchCollectionProps) {
   const navigation = useDexifyNavigation();
   const {width} = useDimensions();
@@ -61,9 +63,13 @@ export function MangaSearchCollection({
   const [get, {loading, data}] = useLazyGetRequest<PagedResultsList<Manga>>();
 
   const fetchManga = useCallback(() => {
+    if (requireIds && (options.ids || []).length === 0) {
+      return;
+    }
+
     get(UrlBuilder.mangaList({...options, order: {followedCount: 'desc'}}));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options, override]);
+  }, [options, override, requireIds]);
 
   useEffect(() => {
     fetchManga();

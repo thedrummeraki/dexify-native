@@ -1,8 +1,8 @@
-import { useDexifyNavigation } from '@app/foundation/navigation';
-import { sharedStyles, spacing } from '@app/utils/styles';
-import { PropsWithChildren } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Appbar, IconButton, Text, useTheme } from 'react-native-paper';
+import {useDexifyNavigation} from '@app/foundation/navigation';
+import {sharedStyles, spacing} from '@app/utils/styles';
+import {PropsWithChildren} from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import {Appbar, IconButton, Text, useTheme} from 'react-native-paper';
 
 export interface SceneContainerHeaderProps {
   title?: string;
@@ -11,7 +11,7 @@ export interface SceneContainerHeaderProps {
 }
 
 export type SceneContainerProps = PropsWithChildren<
-  SceneContainerHeaderProps & { canScroll?: boolean }
+  SceneContainerHeaderProps & {canScroll?: boolean}
 >;
 
 export default function SceneContainer({
@@ -47,7 +47,7 @@ function Header({
     <Appbar.Header
       elevated
       theme={theme}
-      style={[styles.header, { borderBottomColor: theme.colors.primary }]}>
+      style={[styles.header, {borderBottomColor: theme.colors.primary}]}>
       <View style={styles.headerLeft}>
         <IconButton icon="close" onPress={handleBackPress} />
         {title ? (
@@ -66,14 +66,14 @@ function Header({
 }
 
 const styles = StyleSheet.create({
-  root: { display: 'flex', flex: 1 },
-  header: { display: 'flex', backgroundColor: 'transparent' },
+  root: {display: 'flex', flex: 1},
+  header: {display: 'flex', backgroundColor: 'transparent'},
   headerLeft: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
-  headerRight: { flexShrink: 1, flexDirection: 'row-reverse' },
-  container: { flex: 1 },
+  headerRight: {flexShrink: 1, flexDirection: 'row-reverse'},
+  container: {flex: 1},
 });

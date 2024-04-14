@@ -28,14 +28,14 @@ export default function ShowMangaSceneDetails({
   const secondaryTitle = secondaryMangaTitle(manga);
 
   const VolumesListHeaderComponent = (
-    <View style={{marginHorizontal: spacing(-1), gap: spacing(3)}}>
+    <View style={{marginHorizontal: spacing(-2), gap: spacing(3)}}>
       <Poster />
-      <PaddingHorizontal style={{gap: spacing(1)}}>
+      <PaddingHorizontal spacing={2} style={{gap: spacing(1)}}>
         <Text variant="titleLarge">{preferredMangaTitle(manga)}</Text>
         {secondaryTitle && <Text variant="titleSmall">{secondaryTitle}</Text>}
         <AuthorsArtists />
       </PaddingHorizontal>
-      <PaddingHorizontal style={{gap: spacing(2)}}>
+      <PaddingHorizontal spacing={2} style={{gap: spacing(2)}}>
         <Publication />
         <Stats />
         <MainActions />

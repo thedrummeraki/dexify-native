@@ -1,25 +1,25 @@
-import { Banner, ProgressBar, Text } from 'react-native-paper';
-import { StyleSheet, View } from 'react-native';
-import { useEffect, useMemo, useState } from 'react';
-import { PaddingHorizontal, ViewSelector } from '@app/components';
-import { useMangaDetails } from '../MangaProvider';
-import { Manga } from '@app/api/mangadex/types';
-import { useLazyGetRequest } from '@app/api/utils';
+import {Banner, ProgressBar, Text} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
+import {useEffect, useMemo, useState} from 'react';
+import {PaddingHorizontal, ViewSelector} from '@app/components';
+import {useMangaDetails} from '../MangaProvider';
+import {Manga} from '@app/api/mangadex/types';
+import {useLazyGetRequest} from '@app/api/utils';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import VolumesContainer, {
   VolumeInfo,
   VolumeView,
   VolumesContainerFlatListProps,
 } from './VolumesContainer';
-import { spacing } from '@app/utils/styles';
+import {spacing} from '@app/utils/styles';
 
 export type VolumesProps = VolumesContainerFlatListProps;
 
 export default function Volumes(props: VolumesProps) {
-  const { manga, coverArts } = useMangaDetails();
+  const {manga, coverArts} = useMangaDetails();
   const [volumeView] = useState(VolumeView.Grid);
 
-  const [getVolumesAndChapters, { data, loading }] =
+  const [getVolumesAndChapters, {data, loading}] =
     useLazyGetRequest<Manga.Aggregate>(
       UrlBuilder.mangaVolumesAndChapters(manga.id),
     );
@@ -57,7 +57,9 @@ export default function Volumes(props: VolumesProps) {
       <PaddingHorizontal>
         <View style={styles.header}>
           <View style={styles.headerPrimary}>
-            <Text variant="titleMedium" style={styles.temporaryHeaderText}>Volumes</Text>
+            <Text variant="titleMedium" style={styles.temporaryHeaderText}>
+              Volumes
+            </Text>
           </View>
           {/* <ViewSelector */}
           {/*   options={[ */}
@@ -82,7 +84,9 @@ export default function Volumes(props: VolumesProps) {
           {...props}
           ListHeaderComponent={ListHeaderComponent}
           ListEmptyComponent={
-            loading ? null : <Banner visible>No volumes can be read from Mangadex.</Banner>
+            loading ? null : (
+              <Banner visible>No volumes can be read from Mangadex.</Banner>
+            )
           }
         />
       </View>

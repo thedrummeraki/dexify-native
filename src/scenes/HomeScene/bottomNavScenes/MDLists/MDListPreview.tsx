@@ -6,8 +6,9 @@ import {
   findRelationships,
 } from '@app/api/mangadex/utils';
 import {spacing} from '@app/utils/styles';
-import {Caption, Text, useTheme} from 'react-native-paper';
+import {Caption, Text, TouchableRipple, useTheme} from 'react-native-paper';
 import {Image, StyleSheet, View} from 'react-native';
+import {useDexifyNavigation} from '@app/foundation/navigation';
 
 export interface MDListPreviewProps {
   mdList: CustomList;
@@ -15,6 +16,7 @@ export interface MDListPreviewProps {
 }
 
 export function MDListPreview({mdList, coverArt}: MDListPreviewProps) {
+  const navigation = useDexifyNavigation();
   const titlesCount = findRelationships(mdList, 'manga').length;
   const titlesCountText =
     titlesCount === 0
@@ -32,21 +34,23 @@ export function MDListPreview({mdList, coverArt}: MDListPreviewProps) {
     : 'https://mangadex.org/img/avatar.png';
 
   return (
-    <View
-      style={[
-        styles.root,
-        {
-          backgroundColor: theme.colors.surfaceDisabled,
-        },
-      ]}>
-      <Image source={{uri: coverUri}} style={styles.image} />
-      <View style={styles.contentsRoot}>
-        <View style={styles.contentsContainer}>
-          <Text>{mdList.attributes.name}</Text>
-          <Caption>{titlesCountText}</Caption>
+    <TouchableRipple onPress={() => navigation.push('ShowCustomList', mdList)}>
+      <View
+        style={[
+          styles.root,
+          {
+            backgroundColor: theme.colors.surfaceDisabled,
+          },
+        ]}>
+        <Image source={{uri: coverUri}} style={styles.image} />
+        <View style={styles.contentsRoot}>
+          <View style={styles.contentsContainer}>
+            <Text>{mdList.attributes.name}</Text>
+            <Caption>{titlesCountText}</Caption>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableRipple>
   );
 }
 
