@@ -1,3 +1,4 @@
+import {VolumeInfo} from '@app/scenes/ShowMangaScene/components/Volumes/VolumesContainer';
 import {
   Artist,
   Author,
@@ -22,6 +23,10 @@ export function preferredMangaTitle(manga: Manga) {
     manga.attributes.title[manga.attributes.originalLanguage] ||
     preferredTitle(manga.attributes.title)
   );
+}
+
+export function volumeInfoTitle({volume}: {volume: string | null}) {
+  return volume ? `Vol. ${volume}` : '- no volume -';
 }
 
 export function secondaryMangaTitle(manga: Manga) {

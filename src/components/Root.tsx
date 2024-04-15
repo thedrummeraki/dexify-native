@@ -7,6 +7,7 @@ import {
   HomeScene,
   ShowMangaDetailsModalScene,
   ShowMangaScene,
+  ShowMangaVolumeScene,
 } from '@app/scenes';
 import {RootStackParamList} from '@app/foundation/navigation';
 
@@ -19,6 +20,7 @@ export function Root() {
         <Stack.Screen name="Home" component={HomeScene} />
         <Stack.Screen name="ShowManga" component={ShowMangaScene} />
         <Stack.Screen name="ShowCustomList" component={CustomListScene} />
+        <Stack.Screen name="ShowMangaVolume" component={ShowMangaVolumeScene} />
       </Stack.Group>
       <Stack.Group
         screenOptions={{presentation: 'fullScreenModal', headerShown: false}}>

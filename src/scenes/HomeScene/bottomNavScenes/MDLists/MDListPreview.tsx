@@ -5,7 +5,7 @@ import {
   findRelationship,
   findRelationships,
 } from '@app/api/mangadex/utils';
-import {spacing} from '@app/utils/styles';
+import {sharedStyles, spacing} from '@app/utils/styles';
 import {Caption, Text, TouchableRipple, useTheme} from 'react-native-paper';
 import {Image, StyleSheet, View} from 'react-native';
 import {useDexifyNavigation} from '@app/foundation/navigation';
@@ -34,7 +34,10 @@ export function MDListPreview({mdList, coverArt}: MDListPreviewProps) {
     : 'https://mangadex.org/img/avatar.png';
 
   return (
-    <TouchableRipple onPress={() => navigation.push('ShowCustomList', mdList)}>
+    <TouchableRipple
+      borderless
+      style={sharedStyles.roundBorders}
+      onPress={() => navigation.push('ShowCustomList', mdList)}>
       <View
         style={[
           styles.root,
@@ -58,15 +61,15 @@ const borderRadiusMultiplier = 3;
 
 const styles = StyleSheet.create({
   root: {
+    ...sharedStyles.roundBorders,
     flexDirection: 'row',
     gap: spacing(2),
-    borderRadius: spacing(borderRadiusMultiplier),
   },
   image: {
     flex: 1,
     aspectRatio: 1,
-    borderTopLeftRadius: spacing(borderRadiusMultiplier),
-    borderBottomLeftRadius: spacing(borderRadiusMultiplier),
+    borderTopLeftRadius: sharedStyles.roundBorders.borderRadius,
+    borderBottomLeftRadius: sharedStyles.roundBorders.borderRadius,
   },
   contentsRoot: {
     flex: 5,

@@ -1,4 +1,5 @@
 import {Artist, Author, CustomList, Manga} from '@app/api/mangadex/types';
+import {VolumeInfo} from '@app/scenes/ShowMangaScene/components/Volumes/VolumesContainer';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
@@ -10,6 +11,10 @@ export type RootStackParamList = {
   Filters: undefined;
   ShowManga: MangaParams & {isAiring?: boolean; jumpToVolume?: string | null};
   ShowMangaDetailsModal: MangaParams;
+  ShowMangaVolume: {
+    manga: Manga;
+    volumeInfo: VolumeInfo;
+  };
   // ShowMangaGallery: {manga: Manga; number?: number};
   // ShowChapter: {id: string; jumpToPage?: number};
   ShowArtist: AuthorArtistParams & {allowHentai?: boolean};
@@ -42,6 +47,10 @@ export function useShowMangaRoute() {
 
 export function useShowMangaDetailsModalRoute() {
   return useRoute<RouteProp<RootStackParamList, 'ShowMangaDetailsModal'>>();
+}
+
+export function useShowMangaVolumeRoute() {
+  return useRoute<RouteProp<RootStackParamList, 'ShowMangaVolume'>>();
 }
 
 export function useShowArtistRoute() {

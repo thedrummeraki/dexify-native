@@ -23,28 +23,30 @@ export function SimpleMangaThumbnail({
   } = useTheme();
 
   return (
-    <TouchableRipple
-      onLongPress={() => onLongPress?.(manga)}
-      onPress={() => onPress?.(manga)}>
-      <View style={{gap: spacing(1)}}>
+    <View style={{gap: spacing(1)}}>
+      <TouchableRipple
+        borderless
+        style={sharedStyles.roundBorders}
+        onLongPress={() => onLongPress?.(manga)}
+        onPress={() => onPress?.(manga)}>
         <Image
           source={{uri: mangaImage(manga)}}
           style={[
             sharedStyles.flex,
+            sharedStyles.roundBorders,
             {
               aspectRatio: 0.7,
-              borderRadius: spacing(3),
-              opacity: selected ? 0.4 : 1,
+              opacity: selected ? 0.8 : 1,
               borderColor: primary,
               borderWidth: spacing(selected ? 1 : 0),
             },
           ]}
         />
-        <Text variant="bodyMedium" numberOfLines={1}>
-          {preferredMangaTitle(manga)}
-        </Text>
-      </View>
-    </TouchableRipple>
+      </TouchableRipple>
+      <Text variant="bodyMedium" numberOfLines={1}>
+        {preferredMangaTitle(manga)}
+      </Text>
+    </View>
   );
 }
 

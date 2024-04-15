@@ -8,4 +8,5 @@ export function spacing(n: number): number {
 export const sharedStyles = StyleSheet.create({
   flex: {flex: 1},
   container: {padding: defaultSpacing * 2, gap: spacing(2)},
+  roundBorders: {borderRadius: spacing(2)},
 });

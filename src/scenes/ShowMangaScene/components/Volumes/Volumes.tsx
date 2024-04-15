@@ -12,10 +12,12 @@ import VolumesContainer, {
   VolumesContainerFlatListProps,
 } from './VolumesContainer';
 import {spacing} from '@app/utils/styles';
+import {useDexifyNavigation} from '@app/foundation/navigation';
 
 export type VolumesProps = VolumesContainerFlatListProps;
 
 export default function Volumes(props: VolumesProps) {
+  const navigation = useDexifyNavigation();
   const {manga, coverArts} = useMangaDetails();
   const [volumeView] = useState(VolumeView.Grid);
 
@@ -81,6 +83,9 @@ export default function Volumes(props: VolumesProps) {
         <VolumesContainer
           volumeInfoList={volumeInfos}
           volumeView={volumeView}
+          onVolumePress={volumeInfo =>
+            navigation.push('ShowMangaVolume', {volumeInfo, manga})
+          }
           {...props}
           ListHeaderComponent={ListHeaderComponent}
           ListEmptyComponent={

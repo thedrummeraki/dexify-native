@@ -1,5 +1,5 @@
 import {Chapter, CoverArt} from '@app/api/mangadex/types';
-import {Banner, Text} from 'react-native-paper';
+import {Banner, Text, TouchableRipple} from 'react-native-paper';
 import {FlatList, FlatListProps, Image, StyleSheet, View} from 'react-native';
 import {useDimensions} from '@app/utils';
 import {ComponentProps} from 'react';
@@ -33,6 +33,7 @@ export type VolumesContainerFlatListProps = Pick<
 export type VolumesContainerProps = {
   volumeInfoList: VolumeInfo[];
   volumeView: VolumeView;
+  onVolumePress(volumeInfo: VolumeInfo): void;
 } & VolumesContainerFlatListProps;
 
 type InternalVolumeContainerProps = Omit<VolumesContainerProps, 'volumeView'>;
@@ -51,6 +52,7 @@ export default function VolumesContainer({
 
 function VolumesList({
   volumeInfoList,
+  onVolumePress,
   ...flatListProps
 }: InternalVolumeContainerProps) {
   return (
@@ -64,6 +66,7 @@ function VolumesList({
 
 function VolumesGrid({
   volumeInfoList,
+  onVolumePress,
   ...flatListProps
 }: InternalVolumeContainerProps) {
   const {width} = useDimensions();
@@ -78,7 +81,10 @@ function VolumesGrid({
       contentContainerStyle={{padding: spacing(2)}}
       renderItem={({item}) => (
         <View style={{flex: 1 / numColums}}>
-          <VolumeGridItem volumeInfo={item} />
+          <VolumeGridItem
+            onPress={() => onVolumePress(item)}
+            volumeInfo={item}
+          />
         </View>
       )}
       keyExtractor={item => `${manga.id}-${item.volume}`}
