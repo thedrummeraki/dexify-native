@@ -146,6 +146,8 @@ export function useAxiosRequest<T, Body = any>(
   const {set} = useStore;
   const {user, token} = useStore(store => store.user);
 
+  const {requireSession} = params;
+
   const callback = useCallback(
     async (callbackUrl?: string, body?: Body) => {
       const url = params.hookUrl || callbackUrl;
@@ -155,14 +157,11 @@ export function useAxiosRequest<T, Body = any>(
         );
       }
 
-      // const requestMethod = session
-      //   ? `[${params.method}]`
-      //   : `[?${params.method}]`;
       const requestMethod = `[${params.method}]`;
       const config: AxiosRequestConfig = {};
       let bearerToken: string | undefined;
 
-      if (token) {
+      if (token && requireSession) {
         if (!isSessionValid(token.session)) {
           console.log(
             'Warning: The token may be invalid at this time. Expired at:',
@@ -204,6 +203,8 @@ export function useAxiosRequest<T, Body = any>(
           Authorization: `Bearer ${bearerToken}`,
           'Content-Type': 'application/json',
         };
+      } else if (!token && requireSession) {
+        throw new Error('Token is missing but session is required.');
       }
 
       // if (session) {
@@ -220,12 +221,12 @@ export function useAxiosRequest<T, Body = any>(
 
       console.log(
         '[axios]',
-        user && token
+        user && token && requireSession
           ? `[By ${user.username}] ${requestMethod}`
           : requestMethod,
         url,
-        'with header keys',
-        Object.keys(config.headers || {}),
+        // 'with header keys',
+        // Object.keys(config.headers || {}),
       );
 
       setStatus(ResponseStatus.Initiated);

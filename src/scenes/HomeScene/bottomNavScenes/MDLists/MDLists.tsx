@@ -14,7 +14,7 @@ import {useUserStore} from '@app/foundation/state/StaterinoProvider';
 export default function MDLists() {
   const [getCustomLists, {loading, data}] = useLazyGetRequest<
     PagedResultsList<CustomList>
-  >(UrlBuilder.currentUserCustomLists({limit: 100}));
+  >(UrlBuilder.currentUserCustomLists({limit: 100}), {requireSession: true});
 
   const [mdLists, setMDLists] = useState<CustomList[]>([]);
   const [coverArts, setCoverArts] = useState<CoverArt[]>([]);
