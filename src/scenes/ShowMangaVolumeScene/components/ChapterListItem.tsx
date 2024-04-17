@@ -1,33 +1,134 @@
-import {Chapter} from '@app/api/mangadex/types';
-import {IconButton, Text, TouchableRipple, useTheme} from 'react-native-paper';
-import {StyleSheet, View} from 'react-native';
+import {Chapter, ScanlationGroup} from '@app/api/mangadex/types';
+import {
+  Caption,
+  IconButton,
+  Text,
+  TouchableRipple,
+  useTheme,
+} from 'react-native-paper';
+import {StyleSheet, View, ViewStyle} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
-import {preferredChapterTitle} from '@app/api/mangadex/utils';
+import {findRelationship, preferredChapterTitle} from '@app/api/mangadex/utils';
 import {spacing} from '@app/utils/styles';
+import {PropsWithChildren, useState} from 'react';
+import TextBadge from '@app/components/TextBadge';
 
 interface ChaptersListItemProps {
+  chapters: Chapter[];
+  onPress(chapter: Chapter): void;
+}
+
+interface ChaptersListItemPreviewProps {
+  child: boolean;
+  showingOtherChapters?: boolean;
   chapter: Chapter;
-  onPress(): void;
+  onPress(chapter: Chapter): void;
+  onReadPress(chapter: Chapter): void;
+  onExpandPress?(): void;
 }
 
 export default function ChaptersListItem({
-  chapter,
+  chapters,
   onPress,
 }: ChaptersListItemProps) {
-  const styles = useStyles();
+  const hasOtherChapters = chapters.length > 1;
+  const [showingOtherChapters, setShowingOtherChapters] = useState(false);
+
+  const handleShowingOtherChapters = () =>
+    setShowingOtherChapters(current => !current);
+
+  const handleParentOnPress = (chapter: Chapter) => {
+    if (hasOtherChapters) {
+      handleShowingOtherChapters();
+    } else {
+      onPress(chapter);
+    }
+  };
 
   return (
-    <TouchableRipple
-      borderless
-      onPress={onPress}
-      style={sharedStyles.roundBorders}>
-      <View style={styles.root}>
-        <Text>{preferredChapterTitle(chapter)}</Text>
-        <View style={styles.actions}>
-          <IconButton icon="eye" style={styles.icon} onPress={onPress} />
+    <>
+      {chapters.map((chapter, index) => (
+        <ChaptersListItemPreview
+          key={chapter.id}
+          chapter={chapter}
+          child={index > 0}
+          showingOtherChapters={showingOtherChapters}
+          onPress={handleParentOnPress}
+          onReadPress={onPress}
+          onExpandPress={
+            hasOtherChapters ? handleShowingOtherChapters : undefined
+          }
+        />
+      ))}
+    </>
+  );
+}
+
+function ChaptersListItemPreview({
+  child,
+  showingOtherChapters,
+  chapter,
+  onPress,
+  onReadPress,
+  onExpandPress,
+}: ChaptersListItemPreviewProps) {
+  const styles = useStyles();
+  const Wrapper = ({child, children}: PropsWithChildren<{child: boolean}>) =>
+    child ? (
+      <View style={styles.otherChaptersRoots}>{children}</View>
+    ) : (
+      <>{children}</>
+    );
+
+  const group = findRelationship<ScanlationGroup>(chapter, 'scanlation_group');
+
+  const rootStyles: ViewStyle[] = [styles.root];
+  if (child) {
+    rootStyles.push(styles.childRoot);
+  }
+
+  if (child && !showingOtherChapters) {
+    return null;
+  }
+
+  return (
+    <Wrapper child={child}>
+      <TouchableRipple
+        borderless
+        onPress={() => (child ? onReadPress(chapter) : onPress(chapter))}
+        style={sharedStyles.roundBorders}>
+        <View style={rootStyles}>
+          <View style={styles.titleContainer}>
+            <Text>{preferredChapterTitle(chapter)}</Text>
+            <View style={styles.tagsContainer}>
+              <TextBadge
+                icon="translate"
+                content={chapter.attributes.translatedLanguage.toLocaleUpperCase()}></TextBadge>
+              {group ? (
+                <TextBadge
+                  icon="account"
+                  background="surfaceDisabled"
+                  content={group.attributes.name}
+                />
+              ) : null}
+            </View>
+          </View>
+          <View style={styles.actions}>
+            <IconButton
+              icon="eye"
+              style={styles.icon}
+              onPress={() => onReadPress(chapter)}
+            />
+            {onExpandPress && !child && (
+              <IconButton
+                icon={showingOtherChapters ? 'chevron-left' : 'chevron-down'}
+                onPress={onExpandPress}
+              />
+            )}
+          </View>
         </View>
-      </View>
-    </TouchableRipple>
+      </TouchableRipple>
+    </Wrapper>
   );
 }
 
@@ -44,8 +145,26 @@ function useStyles() {
       justifyContent: 'space-between',
       alignItems: 'center',
     },
+    otherChaptersRoots: {
+      marginTop: spacing(1),
+      gap: spacing(1),
+    },
+    childRoot: {
+      paddingVertical: spacing(2),
+      paddingLeft: spacing(2),
+      marginLeft: spacing(2),
+      paddingRight: spacing(4),
+      backgroundColor: theme.colors.surfaceVariant,
+    },
+    titleContainer: {
+      flexShrink: 1,
+      gap: spacing(1),
+    },
+    tagsContainer: {flexWrap: 'wrap', flexDirection: 'row', gap: spacing(1)},
     actions: {
       flexDirection: 'row',
+      alignItems: 'center',
+      marginRight: spacing(-2),
     },
     icon: {
       padding: 0,

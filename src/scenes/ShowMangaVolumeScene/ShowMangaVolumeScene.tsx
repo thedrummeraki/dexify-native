@@ -9,6 +9,8 @@ import {useEffect} from 'react';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import ChaptersList from './components/ChaptersList';
 
+export type GroupedChapters = Map<string | null, Chapter[]>;
+
 export default function ShowMangaVolumeScene() {
   const route = useShowMangaVolumeRoute();
   const {manga, volumeInfo} = route.params;
@@ -22,13 +24,22 @@ export default function ShowMangaVolumeScene() {
     useLazyGetRequest<PagedResultsList<Chapter>>();
 
   const chapters = isSuccess(data) ? data.data : [];
+  const groupedChapters: GroupedChapters = chapters.reduce((map, chapter) => {
+    map.set(chapter.attributes.chapter, [
+      ...(map.get(chapter.attributes.chapter) || []),
+      chapter,
+    ]);
+    return map;
+  }, new Map());
 
   useEffect(() => {
     fetchChapters(
       UrlBuilder.chaptersList({
         ids: chapterIds,
         contentRating: [contentRating],
+        includes: ['scanlation_group'],
         order: {chapter: 'asc'},
+        limit: 100,
       }),
     );
   }, [chapterIds, contentRating]);
@@ -40,6 +51,7 @@ export default function ShowMangaVolumeScene() {
       headerIcon="arrow-left">
       <ChaptersList
         chapters={chapters}
+        groupedChapters={groupedChapters}
         onChapterPress={() => {}}
         ListHeaderComponent={
           <Padding spacing={0}>
@@ -52,7 +64,7 @@ export default function ShowMangaVolumeScene() {
           </Padding>
         }
         ListEmptyComponent={
-          loading ? null : (
+          loading || !chapterIds ? null : (
             <Banner visible>No chapters were found for this volume.</Banner>
           )
         }

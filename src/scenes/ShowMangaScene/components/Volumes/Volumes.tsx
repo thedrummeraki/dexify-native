@@ -40,13 +40,17 @@ export default function Volumes(props: VolumesProps) {
           ([_, detail]) => detail.id,
         );
 
+        const otherChpaterIds = Object.entries(details.chapters).flatMap(
+          ([_, detail]) => detail.others,
+        );
+
         const coverArt =
           coverArts.find(coverArt => coverArt.attributes.volume === volume) ||
           null;
 
         return {
           volume: volume === 'none' ? null : volume,
-          chapterIds,
+          chapterIds: [...chapterIds, ...otherChpaterIds],
           coverArt,
         };
       }),
