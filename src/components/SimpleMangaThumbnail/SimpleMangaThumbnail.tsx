@@ -1,5 +1,5 @@
 import React from 'react';
-import {Manga} from '@app/api/mangadex/types';
+import {ContentRating, Manga} from '@app/api/mangadex/types';
 import {Image, StyleSheet, View} from 'react-native';
 import {Card, Text, TouchableRipple, useTheme} from 'react-native-paper';
 import {mangaImage, preferredMangaTitle} from '@app/api/mangadex/utils';
@@ -8,6 +8,7 @@ import {sharedStyles, spacing} from '@app/utils/styles';
 export interface SimpleMangaThumbnailProps {
   manga: Manga;
   selected?: boolean;
+  hideExplicitBlur?: boolean;
   onPress?(manga: Manga): void;
   onLongPress?(manga: Manga): void;
 }
@@ -15,12 +16,19 @@ export interface SimpleMangaThumbnailProps {
 export function SimpleMangaThumbnail({
   manga,
   selected,
+  hideExplicitBlur,
   onPress,
   onLongPress,
 }: SimpleMangaThumbnailProps) {
   const {
     colors: {primary},
   } = useTheme();
+
+  const blurRadius =
+    manga.attributes.contentRating === ContentRating.pornographic &&
+    !hideExplicitBlur
+      ? 8
+      : 0;
 
   return (
     <View style={{gap: spacing(1)}}>
@@ -41,6 +49,7 @@ export function SimpleMangaThumbnail({
               borderWidth: spacing(selected ? 1 : 0),
             },
           ]}
+          blurRadius={blurRadius}
         />
       </TouchableRipple>
       <Text variant="bodyMedium" numberOfLines={1}>

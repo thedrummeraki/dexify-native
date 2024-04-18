@@ -1,26 +1,26 @@
 import {
-  CoverArt,
+  ContentRating,
   CustomList,
+  Manga,
   PagedResultsList,
   isSuccess,
 } from '@app/api/mangadex/types';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import {useLazyGetRequest} from '@app/api/utils';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import MDListsDetails from './MDListsDetails';
 import {findRelationship} from '@app/api/mangadex/utils';
-import {useUserStore} from '@app/foundation/state/StaterinoProvider';
 
 export default function MDLists() {
-  const [getCustomLists, {loading, data}] = useLazyGetRequest<
+  const [getCustomLists, {loading}] = useLazyGetRequest<
     PagedResultsList<CustomList>
   >(UrlBuilder.currentUserCustomLists({limit: 100}), {requireSession: true});
 
   const [mdLists, setMDLists] = useState<CustomList[]>([]);
-  const [coverArts, setCoverArts] = useState<CoverArt[]>([]);
+  const [mangaList, setMangaList] = useState<Manga[]>([]);
 
-  const [getCovers, {loading: coversLoading}] =
-    useLazyGetRequest<PagedResultsList<CoverArt>>();
+  const [getMangas, {loading: mangasLoading}] =
+    useLazyGetRequest<PagedResultsList<Manga>>();
 
   useEffect(() => {
     getCustomLists().then(data => {
@@ -36,22 +36,27 @@ export default function MDLists() {
           return ids;
         }, [] as string[]);
 
-        getCovers(UrlBuilder.covers({manga: relevantMangaIdsList})).then(
-          data => {
-            if (isSuccess(data)) {
-              setCoverArts(data.data);
-            }
-          },
-        );
+        getMangas(
+          UrlBuilder.mangaList({
+            ids: relevantMangaIdsList,
+            contentRating: Object.values(ContentRating),
+            limit: relevantMangaIdsList.length,
+            order: {},
+          }),
+        ).then(res => {
+          if (isSuccess(res)) {
+            setMangaList(res.data);
+          }
+        });
       }
     });
   }, []);
 
   return (
     <MDListsDetails
-      loading={loading || coversLoading}
+      loading={loading || mangasLoading}
       mdLists={mdLists}
-      coverArts={coverArts}
+      mangas={mangaList}
     />
   );
 }

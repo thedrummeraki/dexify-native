@@ -13,6 +13,7 @@ import VolumesContainer, {
 } from './VolumesContainer';
 import {spacing} from '@app/utils/styles';
 import {useDexifyNavigation} from '@app/foundation/navigation';
+import {useMangadexPagination} from '@app/api/mangadex/hooks';
 
 export type VolumesProps = VolumesContainerFlatListProps;
 

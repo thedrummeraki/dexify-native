@@ -6,6 +6,7 @@ import {useTheme} from 'react-native-paper';
 import {spacing} from '@app/utils/styles';
 import TextBadge from '@app/components/TextBadge';
 import {useDexifyNavigation} from '@app/foundation/navigation';
+import ContentRatingTextBadge from '@app/components/ContentRatingTextBadge';
 
 export default function AuthorsArtists() {
   const navigation = useDexifyNavigation();
@@ -21,6 +22,7 @@ export default function AuthorsArtists() {
 
   return (
     <View style={styles.root}>
+      <ContentRatingTextBadge type="manga" manga={manga} />
       {artistsAndAuthors.map(author => {
         const icon = author.type === 'artist' ? 'palette' : 'account';
         return (
@@ -28,7 +30,7 @@ export default function AuthorsArtists() {
             key={author.id}
             content={author.attributes.name}
             icon={icon}
-            onPress={() => navigation.navigate('ShowArtist', author)}
+            onPress={() => navigation.push('ShowArtist', author)}
           />
         );
       })}

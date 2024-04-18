@@ -5,9 +5,10 @@ import {Banner, ProgressBar, Text} from 'react-native-paper';
 import {VolumePoster} from './components';
 import {useLazyGetRequest} from '@app/api/utils';
 import {Chapter, PagedResultsList, isSuccess} from '@app/api/mangadex/types';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import ChaptersList from './components/ChaptersList';
+import {useMangadexPagination} from '@app/api/mangadex/hooks';
 
 export type GroupedChapters = Map<string | null, Chapter[]>;
 
@@ -20,10 +21,13 @@ export default function ShowMangaVolumeScene() {
   } = manga;
   const {chapterIds} = volumeInfo;
 
-  const [fetchChapters, {data, loading}] =
+  const {offset, limit, nextPage} = useMangadexPagination([]);
+
+  const [fetchChapters, {loading}] =
     useLazyGetRequest<PagedResultsList<Chapter>>();
 
-  const chapters = isSuccess(data) ? data.data : [];
+  const [chapters, setChapters] = useState<Chapter[]>([]);
+
   const groupedChapters: GroupedChapters = chapters.reduce((map, chapter) => {
     map.set(chapter.attributes.chapter, [
       ...(map.get(chapter.attributes.chapter) || []),
@@ -33,16 +37,23 @@ export default function ShowMangaVolumeScene() {
   }, new Map());
 
   useEffect(() => {
+    if (offset + limit < chapterIds.length) {
+      return;
+    }
     fetchChapters(
       UrlBuilder.chaptersList({
-        ids: chapterIds,
+        ids: chapterIds.slice(offset, limit),
         contentRating: [contentRating],
         includes: ['scanlation_group'],
         order: {chapter: 'asc'},
-        limit: 100,
+        limit,
       }),
-    );
-  }, [chapterIds, contentRating]);
+    ).then(res => {
+      if (isSuccess(res)) {
+        setChapters(current => [...current, ...res.data]);
+      }
+    });
+  }, [chapterIds, contentRating, offset, limit]);
 
   return (
     <SceneContainer
@@ -53,6 +64,7 @@ export default function ShowMangaVolumeScene() {
         chapters={chapters}
         groupedChapters={groupedChapters}
         onChapterPress={() => {}}
+        // onEndReached={() => nextPage()}
         ListHeaderComponent={
           <Padding spacing={0}>
             <VolumePoster

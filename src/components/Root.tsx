@@ -19,6 +19,7 @@ export function Root() {
       <Stack.Group screenOptions={{headerShown: false}}>
         <Stack.Screen name="Home" component={HomeScene} />
         <Stack.Screen name="ShowManga" component={ShowMangaScene} />
+        <Stack.Screen name="ShowArtist" component={AuthorArtistScene} />
         <Stack.Screen name="ShowCustomList" component={CustomListScene} />
         <Stack.Screen name="ShowMangaVolume" component={ShowMangaVolumeScene} />
       </Stack.Group>
@@ -29,7 +30,6 @@ export function Root() {
           name="ShowMangaDetailsModal"
           component={ShowMangaDetailsModalScene}
         />
-        <Stack.Screen name="ShowArtist" component={AuthorArtistScene} />
       </Stack.Group>
     </Stack.Navigator>
   );

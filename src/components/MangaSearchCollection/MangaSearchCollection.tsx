@@ -112,7 +112,7 @@ export function MangaSearchCollection({
             query={title}
             placeholder={searchBarPlaceholder}
             onQueryChange={setTitle}
-            onShowFilters={() => navigation.navigate('Filters')}
+            onShowFilters={() => navigation.push('Filters')}
           />
           {hidePreview ? null : <FiltersPreview />}
         </View>
@@ -121,7 +121,7 @@ export function MangaSearchCollection({
         mangaList={mangaList}
         loading={loading}
         numColumns={numColumns}
-        onMangaPress={manga => navigation.navigate('ShowManga', {...manga})}
+        onMangaPress={manga => navigation.push('ShowManga', {...manga})}
         onEndReached={() => {
           if (!loading && hasMore) {
             nextPage();

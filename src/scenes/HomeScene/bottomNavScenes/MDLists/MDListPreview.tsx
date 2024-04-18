@@ -1,4 +1,9 @@
-import {CoverArt, CustomList} from '@app/api/mangadex/types';
+import {
+  ContentRating,
+  CoverArt,
+  CustomList,
+  Manga,
+} from '@app/api/mangadex/types';
 import {
   CoverSize,
   coverImage,
@@ -12,10 +17,10 @@ import {useDexifyNavigation} from '@app/foundation/navigation';
 
 export interface MDListPreviewProps {
   mdList: CustomList;
-  coverArt: CoverArt | null;
+  manga: Manga | null;
 }
 
-export function MDListPreview({mdList, coverArt}: MDListPreviewProps) {
+export function MDListPreview({mdList, manga}: MDListPreviewProps) {
   const navigation = useDexifyNavigation();
   const titlesCount = findRelationships(mdList, 'manga').length;
   const titlesCountText =
@@ -26,12 +31,19 @@ export function MDListPreview({mdList, coverArt}: MDListPreviewProps) {
       : `${titlesCount} titles`;
 
   const theme = useTheme();
+  const mangaCoverArt = manga
+    ? findRelationship<CoverArt>(manga, 'cover_art')
+    : null;
 
-  const coverUri = coverArt
-    ? coverImage(coverArt, findRelationship(coverArt, 'manga')!.id, {
-        size: CoverSize.Small,
-      })
-    : 'https://mangadex.org/img/avatar.png';
+  const coverUri =
+    mangaCoverArt && manga
+      ? coverImage(mangaCoverArt, manga.id, {
+          size: CoverSize.Small,
+        })
+      : 'https://mangadex.org/img/avatar.png';
+
+  const blurRadius =
+    manga?.attributes.contentRating === ContentRating.pornographic ? 8 : 0;
 
   return (
     <TouchableRipple
@@ -45,7 +57,11 @@ export function MDListPreview({mdList, coverArt}: MDListPreviewProps) {
             backgroundColor: theme.colors.surfaceDisabled,
           },
         ]}>
-        <Image source={{uri: coverUri}} style={styles.image} />
+        <Image
+          source={{uri: coverUri}}
+          style={styles.image}
+          blurRadius={blurRadius}
+        />
         <View style={styles.contentsRoot}>
           <View style={styles.contentsContainer}>
             <Text>{mdList.attributes.name}</Text>

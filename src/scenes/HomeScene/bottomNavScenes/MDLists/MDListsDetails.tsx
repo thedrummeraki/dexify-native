@@ -1,4 +1,4 @@
-import {CoverArt, CustomList} from '@app/api/mangadex/types';
+import {CoverArt, CustomList, Manga} from '@app/api/mangadex/types';
 import {findRelationship} from '@app/api/mangadex/utils';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import React from 'react';
@@ -9,13 +9,13 @@ import {MDListPreview} from './MDListPreview';
 export interface MDListsDetailsProps {
   loading: boolean;
   mdLists: CustomList[];
-  coverArts: CoverArt[];
+  mangas: Manga[];
 }
 
 export default function MDListsDetails({
   loading,
   mdLists,
-  coverArts,
+  mangas,
 }: MDListsDetailsProps) {
   return (
     <SafeAreaView style={sharedStyles.flex}>
@@ -25,16 +25,19 @@ export default function MDListsDetails({
       </View>
       <FlatList
         data={mdLists}
-        contentContainerStyle={{gap: spacing(2), paddingHorizontal: spacing(2)}}
+        contentContainerStyle={{
+          gap: spacing(2),
+          paddingHorizontal: spacing(2),
+        }}
+        style={{paddingBottom: spacing(2)}}
         renderItem={({item}) => {
           const mangaId = findRelationship(item, 'manga')?.id;
-          const coverArt = mangaId
-            ? coverArts.find(coverArt => {
-                const coverArtMangaId = findRelationship(coverArt, 'manga')!.id;
-                return coverArtMangaId === mangaId;
+          const manga = mangaId
+            ? mangas.find(manga => {
+                return manga.id === mangaId;
               }) || null
             : null;
-          return <MDListPreview mdList={item} coverArt={coverArt} />;
+          return <MDListPreview mdList={item} manga={manga} />;
         }}
       />
     </SafeAreaView>
