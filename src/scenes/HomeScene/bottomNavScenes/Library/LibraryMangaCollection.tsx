@@ -39,6 +39,7 @@ export default function LibraryMangaCollection({
     <MangaSearchCollection
       hidePreview
       hideSearchbar
+      hideThumbnailInfo={['readingStatus']}
       override={{ids: mangaIds, contentRating: Object.values(ContentRating)}}
     />
   );

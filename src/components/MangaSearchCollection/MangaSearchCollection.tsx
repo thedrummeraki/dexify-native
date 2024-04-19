@@ -18,10 +18,12 @@ import {FiltersPreview} from './components';
 import {View} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
 import {useDimensions} from '@app/utils';
+import {VisibleThumbnailInfo} from '../SimpleMangaThumbnail/SimpleMangaThumbnail';
 
 export interface MangaSearchCollectionProps {
   hidePreview?: boolean;
   hideSearchbar?: boolean;
+  hideThumbnailInfo?: VisibleThumbnailInfo[];
   useFilters?: boolean;
   searchBarPlaceholder?: string;
   override?: MangaRequestParams;
@@ -31,6 +33,7 @@ export interface MangaSearchCollectionProps {
 export function MangaSearchCollection({
   hidePreview,
   hideSearchbar,
+  hideThumbnailInfo,
   useFilters,
   searchBarPlaceholder,
   override,
@@ -118,6 +121,7 @@ export function MangaSearchCollection({
         </View>
       )}
       <MangaCollection
+        hideThumbnailInfo={hideThumbnailInfo}
         mangaList={mangaList}
         loading={loading}
         numColumns={numColumns}

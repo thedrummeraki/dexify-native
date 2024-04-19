@@ -1,13 +1,7 @@
 import React from 'react';
 import {ContentRating, Manga, ReadingStatus} from '@app/api/mangadex/types';
-import {Image, StyleSheet, View, processColor} from 'react-native';
-import {
-  Caption,
-  Card,
-  Text,
-  TouchableRipple,
-  useTheme,
-} from 'react-native-paper';
+import {Image, StyleSheet, View} from 'react-native';
+import {Text, TouchableRipple, useTheme} from 'react-native-paper';
 import {mangaImage, preferredMangaTitle} from '@app/api/mangadex/utils';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import {readingStatusName} from '@app/scenes/HomeScene/bottomNavScenes/Library/Library';
@@ -16,12 +10,15 @@ export interface SimpleMangaThumbnailProps {
   manga: Manga;
   selected?: boolean;
   hideExplicitBlur?: boolean;
-  info?: OptionalInfo;
+  hideThumbnailInfo?: VisibleThumbnailInfo[];
+  info?: ThumbnailInfo;
   onPress?(manga: Manga): void;
   onLongPress?(manga: Manga): void;
 }
 
-interface OptionalInfo {
+export type VisibleThumbnailInfo = 'readingStatus';
+
+export interface ThumbnailInfo {
   readingStatus?: ReadingStatus;
 }
 
@@ -29,6 +26,7 @@ export function SimpleMangaThumbnail({
   manga,
   selected,
   hideExplicitBlur,
+  hideThumbnailInfo,
   info,
   onPress,
   onLongPress,
@@ -43,6 +41,10 @@ export function SimpleMangaThumbnail({
       ? 16
       : 0;
 
+  const isInfoVisible = (infoType: VisibleThumbnailInfo) => {
+    return !(hideThumbnailInfo || []).includes(infoType);
+  };
+
   const {readingStatus} = info || {};
 
   return (
@@ -54,11 +56,11 @@ export function SimpleMangaThumbnail({
         onPress={() => onPress?.(manga)}>
         <View>
           <View style={styles.info}>
-            {readingStatus ? (
+            {readingStatus && isInfoVisible('readingStatus') ? (
               <View style={[styles.infoItem, {backgroundColor: secondary}]}>
-                <Caption style={{color: onSecondary}}>
+                <Text variant="bodySmall" style={{color: onSecondary}}>
                   {readingStatusName(readingStatus)}
-                </Caption>
+                </Text>
               </View>
             ) : null}
           </View>
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   infoItem: {
-    borderRadius: sharedStyles.roundBorders.borderRadius / 2,
+    // borderRadius: sharedStyles.roundBorders.borderRadius / 2,
     paddingHorizontal: spacing(0.5),
   },
 });

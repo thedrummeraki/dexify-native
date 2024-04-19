@@ -5,6 +5,7 @@ import {Text} from 'react-native-paper';
 import SimpleMangaThumbnail from '../SimpleMangaThumbnail';
 import {spacing} from '@app/utils/styles';
 import {useSubscribedLibrary} from '@app/providers/LibraryProvider';
+import {VisibleThumbnailInfo} from '../SimpleMangaThumbnail/SimpleMangaThumbnail';
 
 type ViewMode = 'view' | 'select';
 
@@ -12,7 +13,7 @@ export interface Props {
   mangaList: Manga[];
   loading?: boolean;
   numColumns?: number;
-  showReadingStatus?: boolean;
+  hideThumbnailInfo?: VisibleThumbnailInfo[];
   onMangaPress?(manga: Manga): void;
   onEndReached?(): void;
 }
@@ -21,7 +22,7 @@ export function MangaCollection({
   mangaList,
   loading,
   numColumns = 2,
-  showReadingStatus,
+  hideThumbnailInfo,
   onMangaPress,
   onEndReached,
 }: Props) {
@@ -87,6 +88,7 @@ export function MangaCollection({
             manga={item}
             onPress={handleMangaPress}
             onLongPress={handleMangaSelection}
+            hideThumbnailInfo={hideThumbnailInfo}
             info={{readingStatus: library.statuses[item.id]}}
           />
         </View>
