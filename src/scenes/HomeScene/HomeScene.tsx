@@ -18,11 +18,11 @@ export default function HomeScene() {
 function AuthenticatedBottomNavigation() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {
-      key: 'home',
-      title: 'Home',
-      focusedIcon: 'home',
-    },
+    // {
+    //   key: 'home',
+    //   title: 'Home',
+    //   focusedIcon: 'home',
+    // },
     {
       key: 'library',
       title: 'Library',
@@ -32,14 +32,14 @@ function AuthenticatedBottomNavigation() {
     {
       key: 'lists',
       title: 'Lists',
-      focusedIcon: 'bookmark',
-      unfocusedIcon: 'bookmark-outline',
+      focusedIcon: 'view-list',
+      unfocusedIcon: 'view-list-outline',
     },
     {key: 'browse', title: 'Browse...', focusedIcon: 'search-web'},
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
-    home: Home,
+    // home: Home,
     browse: Browse,
     lists: MDLists,
     library: Library,
@@ -57,17 +57,17 @@ function AuthenticatedBottomNavigation() {
 function UnauthenticatedBottomNavigation() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {
-      key: 'home',
-      title: 'Home',
-      focusedIcon: 'home',
-    },
+    // {
+    //   key: 'home',
+    //   title: 'Home',
+    //   focusedIcon: 'home',
+    // },
     {key: 'browse', title: 'Browse...', focusedIcon: 'search-web'},
     {key: 'login', title: 'Login', focusedIcon: 'account-key'},
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
-    home: Home,
+    // home: Home,
     browse: Browse,
     login: Login,
   });
