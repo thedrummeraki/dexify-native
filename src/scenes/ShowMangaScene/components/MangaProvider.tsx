@@ -15,6 +15,8 @@ export type MangaProviderProps = PropsWithChildren<{
 interface MangaProviderState {
   manga: Manga;
   coverArts: CoverArt[];
+  aggregate: Manga.Aggregate;
+  aggregateLoading: boolean;
 }
 
 const MangaContext = React.createContext<MangaProviderState>(
@@ -36,6 +38,11 @@ export const useMangaDetails = (): MangaProviderState => {
 
 export default function MangaProvider({manga, children}: MangaProviderProps) {
   const [coverArts, setCoverArts] = useState<CoverArt[]>([]);
+  const [aggregate, setAggregate] = useState<Manga.Aggregate>({
+    result: 'ok',
+    volumes: {},
+  });
+
   const [getCovers] = useLazyGetRequest<PagedResultsList<CoverArt>>(
     UrlBuilder.covers({manga: [manga.id], limit: 100}),
   );
@@ -48,8 +55,22 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
     });
   }, []);
 
+  const [getVolumesAndChapters, {loading: aggregateLoading}] =
+    useLazyGetRequest<Manga.Aggregate>(
+      UrlBuilder.mangaVolumesAndChapters(manga.id),
+    );
+
+  useEffect(() => {
+    getVolumesAndChapters().then(aggregate => {
+      if (aggregate) {
+        setAggregate(aggregate);
+      }
+    });
+  }, [manga.id]);
+
   return (
-    <MangaContext.Provider value={{manga, coverArts}}>
+    <MangaContext.Provider
+      value={{manga, coverArts, aggregate, aggregateLoading}}>
       {children}
     </MangaContext.Provider>
   );

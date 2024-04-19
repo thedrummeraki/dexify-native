@@ -1,4 +1,4 @@
-import {CustomList} from '@app/api/mangadex/types';
+import {ContentRating, CustomList} from '@app/api/mangadex/types';
 import {findRelationships} from '@app/api/mangadex/utils';
 import {MangaSearchCollection, SceneContainer} from '@app/components';
 
@@ -12,9 +12,16 @@ export default function CustomListSceneDetails({
   const mangaRelationships = findRelationships(customList, 'manga');
   const mangaIds = mangaRelationships.map(relationship => relationship.id);
 
+  const subtitle =
+    mangaIds.length === 1 ? '1 title' : `${mangaIds.length} titles`;
+
   return (
-    <SceneContainer title={customList.attributes.name}>
-      <MangaSearchCollection useFilters override={{ids: mangaIds}} requireIds />
+    <SceneContainer title={customList.attributes.name} subtitle={subtitle}>
+      <MangaSearchCollection
+        hideSearchbar
+        override={{ids: mangaIds, contentRating: Object.values(ContentRating)}}
+        requireIds
+      />
     </SceneContainer>
   );
 }

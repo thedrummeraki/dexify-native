@@ -21,6 +21,7 @@ interface ChaptersListItemProps {
 interface ChaptersListItemPreviewProps {
   child: boolean;
   showingOtherChapters?: boolean;
+  hasOtherChapters?: boolean;
   chapter: Chapter;
   onPress(chapter: Chapter): void;
   onReadPress(chapter: Chapter): void;
@@ -51,8 +52,9 @@ export default function ChaptersListItem({
         <ChaptersListItemPreview
           key={chapter.id}
           chapter={chapter}
-          child={index > 0}
+          child={index > 0 && hasOtherChapters}
           showingOtherChapters={showingOtherChapters}
+          hasOtherChapters={hasOtherChapters}
           onPress={handleParentOnPress}
           onReadPress={onPress}
           onExpandPress={
@@ -67,6 +69,7 @@ export default function ChaptersListItem({
 function ChaptersListItemPreview({
   child,
   showingOtherChapters,
+  hasOtherChapters,
   chapter,
   onPress,
   onReadPress,
@@ -113,9 +116,13 @@ function ChaptersListItemPreview({
               ) : null}
             </View>
           </View>
-          <View style={styles.actions}>
+          <View
+            style={[
+              styles.actions,
+              !child && !hasOtherChapters && {marginRight: spacing(0)},
+            ]}>
             <IconButton
-              icon="eye"
+              icon={chapter.attributes.externalUrl ? 'open-in-new' : 'eye'}
               style={styles.icon}
               onPress={() => onReadPress(chapter)}
             />

@@ -1,11 +1,12 @@
-import {AllReadingStatusResponse, ReadingStatus} from '@app/api/mangadex/types';
-import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
-import {useLazyGetRequest} from '@app/api/utils';
+import {ReadingStatus} from '@app/api/mangadex/types';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import React, {useEffect, useState} from 'react';
 import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
 import {Chip, Text} from 'react-native-paper';
 import LibraryMangaCollection from './LibraryMangaCollection';
+import {useStore} from '@app/foundation/state/StaterinoProvider';
+import {defaultLibraryStore} from '@app/foundation/state/library';
+import {useSubscribedLibrary} from '@app/providers/LibraryProvider';
 
 export default function Library() {
   const readingStatuses = Object.values(ReadingStatus);
@@ -13,21 +14,11 @@ export default function Library() {
     ReadingStatus.Reading,
   );
 
+  const {data: mapping, loading} = useSubscribedLibrary();
+
   const handleReadingStatusSelection = (readingStatus: ReadingStatus) => {
     setCurrentReadingStatus(readingStatus);
   };
-
-  const [fetchReadingStatus, {data: mapping, loading}] =
-    useLazyGetRequest<AllReadingStatusResponse>(
-      UrlBuilder.readingStatusMangaIds(),
-      {
-        requireSession: true,
-      },
-    );
-
-  useEffect(() => {
-    fetchReadingStatus();
-  }, []);
 
   return (
     <SafeAreaView style={[sharedStyles.flex]}>
@@ -52,13 +43,13 @@ export default function Library() {
       <LibraryMangaCollection
         loading={loading}
         readingStatus={currentReadingStatus}
-        mapping={mapping || {statuses: {}}}
+        mapping={mapping}
       />
     </SafeAreaView>
   );
 }
 
-function readingStatusName(readingStatus: ReadingStatus) {
+export function readingStatusName(readingStatus: ReadingStatus) {
   switch (readingStatus) {
     case ReadingStatus.Reading:
       return 'Reading';

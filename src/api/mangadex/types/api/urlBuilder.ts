@@ -59,6 +59,10 @@ export default class UrlBuilder {
     return this.buildUrl('/manga/status', {status: status ? status : ''});
   }
 
+  public static updateReadingStatus(mangaId: string) {
+    return this.buildUrl(`/manga/${mangaId}/status`);
+  }
+
   public static mangaById(
     id: string,
     params?: Partial<SingleMangaRequestParams>,

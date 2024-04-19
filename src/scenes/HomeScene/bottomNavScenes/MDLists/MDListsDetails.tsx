@@ -29,7 +29,6 @@ export default function MDListsDetails({
           gap: spacing(2),
           paddingHorizontal: spacing(2),
         }}
-        style={{paddingBottom: spacing(2)}}
         renderItem={({item}) => {
           const mangaId = findRelationship(item, 'manga')?.id;
           const manga = mangaId

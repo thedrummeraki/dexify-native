@@ -8,6 +8,7 @@ import {
   DefaultTheme,
 } from '@react-navigation/native';
 import {useColorScheme} from 'react-native';
+import LibraryProvider from './providers/LibraryProvider';
 
 export function App() {
   const scheme = useColorScheme();
@@ -16,7 +17,9 @@ export function App() {
     <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <PaperProvider>
         <TagsProvider>
-          <Root />
+          <LibraryProvider>
+            <Root />
+          </LibraryProvider>
         </TagsProvider>
       </PaperProvider>
     </NavigationContainer>

@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Manga} from '@app/api/mangadex/types';
+import {Manga, ReadingStatus} from '@app/api/mangadex/types';
 import {FlatList, Image, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import SimpleMangaThumbnail from '../SimpleMangaThumbnail';
 import {spacing} from '@app/utils/styles';
+import {useSubscribedLibrary} from '@app/providers/LibraryProvider';
 
 type ViewMode = 'view' | 'select';
 
@@ -11,6 +12,7 @@ export interface Props {
   mangaList: Manga[];
   loading?: boolean;
   numColumns?: number;
+  showReadingStatus?: boolean;
   onMangaPress?(manga: Manga): void;
   onEndReached?(): void;
 }
@@ -19,11 +21,13 @@ export function MangaCollection({
   mangaList,
   loading,
   numColumns = 2,
+  showReadingStatus,
   onMangaPress,
   onEndReached,
 }: Props) {
   const [selectedMangaIds, setSelectedMangaIds] = useState<string[]>([]);
   const [mode, setMode] = useState<ViewMode>('view');
+  const {data: library} = useSubscribedLibrary();
 
   const handleMangaSelection = (manga: Manga) => {
     setSelectedMangaIds(current => {
@@ -51,6 +55,13 @@ export function MangaCollection({
     }
   }, [selectedMangaIds.length]);
 
+  useEffect(() => {
+    return () => {
+      // unselect mangas when unmounted.
+      setSelectedMangaIds([]);
+    };
+  }, []);
+
   if (numColumns < 1) {
     throw new Error('Must at least have on column');
   }
@@ -76,6 +87,7 @@ export function MangaCollection({
             manga={item}
             onPress={handleMangaPress}
             onLongPress={handleMangaSelection}
+            info={{readingStatus: library.statuses[item.id]}}
           />
         </View>
       )}

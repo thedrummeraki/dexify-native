@@ -9,6 +9,7 @@ import {useEffect, useState} from 'react';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import ChaptersList from './components/ChaptersList';
 import {useMangadexPagination} from '@app/api/mangadex/hooks';
+import {Linking} from 'react-native';
 
 export type GroupedChapters = Map<string | null, Chapter[]>;
 
@@ -37,9 +38,9 @@ export default function ShowMangaVolumeScene() {
   }, new Map());
 
   useEffect(() => {
-    if (offset + limit < chapterIds.length) {
-      return;
-    }
+    // if (offset + limit < chapterIds.length) {
+    //   return;
+    // }
     fetchChapters(
       UrlBuilder.chaptersList({
         ids: chapterIds.slice(offset, limit),
@@ -63,7 +64,15 @@ export default function ShowMangaVolumeScene() {
       <ChaptersList
         chapters={chapters}
         groupedChapters={groupedChapters}
-        onChapterPress={() => {}}
+        onChapterPress={chapter => {
+          if (chapter.attributes.externalUrl) {
+            Linking.openURL(chapter.attributes.externalUrl).catch(console.warn);
+          } else {
+            // temporary open on mangadex directly until manga reader is open
+            const mangadexChapterUrl = `https://mangadex.org/chapter/${chapter.id}`;
+            Linking.openURL(mangadexChapterUrl).catch(console.warn);
+          }
+        }}
         // onEndReached={() => nextPage()}
         ListHeaderComponent={
           <Padding spacing={0}>

@@ -3,16 +3,19 @@ import merge from 'mergerino';
 import {useLayoutEffect, useReducer} from 'react';
 import {UserStore, defaultUserStore} from './user';
 import {FiltersStore, defaultFiltersStore} from './filters';
+import {LibraryStore, defaultLibraryStore} from './library';
 
 export interface AppState {
   user: UserStore;
   filters: FiltersStore;
+  library: LibraryStore;
 }
 
 export function defaultState(): AppState {
   return {
     user: defaultUserStore,
     filters: defaultFiltersStore,
+    library: defaultLibraryStore,
   };
 }
 

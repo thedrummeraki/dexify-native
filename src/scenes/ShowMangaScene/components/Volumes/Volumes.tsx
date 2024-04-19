@@ -19,17 +19,13 @@ export type VolumesProps = VolumesContainerFlatListProps;
 
 export default function Volumes(props: VolumesProps) {
   const navigation = useDexifyNavigation();
-  const {manga, coverArts} = useMangaDetails();
+  const {
+    manga,
+    coverArts,
+    aggregate: data,
+    aggregateLoading: loading,
+  } = useMangaDetails();
   const [volumeView] = useState(VolumeView.Grid);
-
-  const [getVolumesAndChapters, {data, loading}] =
-    useLazyGetRequest<Manga.Aggregate>(
-      UrlBuilder.mangaVolumesAndChapters(manga.id),
-    );
-
-  useEffect(() => {
-    getVolumesAndChapters();
-  }, [manga.id]);
 
   const aggregateEntries =
     data?.result === 'ok' ? Object.entries(data.volumes) : [];

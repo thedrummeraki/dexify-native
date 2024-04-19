@@ -4,9 +4,9 @@ import {
   ContentRating,
   ReadingStatus,
 } from '@app/api/mangadex/types';
-import { MangaSearchCollection } from '@app/components';
-import { StyleSheet, View } from 'react-native';
-import { ProgressBar, Text } from 'react-native-paper';
+import {MangaSearchCollection} from '@app/components';
+import {StyleSheet, View} from 'react-native';
+import {ProgressBar, Text} from 'react-native-paper';
 
 export interface LibraryMangaCollectionProps {
   loading?: boolean;
@@ -39,11 +39,11 @@ export default function LibraryMangaCollection({
     <MangaSearchCollection
       hidePreview
       hideSearchbar
-      override={{ ids: mangaIds }}
+      override={{ids: mangaIds, contentRating: Object.values(ContentRating)}}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  emptyStateContainer: { flex: 1, alignItems: 'center' },
+  emptyStateContainer: {flex: 1, alignItems: 'center'},
 });
