@@ -61,7 +61,7 @@ export function usePostRequest<T, Body = any>(
     params,
   );
 
-  return useFetch<T>(options, {method: 'POST'});
+  return useAxiosRequest<T, Body>(options);
 }
 
 export function useFetch<T, Body = any>(
@@ -204,6 +204,7 @@ export function useAxiosRequest<T, Body = any>(
           'Content-Type': 'application/json',
         };
       } else if (!token && requireSession) {
+        console.error('Token is missing but session is required.');
         throw new Error('Token is missing but session is required.');
       }
 
