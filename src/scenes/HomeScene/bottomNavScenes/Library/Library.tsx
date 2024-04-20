@@ -14,7 +14,7 @@ export default function Library() {
     ReadingStatus.Reading,
   );
 
-  const {data: mapping, loading} = useSubscribedLibrary();
+  const {data: mapping, loading} = useStore(state => state.library);
 
   const handleReadingStatusSelection = (readingStatus: ReadingStatus) => {
     setCurrentReadingStatus(readingStatus);

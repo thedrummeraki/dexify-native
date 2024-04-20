@@ -6,6 +6,7 @@ import {
   FiltersScene,
   HomeScene,
   ShowMangaDetailsModalScene,
+  ShowMangaLibraryModalScene,
   ShowMangaScene,
   ShowMangaVolumeScene,
 } from '@app/scenes';
@@ -29,6 +30,10 @@ export function Root() {
         <Stack.Screen
           name="ShowMangaDetailsModal"
           component={ShowMangaDetailsModalScene}
+        />
+        <Stack.Screen
+          name="ShowMangaLibraryModal"
+          component={ShowMangaLibraryModalScene}
         />
       </Stack.Group>
     </Stack.Navigator>

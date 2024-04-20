@@ -4,38 +4,25 @@ import {StyleSheet, View} from 'react-native';
 import {Button, IconButton} from 'react-native-paper';
 import {useMangaDetails} from '../MangaProvider';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
-import {ReadingStatus} from '@app/api/mangadex/types';
-import {usePostRequest} from '@app/api/utils';
-import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
+import {useDexifyNavigation} from '@app/foundation/navigation';
+import {readingStatusName} from '@app/scenes/HomeScene/bottomNavScenes/Library/Library';
 
 export default function MainActions() {
-  const {aggregate, aggregateLoading, manga} = useMangaDetails();
-  const cannotBeRead =
-    aggregateLoading ||
-    aggregate.result === 'error' ||
-    Object.keys(aggregate.volumes).length === 0;
+  const navigation = useDexifyNavigation();
+  const [library, user] = useStore([
+    state => state.library.data,
+    state => state.user.user,
+  ]);
+  const {manga} = useMangaDetails();
 
-  const [post, {loading: submitting}] = usePostRequest(undefined, {
-    requireSession: true,
-  });
-  const {set} = useStore;
-
-  const updateReadingStatus = (status: ReadingStatus) => {
-    post(UrlBuilder.updateReadingStatus(manga.id), {status}).then(res => {
-      set({library: {data: {statuses: {[manga.id]: status}}}});
-    });
-  };
+  const readingStatus = library.statuses[manga.id];
 
   return (
     <View style={styles.root}>
       <View style={styles.minor}>
         <AuthGuard
-          onPress={() => updateReadingStatus(ReadingStatus.PlanToRead)}>
-          <IconButton
-            disabled={submitting}
-            mode="contained"
-            icon="bookmark-outline"
-          />
+          onPress={() => navigation.push('ShowMangaLibraryModal', manga)}>
+          <IconButton mode="contained" icon="bookmark-outline" />
         </AuthGuard>
         {/* <IconButton */}
         {/*   mode="contained-tonal" */}
@@ -44,10 +31,13 @@ export default function MainActions() {
       </View>
       <View style={styles.major}>
         <Button
-          disabled={cannotBeRead}
+          disabled={!user}
           mode="contained"
-          icon="book-open-blank-variant">
-          Read now
+          icon={readingStatus ? 'check' : undefined}
+          onPress={() => navigation.push('ShowMangaLibraryModal', manga)}>
+          {readingStatus
+            ? readingStatusName(readingStatus)
+            : 'Add to library...'}
         </Button>
       </View>
     </View>

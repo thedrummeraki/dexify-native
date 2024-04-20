@@ -79,24 +79,20 @@ export default function Volumes(props: VolumesProps) {
   );
 
   return (
-    <View>
-      <View style={styles.container}>
-        <VolumesContainer
-          volumeInfoList={volumeInfos}
-          volumeView={volumeView}
-          onVolumePress={volumeInfo =>
-            navigation.push('ShowMangaVolume', {volumeInfo, manga})
-          }
-          {...props}
-          ListHeaderComponent={ListHeaderComponent}
-          ListEmptyComponent={
-            loading ? null : (
-              <Banner visible>No volumes can be read from Mangadex.</Banner>
-            )
-          }
-        />
-      </View>
-    </View>
+    <VolumesContainer
+      volumeInfoList={volumeInfos}
+      volumeView={volumeView}
+      onVolumePress={volumeInfo =>
+        navigation.push('ShowMangaVolume', {volumeInfo, manga})
+      }
+      {...props}
+      ListHeaderComponent={ListHeaderComponent}
+      ListEmptyComponent={
+        loading ? null : (
+          <Banner visible>No volumes can be read from Mangadex.</Banner>
+        )
+      }
+    />
   );
 }
 
@@ -112,5 +108,5 @@ const styles = StyleSheet.create({
   temporaryHeaderText: {
     paddingVertical: spacing(2),
   },
-  container: {},
+  container: {flex: 1},
 });

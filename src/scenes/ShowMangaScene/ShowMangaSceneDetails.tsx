@@ -16,7 +16,8 @@ import {
 } from './components';
 import MangaProvider from './components/MangaProvider';
 import {Text} from 'react-native-paper';
-import {spacing} from '@app/utils/styles';
+import {sharedStyles, spacing} from '@app/utils/styles';
+import FloatingActions from './components/FloatingActions';
 
 export interface ShowMangaSceneDetailsProps {
   manga: Manga;
@@ -48,6 +49,9 @@ export default function ShowMangaSceneDetails({
     <SafeAreaView>
       <MangaProvider manga={manga}>
         <Volumes ListHeaderComponent={VolumesListHeaderComponent} />
+        <View style={sharedStyles.flex}>
+          <FloatingActions />
+        </View>
       </MangaProvider>
     </SafeAreaView>
   );

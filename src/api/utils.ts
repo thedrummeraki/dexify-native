@@ -226,6 +226,7 @@ export function useAxiosRequest<T, Body = any>(
           ? `[By ${user.username}] ${requestMethod}`
           : requestMethod,
         url,
+        body ? `[body: ${JSON.stringify(body)}]` : '[no-body]',
         // 'with header keys',
         // Object.keys(config.headers || {}),
       );

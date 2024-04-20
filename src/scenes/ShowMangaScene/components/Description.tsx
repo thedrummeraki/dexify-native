@@ -19,7 +19,6 @@ export default function Description({numberOfLines = 3}: DescriptionProps) {
   const [visibleNumberOfLines, setVisibleNumberOfLines] = useState<
     number | undefined
   >(Platform.OS === 'ios' ? undefined : numberOfLines); // weird hack for iOS
-  console.log({visibleNumberOfLines});
   const [showingMore, setShowingMore] = useState(false);
 
   useEffect(() => {
@@ -37,7 +36,6 @@ export default function Description({numberOfLines = 3}: DescriptionProps) {
         style={{color: theme.colors.outline}}
         onTextLayout={e => {
           const linesCount = e.nativeEvent.lines.length;
-          console.log({linesCount, lines: e.nativeEvent.lines});
           setVisibleNumberOfLines(numberOfLines);
           setLines(linesCount);
           setShouldShowMore(linesCount > numberOfLines);
