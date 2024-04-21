@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {Dimensions, StatusBar} from 'react-native';
+import {Dimensions, Platform, StatusBar} from 'react-native';
 
 /**
  * A debounced function, for useEffect.
@@ -35,4 +35,19 @@ export function useDebouncedEffect(
 export function useDimensions(source: 'window' | 'screen' = 'window') {
   const heightOffset = StatusBar.currentHeight || 0;
   return {...Dimensions.get(source), heightOffset};
+}
+
+export function usePlatformName() {
+  switch (Platform.OS) {
+    case 'ios':
+      return 'iOS';
+    case 'android':
+      return 'Android';
+    case 'windows':
+      return 'Windows';
+    case 'macos':
+      return 'macOS';
+    case 'web':
+      return 'web';
+  }
 }
