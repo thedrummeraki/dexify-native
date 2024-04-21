@@ -1,12 +1,10 @@
 import {ReadingStatus} from '@app/api/mangadex/types';
 import {sharedStyles, spacing} from '@app/utils/styles';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
 import {Chip, Text} from 'react-native-paper';
 import LibraryMangaCollection from './LibraryMangaCollection';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
-import {defaultLibraryStore} from '@app/foundation/state/library';
-import {useSubscribedLibrary} from '@app/providers/LibraryProvider';
 
 export default function Library() {
   const readingStatuses = Object.values(ReadingStatus);
@@ -15,6 +13,7 @@ export default function Library() {
   );
 
   const {data: mapping, loading} = useStore(state => state.library);
+  const allStatuses = Object.values(mapping.statuses).flat();
 
   const handleReadingStatusSelection = (readingStatus: ReadingStatus) => {
     setCurrentReadingStatus(readingStatus);
@@ -35,7 +34,12 @@ export default function Library() {
               showSelectedOverlay
               selected={currentReadingStatus === item}
               onPress={() => handleReadingStatusSelection(item)}>
-              {readingStatusName(item)}
+              {readingStatusName(item)} (
+              {
+                allStatuses.filter(status => String(status) === String(item))
+                  .length
+              }
+              )
             </Chip>
           )}
         />

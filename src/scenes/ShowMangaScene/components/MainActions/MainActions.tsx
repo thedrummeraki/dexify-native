@@ -25,7 +25,8 @@ export default function MainActions() {
         <AuthGuard
           onPress={() => navigation.push('ShowMangaMDListsModal', manga)}>
           <IconButton
-            mode={addedToList ? 'contained' : 'contained-tonal'}
+            disabled={!user}
+            mode={addedToList ? 'contained' : 'outlined'}
             icon={addedToList ? 'bookmark-check' : 'bookmark-outline'}
           />
         </AuthGuard>

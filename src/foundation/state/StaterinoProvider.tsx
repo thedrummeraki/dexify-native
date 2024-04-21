@@ -55,10 +55,8 @@ export const useUserStore = () => {
     set({user: {user, token}});
   };
   const logout = () => {
-    const emptyUserStore = {user: {user: null, token: null}};
-    // storeSession(emptyUserStore.user);
     blastSession();
-    set(emptyUserStore);
+    set(defaultState);
   };
 
   // TODO: maybe too specific here

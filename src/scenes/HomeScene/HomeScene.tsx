@@ -2,7 +2,7 @@ import {Browse} from '@app/scenes';
 import React from 'react';
 import {useState} from 'react';
 import {BottomNavigation} from 'react-native-paper';
-import {Home, Library, Login, MDLists} from './bottomNavScenes';
+import {Home, Library, Login, MDLists, Settings} from './bottomNavScenes';
 import {useUserStore} from '@app/foundation/state/StaterinoProvider';
 
 export default function HomeScene() {
@@ -36,6 +36,12 @@ function AuthenticatedBottomNavigation() {
       unfocusedIcon: 'view-list-outline',
     },
     {key: 'browse', title: 'Browse...', focusedIcon: 'search-web'},
+    {
+      key: 'settings',
+      title: 'Settings',
+      focusedIcon: 'cog',
+      unfocusedIcon: 'cog-outline',
+    },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
@@ -43,6 +49,7 @@ function AuthenticatedBottomNavigation() {
     browse: Browse,
     lists: MDLists,
     library: Library,
+    settings: Settings,
   });
 
   return (
