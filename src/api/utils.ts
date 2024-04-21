@@ -64,6 +64,24 @@ export function usePostRequest<T, Body = any>(
   return useAxiosRequest<T, Body>(options);
 }
 
+export function useDeleteRequest<T, Body = any>(
+  hookUrl?: string,
+  params?: SimpleRequestParams<Body>,
+) {
+  const options = Object.assign(
+    {
+      hookUrl,
+      method: AxiosRequestType.Delete,
+      refreshSession: true,
+      forceRefresh: true,
+      throwIfRefreshFails: true,
+    },
+    params,
+  );
+
+  return useAxiosRequest<T, Body>(options);
+}
+
 export function useFetch<T, Body = any>(
   params: RequestParams<Body>,
   init?: RequestInit,

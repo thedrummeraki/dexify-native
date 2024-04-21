@@ -14,21 +14,25 @@ import {sharedStyles, spacing} from '@app/utils/styles';
 import {Caption, Text, TouchableRipple, useTheme} from 'react-native-paper';
 import {Image, StyleSheet, View} from 'react-native';
 import {useDexifyNavigation} from '@app/foundation/navigation';
+import {useStore} from '@app/foundation/state/StaterinoProvider';
 
 export interface MDListPreviewProps {
+  selected?: boolean;
   mdList: CustomList;
   manga: Manga | null;
+  onPress?(mdList: CustomList): void;
 }
 
-export function MDListPreview({mdList, manga}: MDListPreviewProps) {
+export function MDListPreview({
+  selected,
+  mdList,
+  manga,
+  onPress,
+}: MDListPreviewProps) {
+  const styles = useStyles();
   const navigation = useDexifyNavigation();
-  const titlesCount = findRelationships(mdList, 'manga').length;
-  const titlesCountText =
-    titlesCount === 0
-      ? 'No titles'
-      : titlesCount === 1
-      ? '1 title'
-      : `${titlesCount} titles`;
+
+  const titlesCountText = useMDTitlesCount(mdList);
 
   const theme = useTheme();
   const mangaCoverArt = manga
@@ -45,17 +49,26 @@ export function MDListPreview({mdList, manga}: MDListPreviewProps) {
   const blurRadius =
     manga?.attributes.contentRating === ContentRating.pornographic ? 8 : 0;
 
+  const handleOnPress = () => {
+    if (onPress) {
+      onPress(mdList);
+    } else {
+      navigation.push('ShowCustomList', mdList);
+    }
+  };
+
   return (
     <TouchableRipple
       borderless
       style={sharedStyles.roundBorders}
-      onPress={() => navigation.push('ShowCustomList', mdList)}>
+      onPress={handleOnPress}>
       <View
         style={[
           styles.root,
           {
             backgroundColor: theme.colors.surfaceDisabled,
           },
+          [selected && styles.selected],
         ]}>
         <Image
           source={{uri: coverUri}}
@@ -64,8 +77,12 @@ export function MDListPreview({mdList, manga}: MDListPreviewProps) {
         />
         <View style={styles.contentsRoot}>
           <View style={styles.contentsContainer}>
-            <Text>{mdList.attributes.name}</Text>
-            <Caption>{titlesCountText}</Caption>
+            <Text style={[selected && styles.selectedText]}>
+              {mdList.attributes.name}
+            </Text>
+            <Caption style={[selected && styles.selectedText]}>
+              {titlesCountText}
+            </Caption>
           </View>
         </View>
       </View>
@@ -73,26 +90,48 @@ export function MDListPreview({mdList, manga}: MDListPreviewProps) {
   );
 }
 
-const borderRadiusMultiplier = 3;
+export function useMDTitlesCount(mdList: CustomList) {
+  const mdListMappings = useStore(state => state.mdLists.data);
+  const mdListIds = Object.values(mdListMappings).flat();
+  const titlesCount = mdListIds.filter(id => id === mdList.id).length;
+  const titlesCountText =
+    titlesCount === 0
+      ? 'No titles'
+      : titlesCount === 1
+      ? '1 title'
+      : `${titlesCount} titles`;
 
-const styles = StyleSheet.create({
-  root: {
-    ...sharedStyles.roundBorders,
-    flexDirection: 'row',
-    gap: spacing(2),
-  },
-  image: {
-    flex: 1,
-    aspectRatio: 1,
-    borderTopLeftRadius: sharedStyles.roundBorders.borderRadius,
-    borderBottomLeftRadius: sharedStyles.roundBorders.borderRadius,
-  },
-  contentsRoot: {
-    flex: 5,
-  },
-  contentsContainer: {
-    flex: 1,
+  return titlesCountText;
+}
 
-    justifyContent: 'center',
-  },
-});
+function useStyles() {
+  const theme = useTheme();
+  const styles = StyleSheet.create({
+    root: {
+      ...sharedStyles.roundBorders,
+      flexDirection: 'row',
+      gap: spacing(2),
+    },
+    image: {
+      flex: 1,
+      aspectRatio: 1,
+      borderTopLeftRadius: sharedStyles.roundBorders.borderRadius,
+      borderBottomLeftRadius: sharedStyles.roundBorders.borderRadius,
+    },
+    selected: {
+      backgroundColor: theme.colors.primary,
+    },
+    selectedText: {
+      color: theme.colors.onPrimary,
+    },
+    contentsRoot: {
+      flex: 5,
+    },
+    contentsContainer: {
+      flex: 1,
+
+      justifyContent: 'center',
+    },
+  });
+  return styles;
+}

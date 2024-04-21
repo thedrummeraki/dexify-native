@@ -19,6 +19,7 @@ export type RootStackParamList = {
   // ShowChapter: {id: string; jumpToPage?: number};
   ShowArtist: AuthorArtistParams & {allowHentai?: boolean};
   ShowMangaLibraryModal: MangaParams;
+  ShowMangaMDListsModal: MangaParams;
   // ShowScanlationGroup: {id: string; allowHentai?: boolean};
   // ShowMangaList: {
   //   title?: string;

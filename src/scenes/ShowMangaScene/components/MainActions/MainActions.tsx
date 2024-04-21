@@ -9,20 +9,25 @@ import {readingStatusName} from '@app/scenes/HomeScene/bottomNavScenes/Library/L
 
 export default function MainActions() {
   const navigation = useDexifyNavigation();
-  const [library, user] = useStore([
+  const [library, mdLists, user] = useStore([
     state => state.library.data,
+    state => state.mdLists.data,
     state => state.user.user,
   ]);
   const {manga} = useMangaDetails();
 
   const readingStatus = library.statuses[manga.id];
+  const addedToList = (mdLists[manga.id] || []).length > 0;
 
   return (
     <View style={styles.root}>
       <View style={styles.minor}>
         <AuthGuard
-          onPress={() => navigation.push('ShowMangaLibraryModal', manga)}>
-          <IconButton mode="contained" icon="bookmark-outline" />
+          onPress={() => navigation.push('ShowMangaMDListsModal', manga)}>
+          <IconButton
+            mode={addedToList ? 'contained' : 'contained-tonal'}
+            icon={addedToList ? 'bookmark-check' : 'bookmark-outline'}
+          />
         </AuthGuard>
         {/* <IconButton */}
         {/*   mode="contained-tonal" */}
@@ -32,7 +37,7 @@ export default function MainActions() {
       <View style={styles.major}>
         <Button
           disabled={!user}
-          mode="contained"
+          mode={readingStatus ? 'contained' : 'outlined'}
           icon={readingStatus ? 'check' : undefined}
           onPress={() => navigation.push('ShowMangaLibraryModal', manga)}>
           {readingStatus

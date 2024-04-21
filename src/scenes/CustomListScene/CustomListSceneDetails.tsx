@@ -1,6 +1,7 @@
 import {ContentRating, CustomList} from '@app/api/mangadex/types';
 import {findRelationships} from '@app/api/mangadex/utils';
 import {MangaSearchCollection, SceneContainer} from '@app/components';
+import {useMDTitlesCount} from '../HomeScene/bottomNavScenes/MDLists/MDListPreview';
 
 export interface CustomListSceneDetailsProps {
   customList: CustomList;
@@ -12,8 +13,7 @@ export default function CustomListSceneDetails({
   const mangaRelationships = findRelationships(customList, 'manga');
   const mangaIds = mangaRelationships.map(relationship => relationship.id);
 
-  const subtitle =
-    mangaIds.length === 1 ? '1 title' : `${mangaIds.length} titles`;
+  const subtitle = useMDTitlesCount(customList);
 
   return (
     <SceneContainer title={customList.attributes.name} subtitle={subtitle}>

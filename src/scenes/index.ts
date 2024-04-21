@@ -6,5 +6,6 @@ export {default as ShowMangaVolumeScene} from './ShowMangaVolumeScene';
 export {default as FiltersScene} from './FiltersScene';
 export {default as ShowMangaDetailsModalScene} from './ShowMangaDetailsModalScene';
 export {default as ShowMangaLibraryModalScene} from './ShowMangaLibraryModalScene';
+export {default as ShowMangaMDListsModalScene} from './ShowMangaMDListsModalScene';
 export {default as AuthorArtistScene} from './AuthorArtistScene';
 export {default as CustomListScene} from './CustomListScene';

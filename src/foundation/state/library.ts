@@ -1,8 +1,18 @@
-import {AllReadingStatusResponse} from '@app/api/mangadex/types';
+import {AllReadingStatusResponse, CustomList} from '@app/api/mangadex/types';
+
+export interface TransformedMdLists {
+  [key: string]: string[] | undefined;
+}
 
 export interface LibraryStore {
   loading: boolean;
   data: AllReadingStatusResponse;
+}
+
+export interface MDListsStore {
+  loading: boolean;
+  data: TransformedMdLists;
+  raw: CustomList[];
 }
 
 export const defaultLibraryStore: LibraryStore = {
@@ -10,4 +20,10 @@ export const defaultLibraryStore: LibraryStore = {
   data: {
     statuses: {},
   },
+};
+
+export const defaultMDListsStore: MDListsStore = {
+  loading: false,
+  data: {},
+  raw: [],
 };
