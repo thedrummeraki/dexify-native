@@ -1,7 +1,7 @@
 import {Text, useTheme} from 'react-native-paper';
 import {useManga} from './MangaProvider';
 import {preferredMangaDescription} from '@app/api/mangadex/utils';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import TextBadge from '@app/components/TextBadge';
 import {Platform, View} from 'react-native';
 import {spacing} from '@app/utils/styles';
@@ -14,6 +14,8 @@ export default function Description({numberOfLines = 3}: DescriptionProps) {
   const manga = useManga();
   const theme = useTheme();
 
+  const initialized = useRef(false);
+
   const [shouldShowMore, setShouldShowMore] = useState(false);
   const [lines, setLines] = useState(-1);
   const [visibleNumberOfLines, setVisibleNumberOfLines] = useState<
@@ -23,7 +25,7 @@ export default function Description({numberOfLines = 3}: DescriptionProps) {
 
   useEffect(() => {
     if (showingMore) {
-      setVisibleNumberOfLines(undefined);
+      setVisibleNumberOfLines(Platform.OS === 'ios' ? undefined : lines);
     } else {
       setVisibleNumberOfLines(numberOfLines);
     }
@@ -35,10 +37,14 @@ export default function Description({numberOfLines = 3}: DescriptionProps) {
         numberOfLines={visibleNumberOfLines}
         style={{color: theme.colors.outline}}
         onTextLayout={e => {
+          if (initialized.current) {
+            return;
+          }
           const linesCount = e.nativeEvent.lines.length;
           setVisibleNumberOfLines(numberOfLines);
           setLines(linesCount);
           setShouldShowMore(linesCount > numberOfLines);
+          initialized.current = true;
         }}>
         {preferredMangaDescription(manga)}
       </Text>

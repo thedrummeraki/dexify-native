@@ -9,7 +9,8 @@ import {useEffect, useState} from 'react';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import ChaptersList from './components/ChaptersList';
 import {useMangadexPagination} from '@app/api/mangadex/hooks';
-import {Linking} from 'react-native';
+import {FlatList, Linking, View} from 'react-native';
+import {sharedStyles} from '@app/utils/styles';
 
 export type GroupedChapters = Map<string | null, Chapter[]>;
 
@@ -61,35 +62,39 @@ export default function ShowMangaVolumeScene() {
       title={volumeInfoTitle(volumeInfo)}
       subtitle={preferredMangaTitle(manga)}
       headerIcon="arrow-left">
-      <ChaptersList
-        chapters={chapters}
-        groupedChapters={groupedChapters}
-        onChapterPress={chapter => {
-          if (chapter.attributes.externalUrl) {
-            Linking.openURL(chapter.attributes.externalUrl).catch(console.warn);
-          } else {
-            // temporary open on mangadex directly until manga reader is open
-            const mangadexChapterUrl = `https://mangadex.org/chapter/${chapter.id}`;
-            Linking.openURL(mangadexChapterUrl).catch(console.warn);
+      <View style={{flex: 4}}>
+        <ChaptersList
+          chapters={chapters}
+          groupedChapters={groupedChapters}
+          onChapterPress={chapter => {
+            if (chapter.attributes.externalUrl) {
+              Linking.openURL(chapter.attributes.externalUrl).catch(
+                console.warn,
+              );
+            } else {
+              // temporary open on mangadex directly until manga reader is open
+              const mangadexChapterUrl = `https://mangadex.org/chapter/${chapter.id}`;
+              Linking.openURL(mangadexChapterUrl).catch(console.warn);
+            }
+          }}
+          // onEndReached={() => nextPage()}
+          ListHeaderComponent={
+            <>
+              <VolumePoster
+                volumeInfo={volumeInfo}
+                manga={manga}
+                aspectRatio={1.5}
+              />
+              {loading && <ProgressBar indeterminate />}
+            </>
           }
-        }}
-        // onEndReached={() => nextPage()}
-        ListHeaderComponent={
-          <Padding spacing={0}>
-            <VolumePoster
-              volumeInfo={volumeInfo}
-              manga={manga}
-              aspectRatio={1.5}
-            />
-            {loading && <ProgressBar indeterminate />}
-          </Padding>
-        }
-        ListEmptyComponent={
-          loading || !chapterIds ? null : (
-            <Banner visible>No chapters were found for this volume.</Banner>
-          )
-        }
-      />
+          ListEmptyComponent={
+            loading || !chapterIds ? null : (
+              <Banner visible>No chapters were found for this volume.</Banner>
+            )
+          }
+        />
+      </View>
     </SceneContainer>
   );
 }

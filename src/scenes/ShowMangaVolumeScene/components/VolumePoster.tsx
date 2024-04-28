@@ -3,6 +3,7 @@ import {CoverSize, coverImage, findRelationship} from '@app/api/mangadex/utils';
 import {VolumeInfo} from '@app/scenes/ShowMangaScene/components/Volumes/VolumesContainer';
 import {sharedStyles} from '@app/utils/styles';
 import {Image, View} from 'react-native';
+import { Surface } from 'react-native-paper';
 
 export interface VolumePosterProps {
   volumeInfo: VolumeInfo;
@@ -24,5 +25,5 @@ export default function VolumePoster({
     />
   ) : null;
 
-  return <View style={[sharedStyles.flex]}>{coverArtMarkup}</View>;
+  return <Surface style={[sharedStyles.flex]}>{coverArtMarkup}</Surface>;
 }

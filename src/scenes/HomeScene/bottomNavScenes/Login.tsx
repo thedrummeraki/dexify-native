@@ -68,7 +68,11 @@ export default function Login() {
         ]}>
         <Surface
           elevation={4}
-          style={[sharedStyles.container, sharedStyles.roundBorders]}>
+          style={[
+            sharedStyles.container,
+            sharedStyles.roundBorders,
+            {paddingVertical: spacing(16), paddingHorizontal: spacing(4)},
+          ]}>
           <View
             style={[
               {
@@ -100,6 +104,7 @@ export default function Login() {
             secureTextEntry
             mode="outlined"
             textContentType="password"
+            autoCapitalize="none"
             passwordRules="required"
             keyboardType="default"
             autoComplete="password"
