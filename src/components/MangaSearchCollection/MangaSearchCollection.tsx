@@ -59,7 +59,7 @@ export function MangaSearchCollection({
   }, [title, filters, useFilters, override]);
 
   const options = useMemo(
-    () => ({...params, limit: 50, offset}),
+    () => ({limit: 50, offset, ...params}),
     [params, offset],
   );
 

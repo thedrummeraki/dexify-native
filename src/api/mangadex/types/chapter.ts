@@ -21,3 +21,5 @@ export interface ChapterAttributes {
   publishAt: string;
   readableAt: string;
 }
+
+export type GroupedChapters = Map<string | null, Chapter[]>;

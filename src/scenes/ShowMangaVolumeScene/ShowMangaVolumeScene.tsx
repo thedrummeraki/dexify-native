@@ -1,18 +1,19 @@
-import {preferredMangaTitle, volumeInfoTitle} from '@app/api/mangadex/utils';
-import {Padding, PaddingHorizontal, SceneContainer} from '@app/components';
+import {
+  groupChapters,
+  preferredMangaTitle,
+  volumeInfoTitle,
+} from '@app/api/mangadex/utils';
+import {SceneContainer} from '@app/components';
 import {useShowMangaVolumeRoute} from '@app/foundation/navigation';
-import {Banner, ProgressBar, Text} from 'react-native-paper';
+import {Banner, ProgressBar} from 'react-native-paper';
 import {VolumePoster} from './components';
 import {useLazyGetRequest} from '@app/api/utils';
 import {Chapter, PagedResultsList, isSuccess} from '@app/api/mangadex/types';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import ChaptersList from './components/ChaptersList';
 import {useMangadexPagination} from '@app/api/mangadex/hooks';
-import {FlatList, Linking, View} from 'react-native';
-import {sharedStyles} from '@app/utils/styles';
-
-export type GroupedChapters = Map<string | null, Chapter[]>;
+import {View} from 'react-native';
 
 export default function ShowMangaVolumeScene() {
   const route = useShowMangaVolumeRoute();
@@ -23,20 +24,13 @@ export default function ShowMangaVolumeScene() {
   } = manga;
   const {chapterIds} = volumeInfo;
 
-  const {offset, limit, nextPage} = useMangadexPagination([]);
+  const {offset, limit} = useMangadexPagination([]);
 
   const [fetchChapters, {loading}] =
     useLazyGetRequest<PagedResultsList<Chapter>>();
 
   const [chapters, setChapters] = useState<Chapter[]>([]);
-
-  const groupedChapters: GroupedChapters = chapters.reduce((map, chapter) => {
-    map.set(chapter.attributes.chapter, [
-      ...(map.get(chapter.attributes.chapter) || []),
-      chapter,
-    ]);
-    return map;
-  }, new Map());
+  const groupedChapters = groupChapters(chapters);
 
   useEffect(() => {
     // if (offset + limit < chapterIds.length) {
@@ -55,6 +49,7 @@ export default function ShowMangaVolumeScene() {
         setChapters(current => [...current, ...res.data]);
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapterIds, contentRating, offset, limit]);
 
   return (
@@ -64,19 +59,7 @@ export default function ShowMangaVolumeScene() {
       headerIcon="arrow-left">
       <View style={{flex: 4}}>
         <ChaptersList
-          chapters={chapters}
           groupedChapters={groupedChapters}
-          onChapterPress={chapter => {
-            if (chapter.attributes.externalUrl) {
-              Linking.openURL(chapter.attributes.externalUrl).catch(
-                console.warn,
-              );
-            } else {
-              // temporary open on mangadex directly until manga reader is open
-              const mangadexChapterUrl = `https://mangadex.org/chapter/${chapter.id}`;
-              Linking.openURL(mangadexChapterUrl).catch(console.warn);
-            }
-          }}
           // onEndReached={() => nextPage()}
           ListHeaderComponent={
             <>

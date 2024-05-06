@@ -1,6 +1,6 @@
-import { spacing as computeSpacing } from '@app/utils/styles';
-import { PropsWithChildren } from 'react';
-import { View, ViewProps } from 'react-native';
+import {spacing as computeSpacing} from '@app/utils/styles';
+import React, {PropsWithChildren} from 'react';
+import {View, ViewProps} from 'react-native';
 
 export type PaddingHorizontalProps = PropsWithChildren<{
   spacing?: number;
@@ -10,14 +10,18 @@ export type PaddingHorizontalProps = PropsWithChildren<{
 export default function PaddingHorizontal({
   spacing = 1,
   children,
+  style,
   ...viewProps
 }: PaddingHorizontalProps) {
-  const style = Object.assign(viewProps.style || {}, {
-    paddingHorizontal: computeSpacing(spacing),
-  });
+  const overridenStyle = Object.assign(
+    {
+      paddingHorizontal: computeSpacing(spacing),
+    },
+    style,
+  );
 
   return (
-    <View style={style} {...viewProps}>
+    <View style={overridenStyle} {...viewProps}>
       {children}
     </View>
   );

@@ -4,7 +4,7 @@ import {Surface, Text, TouchableRipple, useTheme} from 'react-native-paper';
 import {Image, StyleSheet, View} from 'react-native';
 import {VolumeInfo} from '.';
 import {useManga} from '../../MangaProvider';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 export interface VolumeGridItemProps {
   volumeInfo: VolumeInfo;

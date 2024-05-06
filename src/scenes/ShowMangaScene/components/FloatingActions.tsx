@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import {FAB, PaperProvider, Portal} from 'react-native-paper';
+import React, {useState} from 'react';
+import {FAB, Portal} from 'react-native-paper';
 
 export default function FloatingActions() {
   const [open, setOpen] = useState(false);

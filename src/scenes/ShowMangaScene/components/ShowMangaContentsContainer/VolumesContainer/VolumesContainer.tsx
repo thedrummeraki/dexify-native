@@ -1,9 +1,8 @@
-import {Chapter, CoverArt} from '@app/api/mangadex/types';
-import {Banner, Text, TouchableRipple} from 'react-native-paper';
-import {FlatList, FlatListProps, Image, StyleSheet, View} from 'react-native';
+import React, {ComponentProps} from 'react';
+import {CoverArt} from '@app/api/mangadex/types';
+import {Text} from 'react-native-paper';
+import {FlatList, View} from 'react-native';
 import {useDimensions} from '@app/utils';
-import {ComponentProps} from 'react';
-import {CoverSize, coverImage, findRelationship} from '@app/api/mangadex/utils';
 import {useManga} from '../../MangaProvider';
 import {spacing} from '@app/utils/styles';
 import VolumeGridItem from './VolumeGridItem';
@@ -52,7 +51,7 @@ export default function VolumesContainer({
 
 function VolumesList({
   volumeInfoList,
-  onVolumePress,
+  // onVolumePress,
   ...flatListProps
 }: InternalVolumeContainerProps) {
   return (

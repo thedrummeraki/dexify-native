@@ -4,15 +4,10 @@ import {
   CustomList,
   Manga,
 } from '@app/api/mangadex/types';
-import {
-  CoverSize,
-  coverImage,
-  findRelationship,
-  findRelationships,
-} from '@app/api/mangadex/utils';
+import {CoverSize, coverImage, findRelationship} from '@app/api/mangadex/utils';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import {Caption, Text, TouchableRipple, useTheme} from 'react-native-paper';
-import {Image, StyleSheet, View} from 'react-native';
+import React, {Image, StyleSheet, View} from 'react-native';
 import {useDexifyNavigation} from '@app/foundation/navigation';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
 

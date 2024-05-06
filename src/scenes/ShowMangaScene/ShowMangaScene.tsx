@@ -1,3 +1,4 @@
+import React from 'react';
 import {useShowMangaRoute} from '@app/foundation/navigation';
 import ShowMangaSceneDetails from './ShowMangaSceneDetails';
 import {Text} from 'react-native';

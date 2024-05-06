@@ -1,9 +1,10 @@
-import {VolumeInfo} from '@app/scenes/ShowMangaScene/components/Volumes/VolumesContainer';
 import {
   Artist,
   Author,
   Chapter,
+  ContentRating,
   CoverArt,
+  GroupedChapters,
   Manga,
   MangaRelationshipType,
   PossibleRelationship,
@@ -11,6 +12,7 @@ import {
   Relationship,
   Title,
 } from './types';
+import {useStore} from '@app/foundation/state/StaterinoProvider';
 
 export enum CoverSize {
   Original = '',
@@ -228,4 +230,24 @@ export function mangaRelationships(manga: Manga) {
 
 function isMangaRelation(value: Relationship): value is Relationship<Manga> {
   return value.type === 'manga';
+}
+
+export function groupChapters(chapters: Chapter[]): GroupedChapters {
+  const groupedChapters = chapters.reduce((map, chapter) => {
+    map.set(chapter.attributes.chapter, [
+      ...(map.get(chapter.attributes.chapter) || []),
+      chapter,
+    ]);
+    return map;
+  }, new Map());
+
+  return groupedChapters;
+}
+
+export function useContentRating(): ContentRating[] | undefined {
+  const user = useStore(state => state.user.user);
+  if (user) {
+    return Object.values(ContentRating);
+  }
+  return undefined;
 }

@@ -1,5 +1,5 @@
 import {Artist, Author, CustomList, Manga} from '@app/api/mangadex/types';
-import {VolumeInfo} from '@app/scenes/ShowMangaScene/components/Volumes/VolumesContainer';
+import {VolumeInfo} from '@app/scenes/ShowMangaScene/components/ShowMangaContentsContainer/VolumesContainer';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 

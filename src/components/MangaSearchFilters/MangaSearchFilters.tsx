@@ -51,14 +51,6 @@ export default function MangaSearchFilters({
     return values;
   }, [user]);
 
-  // const useStore = useMemo(() => {
-  //   return staterino({
-  //     hooks: {useLayoutEffect, useReducer},
-  //     merge,
-  //     state,
-  //   });
-  // }, [state]);
-
   const [fields, set] = useReducer(
     (a: typeof state, p: MultipleTopLevelPatch<typeof state>) => merge(a, p),
     state,
@@ -68,8 +60,6 @@ export default function MangaSearchFilters({
   const {
     colors: {background: backgroundColor},
   } = useTheme();
-
-  // const {set} = useStore;
 
   const onContentFieldChange = useCallback(
     (contentRating: ContentRating[]) => {

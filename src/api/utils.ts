@@ -109,14 +109,14 @@ export function useFetch<T, Body = any>(
         const headers: RequestInit = {};
         if (params.requireSession) {
           if (token && isSessionValid(token.session)) {
-            headers['headers'] = {
+            headers.headers = {
               Authorization: `Bearer ${token.session.value}`,
             };
           }
         }
         if (body) {
-          headers['headers'] = {
-            ...headers['headers'],
+          headers.headers = {
+            ...headers.headers,
             'Content-Type': 'application/json',
             Accept: 'application/json',
           };
@@ -132,13 +132,12 @@ export function useFetch<T, Body = any>(
         }
         setStatus(ResponseStatus.Pending);
 
-        const data = (await response.json()) as T;
+        const dataAsJson = (await response.json()) as T;
         setStatus(ResponseStatus.Successful);
-        console.log({data});
-        setData(data);
-        return data;
-      } catch (error) {
-        setError(error);
+        setData(dataAsJson);
+        return dataAsJson;
+      } catch (e) {
+        setError(e);
         setStatus(ResponseStatus.Error);
       } finally {
         setLoading(false);
@@ -146,6 +145,7 @@ export function useFetch<T, Body = any>(
 
       return data;
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [init, JSON.stringify(params)],
   );
 
@@ -278,6 +278,7 @@ export function useAxiosRequest<T, Body = any>(
         setLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [params, token, set, user],
   );
 

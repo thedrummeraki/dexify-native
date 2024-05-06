@@ -1,4 +1,5 @@
 import {
+  Chapter,
   CoverArt,
   Manga,
   PagedResultsList,
@@ -15,6 +16,10 @@ export type MangaProviderProps = PropsWithChildren<{
 interface MangaProviderState {
   manga: Manga;
   coverArts: CoverArt[];
+  chapters: Chapter[];
+  stats: Manga.StatisticsResponse;
+  statsLoading: boolean;
+  chaptersLoading: boolean;
   aggregate: Manga.Aggregate;
   aggregateLoading: boolean;
 }
@@ -42,9 +47,37 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
     result: 'ok',
     volumes: {},
   });
+  const [stats, setStats] = useState<Manga.StatisticsResponse>({
+    result: 'ok',
+    statistics: {},
+  });
+  const [chapters, setChapters] = useState<Chapter[]>([]);
+
+  const [getStats, {loading: statsLoading}] =
+    useLazyGetRequest<Manga.StatisticsResponse>(
+      UrlBuilder.mangaStatistics(manga.id),
+    );
+
+  useEffect(() => {
+    getStats().then(res => {
+      if (res) {
+        setStats(res);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [manga.id]);
 
   const [getCovers] = useLazyGetRequest<PagedResultsList<CoverArt>>(
     UrlBuilder.covers({manga: [manga.id], limit: 100}),
+  );
+
+  const [getChapters, {loading: chaptersLoading}] = useLazyGetRequest<
+    PagedResultsList<Chapter>
+  >(
+    UrlBuilder.chaptersFeed(manga, {
+      contentRating: [manga.attributes.contentRating],
+      order: {chapter: 'asc'},
+    }),
   );
 
   useEffect(() => {
@@ -53,6 +86,12 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
         setCoverArts(data.data);
       }
     });
+    getChapters().then(data => {
+      if (isSuccess(data)) {
+        setChapters(data.data);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [getVolumesAndChapters, {loading: aggregateLoading}] =
@@ -61,16 +100,26 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
     );
 
   useEffect(() => {
-    getVolumesAndChapters().then(aggregate => {
-      if (aggregate) {
-        setAggregate(aggregate);
+    getVolumesAndChapters().then(res => {
+      if (res) {
+        setAggregate(res);
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manga.id]);
 
   return (
     <MangaContext.Provider
-      value={{manga, coverArts, aggregate, aggregateLoading}}>
+      value={{
+        manga,
+        coverArts,
+        aggregate,
+        aggregateLoading,
+        chapters,
+        chaptersLoading,
+        stats,
+        statsLoading,
+      }}>
       {children}
     </MangaContext.Provider>
   );

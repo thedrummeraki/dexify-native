@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Manga, ReadingStatus} from '@app/api/mangadex/types';
-import {FlatList, Image, StyleSheet, View} from 'react-native';
+import {Manga} from '@app/api/mangadex/types';
+import {FlatList, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import SimpleMangaThumbnail from '../SimpleMangaThumbnail';
 import {spacing} from '@app/utils/styles';
@@ -78,7 +78,11 @@ export function MangaCollection({
       onEndReachedThreshold={1}
       ListEmptyComponent={
         <View style={styles.emptyStateRoot}>
-          <Text>{loading ? 'Please wait...' : 'No manga was found.'}</Text>
+          <Text>
+            {loading
+              ? 'Please wait...'
+              : 'No manga was found with the current filters.'}
+          </Text>
         </View>
       }
       renderItem={({item}) => (

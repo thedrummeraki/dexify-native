@@ -102,6 +102,25 @@ export default class UrlBuilder {
     return this.buildUrl('/chapter', Object.assign(defaultValues, params));
   }
 
+  public static chaptersFeed(
+    {id}: {id: string},
+    params?: Partial<ChapterRequestParams>,
+  ) {
+    const defaultValues: Partial<ChapterRequestParams> = {
+      contentRating: [
+        ContentRating.safe,
+        ContentRating.suggestive,
+        ContentRating.erotica,
+      ],
+      includes: ['manga', 'scanlation_group'],
+    };
+
+    return this.buildUrl(
+      `/manga/${id}/feed`,
+      Object.assign(defaultValues, params),
+    );
+  }
+
   public static mangaReadMarkers(id: string) {
     return this.buildUrl(`/manga/${id}/read`);
   }

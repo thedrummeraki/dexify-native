@@ -1,9 +1,12 @@
+import React from 'react';
 import {Manga} from '@app/api/mangadex/types';
 import {
+  findRelationships,
   preferredMangaTitle,
   secondaryMangaTitle,
+  useContentRating,
 } from '@app/api/mangadex/utils';
-import {PaddingHorizontal} from '@app/components';
+import {MangaSearchCollection, PaddingHorizontal} from '@app/components';
 import {SafeAreaView, View} from 'react-native';
 import {
   AuthorsArtists,
@@ -16,8 +19,8 @@ import {
 } from './components';
 import MangaProvider from './components/MangaProvider';
 import {Text} from 'react-native-paper';
-import {sharedStyles, spacing} from '@app/utils/styles';
-import FloatingActions from './components/FloatingActions';
+import {spacing} from '@app/utils/styles';
+// import FloatingActions from './components/FloatingActions';
 
 export interface ShowMangaSceneDetailsProps {
   manga: Manga;
@@ -27,6 +30,10 @@ export default function ShowMangaSceneDetails({
   manga,
 }: ShowMangaSceneDetailsProps) {
   const secondaryTitle = secondaryMangaTitle(manga);
+  const relatedMangaIds = findRelationships(manga, 'manga').map(
+    relationship => relationship.id,
+  );
+  const contentRating = useContentRating();
 
   const VolumesListHeaderComponent = (
     <View style={{marginHorizontal: spacing(-2), gap: spacing(3)}}>
@@ -45,13 +52,31 @@ export default function ShowMangaSceneDetails({
     </View>
   );
 
+  // const VolumesListFooterComponent = (
+  //   <View style={{marginTop: spacing(4), gap: spacing(3)}}>
+  //     {relatedMangaIds.length ? (
+  //       <>
+  //         <Text variant="titleLarge">Related manga</Text>
+  //         <MangaSearchCollection
+  //           hidePreview
+  //           hideSearchbar
+  //           override={{ids: relatedMangaIds, contentRating, limit: 6}}
+  //         />
+  //       </>
+  //     ) : null}
+  //   </View>
+  // );
+
   return (
     <SafeAreaView>
       <MangaProvider manga={manga}>
-        <Volumes ListHeaderComponent={VolumesListHeaderComponent} />
-        <View style={sharedStyles.flex}>
+        <Volumes
+          ListHeaderComponent={VolumesListHeaderComponent}
+          // ListFooterComponent={VolumesListFooterComponent}
+        />
+        {/* <View style={sharedStyles.flex}>
           <FloatingActions />
-        </View>
+        </View> */}
       </MangaProvider>
     </SafeAreaView>
   );

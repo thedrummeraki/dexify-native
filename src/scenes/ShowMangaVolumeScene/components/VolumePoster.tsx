@@ -1,9 +1,9 @@
 import {CoverArt, Manga} from '@app/api/mangadex/types';
 import {CoverSize, coverImage, findRelationship} from '@app/api/mangadex/utils';
-import {VolumeInfo} from '@app/scenes/ShowMangaScene/components/Volumes/VolumesContainer';
+import {VolumeInfo} from '@app/scenes/ShowMangaScene/components/ShowMangaContentsContainer/VolumesContainer';
 import {sharedStyles} from '@app/utils/styles';
 import {Image, View} from 'react-native';
-import { Surface } from 'react-native-paper';
+import {Surface} from 'react-native-paper';
 
 export interface VolumePosterProps {
   volumeInfo: VolumeInfo;
