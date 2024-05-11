@@ -1,6 +1,6 @@
 import {useDexifyNavigation} from '@app/foundation/navigation';
-import {sharedStyles, spacing} from '@app/utils/styles';
-import {PropsWithChildren} from 'react';
+import {spacing} from '@app/utils/styles';
+import React, {PropsWithChildren} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {Appbar, Caption, IconButton, Text, useTheme} from 'react-native-paper';
 
@@ -51,7 +51,7 @@ function Header({
     <Appbar.Header
       elevated
       theme={theme}
-      style={[styles.header, {borderBottomColor: theme.colors.primary}]}>
+      style={[styles.header, {backgroundColor: theme.colors.backdrop}]}>
       <View style={styles.headerLeft}>
         <IconButton icon={headerIcon} onPress={handleBackPress} />
         {title ? (

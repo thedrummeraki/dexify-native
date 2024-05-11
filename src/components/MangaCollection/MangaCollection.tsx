@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Manga} from '@app/api/mangadex/types';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {FlatList, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import SimpleMangaThumbnail from '../SimpleMangaThumbnail';
 import {spacing} from '@app/utils/styles';
@@ -14,6 +14,7 @@ export interface Props {
   loading?: boolean;
   numColumns?: number;
   hideThumbnailInfo?: VisibleThumbnailInfo[];
+  contentContainerStyle?: StyleProp<ViewStyle>;
   onMangaPress?(manga: Manga): void;
   onEndReached?(): void;
 }
@@ -23,6 +24,7 @@ export function MangaCollection({
   loading,
   numColumns = 2,
   hideThumbnailInfo,
+  contentContainerStyle,
   onMangaPress,
   onEndReached,
 }: Props) {
@@ -71,7 +73,10 @@ export function MangaCollection({
     <FlatList
       data={mangaList}
       numColumns={numColumns}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={Object.assign(
+        {...styles.contentContainer},
+        contentContainerStyle,
+      )}
       columnWrapperStyle={styles.columnWrapper}
       style={styles.root}
       onEndReached={onEndReached}
@@ -103,8 +108,8 @@ export function MangaCollection({
 }
 
 const styles = StyleSheet.create({
-  contentContainer: {paddingHorizontal: 8, gap: 8},
-  columnWrapper: {gap: 8, marginBottom: spacing(1)},
+  contentContainer: {paddingHorizontal: spacing(2), gap: spacing(2)},
+  columnWrapper: {gap: spacing(2), marginBottom: spacing(1)},
   root: {flex: 1},
   emptyStateRoot: {flex: 1, alignItems: 'center'},
 });

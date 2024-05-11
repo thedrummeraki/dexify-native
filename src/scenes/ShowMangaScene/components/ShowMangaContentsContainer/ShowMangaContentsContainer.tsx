@@ -12,7 +12,7 @@ import {spacing} from '@app/utils/styles';
 import {useDexifyNavigation} from '@app/foundation/navigation';
 import ChaptersList from '@app/scenes/ShowMangaVolumeScene/components/ChaptersList';
 import {groupChapters} from '@app/api/mangadex/utils';
-import {useFlag, useVariant} from '@unleash/proxy-client-react';
+import {useFlag} from '@unleash/proxy-client-react';
 
 export type VolumesProps = VolumesContainerFlatListProps;
 
@@ -56,7 +56,7 @@ export default function ShowMangaContentsContainer(props: VolumesProps) {
     [data],
   );
 
-  const OriginalListHeaderComponent = useMemo(() => props.ListHeaderComponent);
+  // const OriginalListHeaderComponent = useMemo(() => props.ListHeaderComponent);
 
   const groupedChapters = useMemo(() => {
     return groupChapters(chapters);
@@ -89,7 +89,7 @@ export default function ShowMangaContentsContainer(props: VolumesProps) {
 
   const ListHeaderComponent = (
     <>
-      {OriginalListHeaderComponent}
+      {props.ListHeaderComponent}
 
       {/* <FlatList
         horizontal

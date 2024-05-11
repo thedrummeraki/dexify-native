@@ -25,8 +25,6 @@ export default function UnleashProvider({children}: PropsWithChildren<{}>) {
     context,
   };
 
-  console.log({unleash: config});
-
   return (
     <FlagProvider config={config}>
       <UserWatchProvider>{children}</UserWatchProvider>
@@ -45,6 +43,7 @@ function UserWatchProvider({children}: PropsWithChildren<{}>) {
         updateContext({userId: username});
       },
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>{children}</>;

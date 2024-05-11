@@ -1,10 +1,10 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {ContentRating, CustomList} from '@app/api/mangadex/types';
 import {findRelationships} from '@app/api/mangadex/utils';
 import {MangaSearchCollection, SceneContainer} from '@app/components';
 import {useMDTitlesCount} from '../HomeScene/bottomNavScenes/MDLists/MDListPreview';
-import {useDexifyNavigation} from '@app/foundation/navigation';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
+import {spacing} from '@app/utils/styles';
 
 export interface CustomListSceneDetailsProps {
   customList: CustomList;
@@ -26,6 +26,7 @@ export default function CustomListSceneDetails({
   return (
     <SceneContainer title={customList.attributes.name} subtitle={subtitle}>
       <MangaSearchCollection
+        contentContainerStyle={{paddingTop: spacing(2)}}
         hideSearchbar
         override={{ids: mangaIds, contentRating: Object.values(ContentRating)}}
         requireIds

@@ -5,7 +5,6 @@ import React from 'react';
 import {FlatList, SafeAreaView, View} from 'react-native';
 import {ProgressBar, Text} from 'react-native-paper';
 import {MDListPreview} from './MDListPreview';
-import {PaddingHorizontal} from '@app/components';
 
 export interface MDListsDetailsProps {
   hideTitle?: boolean;
@@ -39,8 +38,8 @@ export default function MDListsDetails({
         renderItem={({item}) => {
           const mangaId = findRelationship(item, 'manga')?.id;
           const manga = mangaId
-            ? mangas.find(manga => {
-                return manga.id === mangaId;
+            ? mangas.find(currentManga => {
+                return currentManga.id === mangaId;
               }) || null
             : null;
           return (

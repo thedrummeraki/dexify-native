@@ -1,4 +1,4 @@
-import {Button, RadioButton, Text} from 'react-native-paper';
+import {Button, Text} from 'react-native-paper';
 import {
   CoverSize,
   mangaImage,
@@ -10,10 +10,10 @@ import {
   Manga,
   ReadingStatus,
 } from '@app/api/mangadex/types';
-import {PaddingHorizontal, SceneContainer} from '@app/components';
+import {SceneContainer} from '@app/components';
 import {Image, StyleSheet, View} from 'react-native';
 import {readingStatusName} from './HomeScene/bottomNavScenes/Library/Library';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {usePostRequest} from '@app/api/utils';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
@@ -38,7 +38,7 @@ export default function ShowMangaLibraryModalScene() {
       },
     );
     // manga.id not needed here as we know that it's available at this point.
-  }, []);
+  }, [manga.id, subscribe]);
 
   const [post] = usePostRequest<BasicResultsResponse | undefined>(undefined, {
     requireSession: true,
@@ -59,51 +59,50 @@ export default function ShowMangaLibraryModalScene() {
         });
       }
     });
-  }, [readingStatus, manga.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [readingStatus, manga.id, set]);
 
   return (
     <SceneContainer canScroll title="Add to library...">
-      <PaddingHorizontal spacing={2}>
-        <View style={styles.root}>
-          <Image
-            source={{uri: mangaImage(manga, {size: CoverSize.Small})}}
-            style={{height: 150, width: 100}}
-          />
-          <Text>{preferredMangaTitle(manga)}</Text>
+      <View style={[styles.root, sharedStyles.container]}>
+        <Image
+          source={{uri: mangaImage(manga, {size: CoverSize.Small})}}
+          style={{height: 150, width: 100}}
+        />
+        <Text>{preferredMangaTitle(manga)}</Text>
+        <Button
+          mode={readingStatus ? 'outlined' : 'contained'}
+          onPress={() => setReadingStatus(null)}>
+          Not tracking this title
+        </Button>
+        {Object.values(ReadingStatus).map(availableReadingStatus => (
           <Button
-            mode={readingStatus ? 'outlined' : 'contained'}
-            onPress={() => setReadingStatus(null)}>
-            Not tracking this title
+            key={availableReadingStatus}
+            mode={
+              availableReadingStatus === readingStatus
+                ? 'contained'
+                : 'outlined'
+            }
+            onPress={() => setReadingStatus(availableReadingStatus)}>
+            {readingStatusName(availableReadingStatus)}
           </Button>
-          {Object.values(ReadingStatus).map(availableReadingStatus => (
-            <Button
-              key={availableReadingStatus}
-              mode={
-                availableReadingStatus === readingStatus
-                  ? 'contained'
-                  : 'outlined'
-              }
-              onPress={() => setReadingStatus(availableReadingStatus)}>
-              {readingStatusName(availableReadingStatus)}
-            </Button>
-          ))}
-        </View>
+        ))}
+      </View>
 
-        {/* <RadioButton.Group */}
-        {/*   value={readingStatus || ''} */}
-        {/*   onValueChange={value => setReadingStatus(value as ReadingStatus)}> */}
-        {/*   <View> */}
-        {/*     <Text>- Not added to library -</Text> */}
-        {/*     <RadioButton value="" /> */}
-        {/*   </View> */}
-        {/*   {Object.values(ReadingStatus).map(readingStatus => ( */}
-        {/*     <View key={readingStatus} style={{flexDirection: 'row'}}> */}
-        {/*       <Text>{readingStatusName(readingStatus)}</Text> */}
-        {/*       <RadioButton value={readingStatus} /> */}
-        {/*     </View> */}
-        {/*   ))} */}
-        {/* </RadioButton.Group> */}
-      </PaddingHorizontal>
+      {/* <RadioButton.Group */}
+      {/*   value={readingStatus || ''} */}
+      {/*   onValueChange={value => setReadingStatus(value as ReadingStatus)}> */}
+      {/*   <View> */}
+      {/*     <Text>- Not added to library -</Text> */}
+      {/*     <RadioButton value="" /> */}
+      {/*   </View> */}
+      {/*   {Object.values(ReadingStatus).map(readingStatus => ( */}
+      {/*     <View key={readingStatus} style={{flexDirection: 'row'}}> */}
+      {/*       <Text>{readingStatusName(readingStatus)}</Text> */}
+      {/*       <RadioButton value={readingStatus} /> */}
+      {/*     </View> */}
+      {/*   ))} */}
+      {/* </RadioButton.Group> */}
     </SceneContainer>
   );
 }

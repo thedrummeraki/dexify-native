@@ -30,10 +30,10 @@ export default function ShowMangaSceneDetails({
   manga,
 }: ShowMangaSceneDetailsProps) {
   const secondaryTitle = secondaryMangaTitle(manga);
-  const relatedMangaIds = findRelationships(manga, 'manga').map(
-    relationship => relationship.id,
-  );
-  const contentRating = useContentRating();
+  // const relatedMangaIds = findRelationships(manga, 'manga').map(
+  //   relationship => relationship.id,
+  // );
+  // const contentRating = useContentRating();
 
   const VolumesListHeaderComponent = (
     <View style={{marginHorizontal: spacing(-2), gap: spacing(3)}}>

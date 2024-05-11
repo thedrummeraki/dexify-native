@@ -15,7 +15,7 @@ import {useDexifyNavigation} from '@app/foundation/navigation';
 import {useLazyGetRequest} from '@app/api/utils';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import {FiltersPreview} from './components';
-import {View} from 'react-native';
+import {StyleProp, View, ViewStyle} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
 import {useDimensions} from '@app/utils';
 import {VisibleThumbnailInfo} from '../SimpleMangaThumbnail/SimpleMangaThumbnail';
@@ -28,6 +28,7 @@ export interface MangaSearchCollectionProps {
   searchBarPlaceholder?: string;
   override?: MangaRequestParams;
   requireIds?: boolean;
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 export function MangaSearchCollection({
@@ -38,6 +39,7 @@ export function MangaSearchCollection({
   searchBarPlaceholder,
   override,
   requireIds,
+  contentContainerStyle,
 }: MangaSearchCollectionProps) {
   const navigation = useDexifyNavigation();
   const {width} = useDimensions();
@@ -125,6 +127,7 @@ export function MangaSearchCollection({
         mangaList={mangaList}
         loading={loading}
         numColumns={numColumns}
+        contentContainerStyle={contentContainerStyle}
         onMangaPress={manga => navigation.push('ShowManga', {...manga})}
         onEndReached={() => {
           if (!loading && hasMore) {

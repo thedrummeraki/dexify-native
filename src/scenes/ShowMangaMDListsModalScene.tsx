@@ -1,19 +1,9 @@
-import {
-  BasicResultsResponse,
-  CustomList,
-  Manga,
-  PagedResultsList,
-  isSuccess,
-} from '@app/api/mangadex/types';
+import {BasicResultsResponse, CustomList, Manga} from '@app/api/mangadex/types';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
-import {
-  useDeleteRequest,
-  useLazyGetRequest,
-  usePostRequest,
-} from '@app/api/utils';
+import {useDeleteRequest, usePostRequest} from '@app/api/utils';
 import {SceneContainer} from '@app/components';
 import {useShowMangaDetailsModalRoute} from '@app/foundation/navigation';
-import {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import MDListsDetails from './HomeScene/bottomNavScenes/MDLists/MDListsDetails';
 import {sharedStyles} from '@app/utils/styles';
 import {View} from 'react-native';
