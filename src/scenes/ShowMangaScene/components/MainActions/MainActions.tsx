@@ -1,3 +1,4 @@
+import React from 'react';
 import AuthGuard from '@app/components/AuthGuard';
 import {spacing} from '@app/utils/styles';
 import {StyleSheet, View} from 'react-native';

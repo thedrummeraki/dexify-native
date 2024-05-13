@@ -1,17 +1,27 @@
 import React from 'react';
 import {ContentRating, Manga, ReadingStatus} from '@app/api/mangadex/types';
-import {Image, StyleSheet, View} from 'react-native';
-import {Text, TouchableRipple, useTheme} from 'react-native-paper';
+import {
+  Image,
+  ImageStyle,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
+import {Caption, Text, TouchableRipple, useTheme} from 'react-native-paper';
 import {mangaImage, preferredMangaTitle} from '@app/api/mangadex/utils';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import {readingStatusName} from '@app/scenes/HomeScene/bottomNavScenes/Library/Library';
 
 export interface SimpleMangaThumbnailProps {
   manga: Manga;
+  subtitle?: string;
   selected?: boolean;
   hideExplicitBlur?: boolean;
   hideThumbnailInfo?: VisibleThumbnailInfo[];
   info?: ThumbnailInfo;
+  style?: ViewStyle;
+  imageStyle?: StyleProp<ImageStyle>;
   onPress?(manga: Manga): void;
   onLongPress?(manga: Manga): void;
 }
@@ -24,10 +34,13 @@ export interface ThumbnailInfo {
 
 export function SimpleMangaThumbnail({
   manga,
+  subtitle,
   selected,
   hideExplicitBlur,
   hideThumbnailInfo,
   info,
+  style,
+  imageStyle,
   onPress,
   onLongPress,
 }: SimpleMangaThumbnailProps) {
@@ -48,7 +61,7 @@ export function SimpleMangaThumbnail({
   const {readingStatus} = info || {};
 
   return (
-    <View style={{gap: spacing(1)}}>
+    <View style={Object.assign({...(style || {})}, {gap: spacing(1)})}>
       <TouchableRipple
         borderless
         style={sharedStyles.roundBorders}
@@ -66,31 +79,37 @@ export function SimpleMangaThumbnail({
           </View>
           <Image
             source={{uri: mangaImage(manga)}}
-            style={[
-              sharedStyles.flex,
-              sharedStyles.roundBorders,
-              {
-                aspectRatio: 0.7,
-                opacity: selected ? 0.8 : 1,
-                borderColor: primary,
-                borderWidth: spacing(selected ? 1 : 0),
-                backgroundColor: surfaceVariant,
-              },
-            ]}
+            style={
+              imageStyle
+                ? imageStyle
+                : [
+                    sharedStyles.flex,
+                    sharedStyles.roundBorders,
+                    selected && styles.selected,
+                    styles.image,
+                    {
+                      borderColor: primary,
+                      borderWidth: spacing(selected ? 1 : 0),
+                      backgroundColor: surfaceVariant,
+                    },
+                  ]
+            }
             blurRadius={blurRadius}
           />
         </View>
       </TouchableRipple>
-      <Text variant="bodyMedium" numberOfLines={1}>
-        {preferredMangaTitle(manga)}
-      </Text>
+      <View style={sharedStyles.titleCaptionContainer}>
+        <Text variant="bodyMedium" numberOfLines={1}>
+          {preferredMangaTitle(manga)}
+        </Text>
+        {subtitle ? <Caption numberOfLines={1}>{subtitle}</Caption> : null}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: sharedStyles.flex,
-  image: {opacity: 0.5},
   container: {position: 'absolute', bottom: 6, left: 6, right: 6},
   info: {
     flexDirection: 'row',
@@ -103,5 +122,11 @@ const styles = StyleSheet.create({
   infoItem: {
     // borderRadius: sharedStyles.roundBorders.borderRadius / 2,
     paddingHorizontal: spacing(0.5),
+  },
+  image: {
+    aspectRatio: 0.7,
+  },
+  selected: {
+    opacity: 0.8,
   },
 });

@@ -1,6 +1,8 @@
 import {useEffect} from 'react';
 import {Dimensions, Platform, StatusBar} from 'react-native';
 
+import {NativeModules} from 'react-native';
+
 /**
  * A debounced function, for useEffect.
  *
@@ -49,5 +51,47 @@ export function usePlatformName() {
       return 'macOS';
     case 'web':
       return 'web';
+  }
+}
+
+export function getDeviceLocale(): string {
+  if (Platform.OS === 'ios') {
+    return (
+      NativeModules.SettingsManager.settings.AppleLocale ||
+      NativeModules.SettingsManager.settings.AppleLanguages[0]
+    );
+  } else if (Platform.OS === 'android') {
+    return NativeModules.I18nManager.localeIdentifier;
+  }
+
+  // return en by default
+  return 'en';
+}
+
+export function getDeviceMangadexFriendlyLanguage(): string {
+  return getDeviceLocale().split('_')[0];
+}
+
+export function timeDifference(current: Date, previous: Date): string {
+  const msPerMinute = 60 * 1000;
+  const msPerHour = msPerMinute * 60;
+  const msPerDay = msPerHour * 24;
+  const msPerMonth = msPerDay * 30;
+  const msPerYear = msPerDay * 365;
+
+  const elapsed = current.getTime() - previous.getTime();
+
+  if (elapsed < msPerMinute) {
+    return Math.round(elapsed / 1000) + ' seconds ago';
+  } else if (elapsed < msPerHour) {
+    return Math.round(elapsed / msPerMinute) + ' minutes ago';
+  } else if (elapsed < msPerDay) {
+    return Math.round(elapsed / msPerHour) + ' hours ago';
+  } else if (elapsed < msPerMonth) {
+    return '~' + Math.round(elapsed / msPerDay) + ' days ago';
+  } else if (elapsed < msPerYear) {
+    return '~' + Math.round(elapsed / msPerMonth) + ' months ago';
+  } else {
+    return '~' + Math.round(elapsed / msPerYear) + ' years ago';
   }
 }

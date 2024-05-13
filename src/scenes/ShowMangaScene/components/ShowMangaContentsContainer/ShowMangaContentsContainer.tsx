@@ -112,23 +112,23 @@ export default function ShowMangaContentsContainer(props: VolumesProps) {
           );
         }}
       /> */}
-      <PaddingHorizontal>
+      {/* <PaddingHorizontal>
         <View style={styles.header}>
           <View style={styles.headerPrimary}>
             <Text variant="titleMedium" style={styles.temporaryHeaderText}>
               {visibleContentInfo(currentVisibleContent).name}
             </Text>
           </View>
-          {/* <ViewSelector
+          <ViewSelector
             options={[
               {icon: 'format-list-bulleted', value: VolumeView.List},
               {icon: 'grid-large', value: VolumeView.Grid},
             ]}
             value={volumeView}
             onValueChange={() => {}}
-          /> */}
+          />
         </View>
-      </PaddingHorizontal>
+      </PaddingHorizontal> */}
       {loading && <ProgressBar indeterminate />}
     </>
   );
@@ -172,31 +172,31 @@ export default function ShowMangaContentsContainer(props: VolumesProps) {
   }
 }
 
-function visibleContentInfo(visibleContent: VisibleContent) {
-  switch (visibleContent) {
-    case VisibleContent.Chapters:
-      return {icon: 'format-list-bulleted', name: 'Chapters'};
-    case VisibleContent.Volumes:
-      return {icon: 'view-list', name: 'Volumes'};
-    case VisibleContent.Art:
-      return {icon: 'palette', name: 'Art'};
-    case VisibleContent.Related:
-      return {icon: 'information-variant', name: 'Related'};
-  }
-}
+// function visibleContentInfo(visibleContent: VisibleContent) {
+//   switch (visibleContent) {
+//     case VisibleContent.Chapters:
+//       return {icon: 'format-list-bulleted', name: 'Chapters'};
+//     case VisibleContent.Volumes:
+//       return {icon: 'view-list', name: 'Volumes'};
+//     case VisibleContent.Art:
+//       return {icon: 'palette', name: 'Art'};
+//     case VisibleContent.Related:
+//       return {icon: 'information-variant', name: 'Related'};
+//   }
+// }
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing(1),
-  },
-  headerPrimary: {
-    flexDirection: 'row',
-    flexGrow: 1,
-  },
-  temporaryHeaderText: {
-    paddingVertical: spacing(2),
-  },
-  container: {flex: 1},
-});
+// const styles = StyleSheet.create({
+//   header: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     gap: spacing(1),
+//   },
+//   headerPrimary: {
+//     flexDirection: 'row',
+//     flexGrow: 1,
+//   },
+//   temporaryHeaderText: {
+//     paddingVertical: spacing(2),
+//   },
+//   container: {flex: 1},
+// });

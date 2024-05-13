@@ -1,8 +1,9 @@
 import {Chapter, GroupedChapters} from '@app/api/mangadex/types';
-import React, {ComponentProps} from 'react';
-import {FlatList, Linking} from 'react-native';
+import React, {ComponentProps, useState} from 'react';
+import {FlatList, Linking, View} from 'react-native';
 import ChaptersListItem from './ChapterListItem';
 import {spacing} from '@app/utils/styles';
+import {SearchBar} from '@app/components';
 
 export type ChaptersListProps = {
   groupedChapters: GroupedChapters;
@@ -17,6 +18,8 @@ export default function ChaptersList({
   // onChapterPress,
   ...flatListProps
 }: ChaptersListProps) {
+  const [query, setQuery] = useState('');
+
   const chapterEntries = [...groupedChapters.entries()];
   const onChapterPress = (chapter: Chapter) => {
     if (chapter.attributes.externalUrl) {
@@ -27,6 +30,20 @@ export default function ChaptersList({
       Linking.openURL(mangadexChapterUrl).catch(console.warn);
     }
   };
+
+  const ListHeaderComponent = (
+    <>
+      {flatListProps.ListHeaderComponent}
+      <View style={{marginHorizontal: spacing(-2)}}>
+        <SearchBar
+          onQueryChange={setQuery}
+          query={query}
+          // onShowFilters={() => {}}
+          placeholder="Filter chapters by title..."
+        />
+      </View>
+    </>
+  );
 
   return (
     <FlatList
@@ -42,6 +59,7 @@ export default function ChaptersList({
         padding: spacing(2),
       }}
       {...flatListProps}
+      ListHeaderComponent={ListHeaderComponent}
     />
   );
 }

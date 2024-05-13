@@ -98,6 +98,7 @@ export type CoverRequestParams = Partial<{
   manga: string[];
   ids: string[];
   uploaders: string[];
+  locales: string[];
   order: Order<'createdAt' | 'updatedAt' | 'volume'>;
   includes: string[];
   limit: number;

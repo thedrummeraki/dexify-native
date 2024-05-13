@@ -1,17 +1,12 @@
 import {Chapter, ScanlationGroup} from '@app/api/mangadex/types';
-import {
-  Caption,
-  IconButton,
-  Text,
-  TouchableRipple,
-  useTheme,
-} from 'react-native-paper';
+import {IconButton, Text, TouchableRipple, useTheme} from 'react-native-paper';
 import {StyleSheet, View, ViewStyle} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
 import {findRelationship, preferredChapterTitle} from '@app/api/mangadex/utils';
 import {spacing} from '@app/utils/styles';
-import {PropsWithChildren, useState} from 'react';
+import React, {PropsWithChildren, useState} from 'react';
 import TextBadge from '@app/components/TextBadge';
+import {timeDifference} from '@app/utils';
 
 interface ChaptersListItemProps {
   chapters: Chapter[];
@@ -94,6 +89,9 @@ function ChaptersListItemPreview({
     return null;
   }
 
+  const publishedDate = new Date(chapter.attributes.publishAt);
+  const timeAgo = timeDifference(new Date(), publishedDate);
+
   return (
     <Wrapper child={child}>
       <TouchableRipple
@@ -106,7 +104,9 @@ function ChaptersListItemPreview({
             <View style={styles.tagsContainer}>
               <TextBadge
                 icon="translate"
-                content={chapter.attributes.translatedLanguage.toLocaleUpperCase()}></TextBadge>
+                content={chapter.attributes.translatedLanguage.toLocaleUpperCase()}
+              />
+              <TextBadge icon="clock-outline" content={timeAgo} />
               {group ? (
                 <TextBadge
                   icon="account"

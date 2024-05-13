@@ -1,5 +1,7 @@
 import {
   Artist,
+  AtHomeResponse,
+  AtHomeSuccessResponse,
   Author,
   CoverArt,
   Manga,
@@ -107,8 +109,8 @@ export type Order<K extends keyof any> = {
 };
 
 export function isSuccess<T>(
-  result: PagedResultsList<T> | undefined,
-): result is SuccessPagedResults<T> {
+  result: PagedResultsList<T> | AtHomeResponse | undefined,
+): result is SuccessPagedResults<T> | AtHomeSuccessResponse {
   return result !== undefined && result.result === 'ok';
 }
 

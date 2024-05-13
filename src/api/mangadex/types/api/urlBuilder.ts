@@ -121,6 +121,10 @@ export default class UrlBuilder {
     );
   }
 
+  public static getAtHomeServer(chapterId: string) {
+    return this.buildUrl(`/at-home/server/${chapterId}`);
+  }
+
   public static mangaReadMarkers(id: string) {
     return this.buildUrl(`/manga/${id}/read`);
   }

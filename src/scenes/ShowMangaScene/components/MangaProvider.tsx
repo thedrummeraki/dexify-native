@@ -1,5 +1,6 @@
 import {
   Chapter,
+  ChapterRequestParams,
   CoverArt,
   Manga,
   PagedResultsList,
@@ -7,6 +8,7 @@ import {
 } from '@app/api/mangadex/types';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import {useLazyGetRequest} from '@app/api/utils';
+import {getDeviceMangadexFriendlyLanguage} from '@app/utils';
 import React, {PropsWithChildren, useContext, useEffect, useState} from 'react';
 
 export type MangaProviderProps = PropsWithChildren<{
@@ -17,9 +19,11 @@ interface MangaProviderState {
   manga: Manga;
   coverArts: CoverArt[];
   chapters: Chapter[];
+  chaptersData: PagedResultsList<Chapter> | undefined;
   stats: Manga.StatisticsResponse;
   statsLoading: boolean;
   chaptersLoading: boolean;
+  chaptersOrder: 'asc' | 'desc';
   aggregate: Manga.Aggregate;
   aggregateLoading: boolean;
 }
@@ -52,6 +56,7 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
     statistics: {},
   });
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const chaptersOrder = 'desc';
 
   const [getStats, {loading: statsLoading}] =
     useLazyGetRequest<Manga.StatisticsResponse>(
@@ -68,17 +73,15 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
   }, [manga.id]);
 
   const [getCovers] = useLazyGetRequest<PagedResultsList<CoverArt>>(
-    UrlBuilder.covers({manga: [manga.id], limit: 100}),
-  );
-
-  const [getChapters, {loading: chaptersLoading}] = useLazyGetRequest<
-    PagedResultsList<Chapter>
-  >(
-    UrlBuilder.chaptersFeed(manga, {
-      contentRating: [manga.attributes.contentRating],
-      order: {chapter: 'asc'},
+    UrlBuilder.covers({
+      manga: [manga.id],
+      limit: 100,
+      order: {volume: 'asc'},
     }),
   );
+
+  const [getChapters, {data: chaptersData, loading: chaptersLoading}] =
+    useLazyGetRequest<PagedResultsList<Chapter>>(undefined);
 
   useEffect(() => {
     getCovers().then(data => {
@@ -86,9 +89,33 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
         setCoverArts(data.data);
       }
     });
-    getChapters().then(data => {
+    getChapters(
+      UrlBuilder.chaptersFeed(manga, {
+        contentRating: [manga.attributes.contentRating],
+        translatedLanguage: [
+          getDeviceMangadexFriendlyLanguage(),
+          // manga.attributes.originalLanguage,
+        ],
+        order: {chapter: chaptersOrder},
+      }),
+    ).then(data => {
       if (isSuccess(data)) {
-        setChapters(data.data);
+        if (data.data.length === 0) {
+          // then try to fetch for all other languages
+          console.log('fetching more chapters in all languages...');
+          getChapters(
+            UrlBuilder.chaptersFeed(manga, {
+              contentRating: [manga.attributes.contentRating],
+              order: {chapter: chaptersOrder},
+            }),
+          ).then(newData => {
+            if (isSuccess(newData)) {
+              setChapters(newData.data);
+            }
+          });
+        } else {
+          setChapters(data.data);
+        }
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -116,6 +143,8 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
         aggregate,
         aggregateLoading,
         chapters,
+        chaptersData,
+        chaptersOrder,
         chaptersLoading,
         stats,
         statsLoading,

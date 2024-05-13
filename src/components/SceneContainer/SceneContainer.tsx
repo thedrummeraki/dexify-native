@@ -1,5 +1,5 @@
 import {useDexifyNavigation} from '@app/foundation/navigation';
-import {spacing} from '@app/utils/styles';
+import {sharedStyles, spacing} from '@app/utils/styles';
 import React, {PropsWithChildren} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {Appbar, Caption, IconButton, Text, useTheme} from 'react-native-paper';
@@ -51,11 +51,16 @@ function Header({
     <Appbar.Header
       elevated
       theme={theme}
-      style={[styles.header, {backgroundColor: theme.colors.backdrop}]}>
+      style={[styles.header, {backgroundColor: theme.colors.surface}]}>
       <View style={styles.headerLeft}>
         <IconButton icon={headerIcon} onPress={handleBackPress} />
         {title ? (
-          <View style={styles.headerTitleContainer}>
+          <View
+            style={[
+              sharedStyles.container,
+              sharedStyles.titleCaptionContainer,
+              styles.headerTitleContainer,
+            ]}>
             <Text numberOfLines={1} variant="titleMedium">
               {title}
             </Text>
@@ -80,10 +85,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'transparent',
+    gap: spacing(0.5),
   },
   headerTitleContainer: {
     flexDirection: 'column',
-    gap: spacing(-1.5),
   },
   headerRight: {flexShrink: 1, flexDirection: 'row-reverse'},
   container: {flex: 1},

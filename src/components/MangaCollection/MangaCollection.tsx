@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Manga} from '@app/api/mangadex/types';
+import {Artist, Author, Manga} from '@app/api/mangadex/types';
 import {FlatList, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import SimpleMangaThumbnail from '../SimpleMangaThumbnail';
 import {spacing} from '@app/utils/styles';
 import {useSubscribedLibrary} from '@app/providers/LibraryProvider';
 import {VisibleThumbnailInfo} from '../SimpleMangaThumbnail/SimpleMangaThumbnail';
+import {findRelationship} from '@app/api/mangadex/utils';
 
 type ViewMode = 'view' | 'select';
 
@@ -90,18 +91,26 @@ export function MangaCollection({
           </Text>
         </View>
       }
-      renderItem={({item}) => (
-        <View style={{flex: 1 / numColumns}}>
-          <SimpleMangaThumbnail
-            selected={selectedMangaIds.includes(item.id)}
-            manga={item}
-            onPress={handleMangaPress}
-            onLongPress={handleMangaSelection}
-            hideThumbnailInfo={hideThumbnailInfo}
-            info={{readingStatus: library.statuses[item.id]}}
-          />
-        </View>
-      )}
+      renderItem={({item}) => {
+        const by =
+          findRelationship<Author>(item, 'author') ||
+          findRelationship<Artist>(item, 'artist');
+        const byName = by?.attributes.name;
+
+        return (
+          <View style={{flex: 1 / numColumns}}>
+            <SimpleMangaThumbnail
+              selected={selectedMangaIds.includes(item.id)}
+              manga={item}
+              subtitle={byName}
+              onPress={handleMangaPress}
+              onLongPress={handleMangaSelection}
+              hideThumbnailInfo={hideThumbnailInfo}
+              info={{readingStatus: library.statuses[item.id]}}
+            />
+          </View>
+        );
+      }}
       keyExtractor={item => item.id}
     />
   );

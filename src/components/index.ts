@@ -8,6 +8,7 @@ export {default as SceneContainer} from './SceneContainer';
 export {default as ViewSelector} from './ViewSelector';
 export {default as TextBadge} from './TextBadge';
 export {default as ContentRating} from './ContentRatingTextBadge';
+export {default as ItemsSection} from './ItemsSection';
 
 export {default as Padding} from './Padding';
 export {default as PaddingHorizontal} from './PaddingHorizontal';

@@ -1,3 +1,4 @@
+import React from 'react';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
 import {isSessionValid} from '@app/foundation/state/user';
 import {PropsWithChildren, useCallback} from 'react';
@@ -14,7 +15,7 @@ export type AuthGuardProps = PropsWithChildren<BaseAuthGuardProps>;
 export default function AuthGuard({
   hideUnlessLoggedIn,
   onPress,
-  onLongPress,
+  // onLongPress,
   children,
 }: AuthGuardProps) {
   const {get} = useStore;
