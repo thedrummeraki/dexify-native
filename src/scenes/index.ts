@@ -2,8 +2,10 @@ export {default as Browse} from './Browse';
 export {default as HomeScene} from './HomeScene';
 export {default as ShowMangaScene} from './ShowMangaScene';
 export {default as ShowMangaVolumeScene} from './ShowMangaVolumeScene';
+export {default as ShowMangaChaptersScene} from './ShowMangaChaptersScene';
 
 export {default as FiltersScene} from './FiltersScene';
+export {default as ChapterFiltersScene} from './ChapterFiltersScene';
 export {default as ShowMangaDetailsModalScene} from './ShowMangaDetailsModalScene';
 export {default as ShowMangaLibraryModalScene} from './ShowMangaLibraryModalScene';
 export {default as ShowMangaMDListsModalScene} from './ShowMangaMDListsModalScene';

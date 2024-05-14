@@ -2,6 +2,7 @@ export {Root} from './Root';
 export {default as MangaCollection} from './MangaCollection';
 export {default as MangaSearchCollection} from './MangaSearchCollection';
 export {default as MangaSearchFilters} from './MangaSearchFilters';
+export {default as ChapterSearchFilters} from './ChapterSearchFilters';
 export {default as SearchBar} from './SearchBar';
 export {default as SimpleMangaThumbnail} from './SimpleMangaThumbnail';
 export {default as SceneContainer} from './SceneContainer';

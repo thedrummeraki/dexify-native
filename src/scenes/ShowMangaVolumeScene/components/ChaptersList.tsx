@@ -7,6 +7,7 @@ import {SearchBar} from '@app/components';
 
 export type ChaptersListProps = {
   groupedChapters: GroupedChapters;
+  hideSearchBar?: boolean;
   // onChapterPress(chapter: Chapter): void;
 } & Omit<
   ComponentProps<typeof FlatList<[string | null, Chapter[]]>>,
@@ -15,6 +16,7 @@ export type ChaptersListProps = {
 
 export default function ChaptersList({
   groupedChapters,
+  hideSearchBar,
   // onChapterPress,
   ...flatListProps
 }: ChaptersListProps) {
@@ -34,14 +36,16 @@ export default function ChaptersList({
   const ListHeaderComponent = (
     <>
       {flatListProps.ListHeaderComponent}
-      <View style={{marginHorizontal: spacing(-2)}}>
-        <SearchBar
-          onQueryChange={setQuery}
-          query={query}
-          // onShowFilters={() => {}}
-          placeholder="Filter chapters by title..."
-        />
-      </View>
+      {!hideSearchBar ? (
+        <View style={{marginHorizontal: spacing(-2)}}>
+          <SearchBar
+            onQueryChange={setQuery}
+            query={query}
+            // onShowFilters={() => {}}
+            placeholder="Filter chapters by title..."
+          />
+        </View>
+      ) : null}
     </>
   );
 
@@ -54,10 +58,10 @@ export default function ChaptersList({
           onPress={chapter => onChapterPress(chapter)}
         />
       )}
-      contentContainerStyle={{
-        gap: spacing(1),
-        padding: spacing(2),
-      }}
+      // contentContainerStyle={{
+      //   gap: spacing(1),
+      //   padding: spacing(2),
+      // }}
       {...flatListProps}
       ListHeaderComponent={ListHeaderComponent}
     />

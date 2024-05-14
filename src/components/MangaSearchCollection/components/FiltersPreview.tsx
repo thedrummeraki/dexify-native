@@ -5,6 +5,7 @@ import {sanitizeFilters} from '@app/foundation/state/filters';
 import {
   ContentRating,
   MangaRequestParams,
+  MangaStatus,
   PublicationDemographic,
 } from '@app/api/mangadex/types';
 import {ScrollView, StyleSheet} from 'react-native';
@@ -13,6 +14,7 @@ import {useTags} from '@app/providers/TagsProvider';
 import {preferredTagName} from '@app/api/mangadex/utils';
 import {contentRatingHumanReadable} from '@app/components/MangaSearchFilters/components/ContentRatingField';
 import {publicationDemographicsHumanReadableValue} from '@app/components/MangaSearchFilters/components/PublicationDemographicsField';
+import {mangaStatusHumanReadable} from '@app/components/MangaSearchFilters/components/MangaStatusField';
 
 type PreviewableParams = Pick<
   MangaRequestParams,
@@ -22,6 +24,7 @@ type PreviewableParams = Pick<
   | 'publicationDemographic'
   | 'artists'
   | 'authors'
+  | 'status'
 >;
 
 type ValueOf<T> = T[keyof T];
@@ -35,6 +38,7 @@ const previewableParamsKeys: PreviewableParamsKey[] = [
   'publicationDemographic',
   'artists',
   'artists',
+  'status',
 ];
 
 type PreviewableParamsNamesMap = {
@@ -48,6 +52,7 @@ const previewableParamsNamesMap: PreviewableParamsNamesMap = {
   publicationDemographic: 'Demographics',
   artists: 'Artists',
   authors: 'Authors',
+  status: 'Publication status',
 };
 
 export default function FiltersPreview() {
@@ -124,6 +129,9 @@ function useHumanReadableValues(
       return publicationDemographics
         .map(publicationDemographicsHumanReadableValue)
         .join(', ');
+    case 'status':
+      const status = value as MangaStatus[];
+      return status.map(mangaStatusHumanReadable).join(', ');
     default:
       return String(value);
   }

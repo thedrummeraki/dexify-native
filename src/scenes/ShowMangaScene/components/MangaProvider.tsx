@@ -1,6 +1,5 @@
 import {
   Chapter,
-  ChapterRequestParams,
   CoverArt,
   Manga,
   PagedResultsList,
@@ -8,7 +7,9 @@ import {
 } from '@app/api/mangadex/types';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import {useLazyGetRequest} from '@app/api/utils';
-import {getDeviceMangadexFriendlyLanguage} from '@app/utils';
+import {useStore} from '@app/foundation/state/StaterinoProvider';
+import {ChapterFiltersParamsState} from '@app/foundation/state/filters';
+import {sanitizeOptions} from '@app/scenes/ShowMangaChaptersScene/ShowMangaChaptersSceneDetails';
 import React, {PropsWithChildren, useContext, useEffect, useState} from 'react';
 
 export type MangaProviderProps = PropsWithChildren<{
@@ -56,7 +57,6 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
     statistics: {},
   });
   const [chapters, setChapters] = useState<Chapter[]>([]);
-  const chaptersOrder = 'desc';
 
   const [getStats, {loading: statsLoading}] =
     useLazyGetRequest<Manga.StatisticsResponse>(
@@ -80,8 +80,12 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
     }),
   );
 
+  const [chapterParams, chaptersOrder] = useStore(state => [
+    state.chapterFilters.params,
+    state.chapterFilters.sort.order.chapter || 'desc',
+  ]);
   const [getChapters, {data: chaptersData, loading: chaptersLoading}] =
-    useLazyGetRequest<PagedResultsList<Chapter>>(undefined);
+    useLazyGetRequest<PagedResultsList<Chapter>>();
 
   useEffect(() => {
     getCovers().then(data => {
@@ -90,36 +94,40 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
       }
     });
     getChapters(
-      UrlBuilder.chaptersFeed(manga, {
-        contentRating: [manga.attributes.contentRating],
-        translatedLanguage: [
-          getDeviceMangadexFriendlyLanguage(),
-          // manga.attributes.originalLanguage,
-        ],
-        order: {chapter: chaptersOrder},
-      }),
+      UrlBuilder.chaptersFeed(
+        manga,
+        sanitizeOptions(
+          {
+            contentRating: [manga.attributes.contentRating],
+            order: {chapter: chaptersOrder},
+            ...chapterParams,
+          } as Required<ChapterFiltersParamsState>,
+          manga,
+        ),
+      ),
     ).then(data => {
       if (isSuccess(data)) {
-        if (data.data.length === 0) {
-          // then try to fetch for all other languages
-          console.log('fetching more chapters in all languages...');
-          getChapters(
-            UrlBuilder.chaptersFeed(manga, {
-              contentRating: [manga.attributes.contentRating],
-              order: {chapter: chaptersOrder},
-            }),
-          ).then(newData => {
-            if (isSuccess(newData)) {
-              setChapters(newData.data);
-            }
-          });
-        } else {
-          setChapters(data.data);
-        }
+        setChapters(data.data);
+        // if (data.data.length === 0) {
+        //   // then try to fetch for all other languages
+        //   console.log('fetching more chapters in all languages...');
+        //   getChapters(
+        //     UrlBuilder.chaptersFeed(manga, {
+        //       contentRating: [manga.attributes.contentRating],
+        //       order: {chapter: chaptersOrder},
+        //     }),
+        //   ).then(newData => {
+        //     if (isSuccess(newData)) {
+        //       setChapters(newData.data);
+        //     }
+        //   });
+        // } else {
+        //   setChapters(data.data);
+        // }
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [chapterParams, chaptersOrder]);
 
   const [getVolumesAndChapters, {loading: aggregateLoading}] =
     useLazyGetRequest<Manga.Aggregate>(

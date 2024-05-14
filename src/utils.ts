@@ -95,3 +95,28 @@ export function timeDifference(current: Date, previous: Date): string {
     return '~' + Math.round(elapsed / msPerYear) + ' years ago';
   }
 }
+
+export function mergeLists<T extends {id: string}>(
+  current: T[],
+  newList: T[],
+): T[] {
+  const mergedItems = [...current, ...newList];
+  const result: T[] = [];
+  const addedIds: string[] = [];
+
+  mergedItems.forEach(item => {
+    if (!addedIds.includes(item.id)) {
+      result.push(item);
+      addedIds.push(item.id);
+    }
+  });
+
+  return mergedItems;
+}
+
+export function intersectPrimitives<
+  T extends string | number | boolean | undefined | null,
+>(a: T[], b: T[]): T[] {
+  var setB = new Set(b);
+  return [...new Set(a)].filter(x => setB.has(x));
+}

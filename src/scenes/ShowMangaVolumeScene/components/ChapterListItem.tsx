@@ -1,5 +1,11 @@
 import {Chapter, ScanlationGroup} from '@app/api/mangadex/types';
-import {IconButton, Text, TouchableRipple, useTheme} from 'react-native-paper';
+import {
+  Caption,
+  IconButton,
+  Text,
+  TouchableRipple,
+  useTheme,
+} from 'react-native-paper';
 import {StyleSheet, View, ViewStyle} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
 import {findRelationship, preferredChapterTitle} from '@app/api/mangadex/utils';
@@ -92,6 +98,10 @@ function ChaptersListItemPreview({
   const publishedDate = new Date(chapter.attributes.publishAt);
   const timeAgo = timeDifference(new Date(), publishedDate);
 
+  const volumeText = chapter.attributes.volume
+    ? `Volume ${chapter.attributes.volume}`
+    : 'No volume';
+
   return (
     <Wrapper child={child}>
       <TouchableRipple
@@ -100,7 +110,10 @@ function ChaptersListItemPreview({
         style={sharedStyles.roundBorders}>
         <View style={rootStyles}>
           <View style={styles.titleContainer}>
-            <Text>{preferredChapterTitle(chapter)}</Text>
+            <View>
+              <Text>{preferredChapterTitle(chapter)}</Text>
+              {!child ? <Caption>{volumeText}</Caption> : null}
+            </View>
             <View style={styles.tagsContainer}>
               <TextBadge
                 icon="translate"

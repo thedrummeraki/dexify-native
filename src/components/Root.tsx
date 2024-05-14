@@ -2,9 +2,11 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   AuthorArtistScene,
+  ChapterFiltersScene,
   CustomListScene,
   FiltersScene,
   HomeScene,
+  ShowMangaChaptersScene,
   ShowMangaDetailsModalScene,
   ShowMangaLibraryModalScene,
   ShowMangaMDListsModalScene,
@@ -24,10 +26,15 @@ export function Root() {
         <Stack.Screen name="ShowArtist" component={AuthorArtistScene} />
         <Stack.Screen name="ShowCustomList" component={CustomListScene} />
         <Stack.Screen name="ShowMangaVolume" component={ShowMangaVolumeScene} />
+        <Stack.Screen
+          name="ShowMangaChapters"
+          component={ShowMangaChaptersScene}
+        />
       </Stack.Group>
       <Stack.Group
         screenOptions={{presentation: 'fullScreenModal', headerShown: false}}>
         <Stack.Screen name="Filters" component={FiltersScene} />
+        <Stack.Screen name="ChapterFilters" component={ChapterFiltersScene} />
         <Stack.Screen
           name="ShowMangaDetailsModal"
           component={ShowMangaDetailsModalScene}

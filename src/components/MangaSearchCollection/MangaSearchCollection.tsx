@@ -17,7 +17,7 @@ import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import {FiltersPreview} from './components';
 import {StyleProp, View, ViewStyle} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
-import {useDimensions} from '@app/utils';
+import {mergeLists, useDimensions} from '@app/utils';
 import {VisibleThumbnailInfo} from '../SimpleMangaThumbnail/SimpleMangaThumbnail';
 
 export interface MangaSearchCollectionProps {
@@ -91,20 +91,7 @@ export function MangaSearchCollection({
       let newMangaList = data.data;
 
       setHasMore(data.total > nextOffset);
-      setMangaList(current => {
-        const mergedMangas = [...current, ...newMangaList];
-        const result: Manga[] = [];
-        const addedIds: string[] = [];
-
-        mergedMangas.forEach(manga => {
-          if (!addedIds.includes(manga.id)) {
-            result.push(manga);
-            addedIds.push(manga.id);
-          }
-        });
-
-        return result;
-      });
+      setMangaList(current => mergeLists(current, newMangaList));
     }
   }, [data, nextOffset]);
 

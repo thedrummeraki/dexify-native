@@ -1,23 +1,22 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {ItemsSection, PaddingHorizontal} from '@app/components';
+import React from 'react';
+import {PaddingHorizontal} from '@app/components';
 import {useMangaDetails} from './MangaProvider';
-import {Banner, Button, Caption, Text, useTheme} from 'react-native-paper';
-import {groupChapters, preferredChapterTitle} from '@app/api/mangadex/utils';
-import {AtHomeResponse, isSuccess} from '@app/api/mangadex/types';
-import {sharedStyles, spacing} from '@app/utils/styles';
-import {Image, View} from 'react-native';
-import {useLazyGetRequest} from '@app/api/utils';
-import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
+import {Banner, Button, Caption, Text} from 'react-native-paper';
+import {groupChapters} from '@app/api/mangadex/utils';
+import {isSuccess} from '@app/api/mangadex/types';
+import {sharedStyles} from '@app/utils/styles';
+import {View} from 'react-native';
 import ChaptersListItem from '@app/scenes/ShowMangaVolumeScene/components/ChapterListItem';
-
-const DEFAULT_COVER_ART_URI = 'https://mangadex.org/img/avatar.png';
+import {useDexifyNavigation} from '@app/foundation/navigation';
 
 export interface ChaptersSectionProps {
   showFirst?: number;
 }
 
 export default function ChaptersSection({showFirst = 5}: ChaptersSectionProps) {
-  const {chaptersData, chaptersLoading, chaptersOrder} = useMangaDetails();
+  const navigation = useDexifyNavigation();
+  const {chaptersData, chaptersLoading, chaptersOrder, manga} =
+    useMangaDetails();
 
   if (!chaptersData) {
     return (
@@ -82,7 +81,9 @@ export default function ChaptersSection({showFirst = 5}: ChaptersSectionProps) {
           ))}
         </View>
         <View style={[sharedStyles.container, sharedStyles.noTopPadding]}>
-          <Button mode="contained-tonal" onPress={() => {}}>
+          <Button
+            mode="contained-tonal"
+            onPress={() => navigation.push('ShowMangaChapters', manga)}>
             {browseAllText}
           </Button>
         </View>
@@ -99,114 +100,5 @@ export default function ChaptersSection({showFirst = 5}: ChaptersSectionProps) {
         </Text>
       </Banner>
     </PaddingHorizontal>
-  );
-}
-
-// export default function ChaptersSection() {
-//   const {chapters, chaptersLoading} = useMangaDetails();
-//   // const groupedChapters = groupChapters(chapters);
-//   // const chapterEntries = [...groupedChapters.entries()];
-
-//   const fetchedChapterPageUrls = useRef(false);
-//   const [fetchChapterPageUrls] = useLazyGetRequest<AtHomeResponse>();
-//   const concernedChapter = chapters.length ? chapters[0] : null;
-//   const [chapterPageUris, setChapterPageUris] = useState<string[]>([]);
-
-//   useEffect(() => {
-//     if (fetchedChapterPageUrls.current || chapters.length === 0) {
-//       return;
-//     }
-
-//     if (!concernedChapter) {
-//       return;
-//     }
-
-//     fetchChapterPageUrls(UrlBuilder.getAtHomeServer(concernedChapter.id)).then(
-//       response => {
-//         if (isSuccess(response)) {
-//           const {
-//             chapter: {dataSaver, hash},
-//             baseUrl,
-//           } = response;
-//           if (!dataSaver.length) {
-//             return;
-//           }
-//           const constructedFirstPageUrls = dataSaver.map(x =>
-//             [baseUrl, 'data-saver', hash, x].join('/'),
-//           );
-//           setChapterPageUris(constructedFirstPageUrls);
-//         }
-//       },
-//     );
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, [chapters]);
-
-//   if (
-//     (!concernedChapter && !chaptersLoading) ||
-//     (concernedChapter && concernedChapter.attributes.pages === 0)
-//   ) {
-//     return null;
-//   } else if (concernedChapter && !chaptersLoading) {
-//     return (
-//       <ItemsSection
-//         title="Start reading now"
-//         subtitle={
-//           concernedChapter.attributes.title
-//             ? preferredChapterTitle(concernedChapter)
-//             : undefined
-//         }
-//         onViewMorePress={() => {}}
-//         data={chapterPageUris}
-//         renderItem={({item}) => <ChapterPagePreview pageUrl={item} />}
-//       />
-//     );
-//   }
-
-//   const chapterPages = Array.from({
-//     length: 10,
-//   }).map(_ => DEFAULT_COVER_ART_URI);
-
-//   return (
-//     <ItemsSection
-//       data={chapterPages}
-//       renderItem={({item}) => (
-//         <Image
-//           source={{uri: item}}
-//           style={sharedStyles.largeFixedSizeThumbnail}
-//         />
-//       )}
-//       title="Start reading now"
-//       subtitle="Loading chapter..."
-//     />
-//   );
-// }
-
-function ChapterPagePreview({pageUrl}: {pageUrl: string}) {
-  const [uri, setUri] = useState(DEFAULT_COVER_ART_URI);
-  const theme = useTheme();
-
-  useEffect(() => {
-    Image.getSize(
-      pageUrl,
-      () => {
-        setUri(pageUrl);
-      },
-      () => {
-        setUri(DEFAULT_COVER_ART_URI);
-      },
-    );
-  }, [pageUrl]);
-
-  return (
-    <Image
-      source={{uri}}
-      onLoad={e => {
-        console.log(e.nativeEvent.source);
-      }}
-      style={[
-        sharedStyles.largeFixedSizeThumbnail,
-        {backgroundColor: theme.colors.surfaceDisabled},
-      ]}
-    />
   );
 }

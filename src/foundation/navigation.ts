@@ -8,13 +8,17 @@ type AuthorArtistParams = Partial<Omit<Author | Artist, 'id'>> & {id: string};
 
 export type RootStackParamList = {
   Home: undefined;
+
   Filters: undefined;
+  ChapterFilters: {manga: Manga};
+
   ShowManga: MangaParams & {isAiring?: boolean; jumpToVolume?: string | null};
   ShowMangaDetailsModal: MangaParams;
   ShowMangaVolume: {
     manga: Manga;
     volumeInfo: VolumeInfo;
   };
+  ShowMangaChapters: MangaParams;
   // ShowMangaGallery: {manga: Manga; number?: number};
   // ShowChapter: {id: string; jumpToPage?: number};
   ShowArtist: AuthorArtistParams & {allowHentai?: boolean};
@@ -47,8 +51,16 @@ export function useShowMangaRoute() {
   return useRoute<RouteProp<RootStackParamList, 'ShowManga'>>();
 }
 
+export function useChapterFiltersRoute() {
+  return useRoute<RouteProp<RootStackParamList, 'ChapterFilters'>>();
+}
+
 export function useShowMangaDetailsModalRoute() {
   return useRoute<RouteProp<RootStackParamList, 'ShowMangaDetailsModal'>>();
+}
+
+export function useShowMangaChaptersRoute() {
+  return useRoute<RouteProp<RootStackParamList, 'ShowMangaChapters'>>();
 }
 
 export function useShowMangaVolumeRoute() {

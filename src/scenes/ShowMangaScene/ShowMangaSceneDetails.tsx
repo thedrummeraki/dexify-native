@@ -30,25 +30,6 @@ export default function ShowMangaSceneDetails({
   manga,
 }: ShowMangaSceneDetailsProps) {
   const secondaryTitle = secondaryMangaTitle(manga);
-  // const relatedMangaIds = findRelationships(manga, 'manga').map(
-  //   relationship => relationship.id,
-  // );
-  // const contentRating = useContentRating();
-
-  // const VolumesListFooterComponent = (
-  //   <View style={{marginTop: spacing(4), gap: spacing(3)}}>
-  //     {relatedMangaIds.length ? (
-  //       <>
-  //         <Text variant="titleLarge">Related manga</Text>
-  //         <MangaSearchCollection
-  //           hidePreview
-  //           hideSearchbar
-  //           override={{ids: relatedMangaIds, contentRating, limit: 6}}
-  //         />
-  //       </>
-  //     ) : null}
-  //   </View>
-  // );
 
   return (
     <SafeAreaView>

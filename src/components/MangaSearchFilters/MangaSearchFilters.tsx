@@ -15,11 +15,7 @@ import {preferredTagName} from '@app/api/mangadex/utils';
 import PublicationDemographicsField from './components/PublicationDemographicsField';
 import ContentRatingField from './components/ContentRatingField';
 import {Button, useTheme} from 'react-native-paper';
-import {
-  FilterParamsState,
-  PartialFilterParamsState,
-  sanitizeFilters,
-} from '@app/foundation/state/filters';
+import {FilterParamsState, useIsDirty} from '@app/foundation/state/filters';
 import {
   useFiltersStore,
   useUserStore,
@@ -89,42 +85,7 @@ export default function MangaSearchFilters({
   );
 
   // const fields = useStore();
-  const dirty = useMemo(() => {
-    const currentState: PartialFilterParamsState = sanitizeFilters(state);
-    const newState: PartialFilterParamsState = sanitizeFilters(fields);
-
-    const currentKeys = Object.keys(currentState);
-    const newKeys = Object.keys(newState);
-
-    const currentInNew = currentKeys.every(key => newKeys.includes(key));
-    const newInCurrent = newKeys.every(key => currentKeys.includes(key));
-
-    if (!currentInNew || !newInCurrent) {
-      return true;
-    }
-
-    // At this point, we know that current and new have the same keys.
-    // Now, ensure all values actually match.
-    const someValuesMismatch = Object.entries(currentState).some(
-      ([key, value]) => {
-        const newValue = newState[key as keyof PartialFilterParamsState];
-
-        if (Array.isArray(newValue) && Array.isArray(value)) {
-          const strValues = value.map(String);
-          const strNewValues = newValue.map(String);
-
-          return !(
-            strValues.every(strkey => strNewValues.includes(strkey)) &&
-            strNewValues.every(strkey => strValues.includes(strkey))
-          );
-        } else {
-          return newValue !== value;
-        }
-      },
-    );
-
-    return someValuesMismatch;
-  }, [state, fields]);
+  const dirty = useIsDirty(state, fields);
 
   return (
     <View style={[sharedStyles.flex, {backgroundColor}]}>

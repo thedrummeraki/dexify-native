@@ -2,7 +2,12 @@ import staterino from 'staterino';
 import merge from 'mergerino';
 import {useLayoutEffect, useReducer} from 'react';
 import {UserStore, defaultUserStore} from './user';
-import {FiltersStore, defaultFiltersStore} from './filters';
+import {
+  ChapterFiltersStore,
+  FiltersStore,
+  defaultChapterFiltersStore,
+  defaultFiltersStore,
+} from './filters';
 import {
   LibraryStore,
   MDListsStore,
@@ -13,6 +18,7 @@ import {
 export interface AppState {
   user: UserStore;
   filters: FiltersStore;
+  chapterFilters: ChapterFiltersStore;
   library: LibraryStore;
   mdLists: MDListsStore;
 }
@@ -21,6 +27,7 @@ export function defaultState(): AppState {
   return {
     user: defaultUserStore,
     filters: defaultFiltersStore,
+    chapterFilters: defaultChapterFiltersStore,
     library: defaultLibraryStore,
     mdLists: defaultMDListsStore,
   };

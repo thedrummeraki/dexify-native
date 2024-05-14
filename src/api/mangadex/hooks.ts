@@ -15,13 +15,16 @@ import UrlBuilder from './types/api/urlBuilder';
 type ManyManga = PagedResultsList<Manga>;
 type OneManga = EntityResponse<Manga>;
 
-export function useMangadexPagination(resetsWhenChanged: readonly any[]) {
+export function useMangadexPagination(
+  resetsWhenChanged: readonly any[],
+  defaultLimit = 50,
+) {
   const [page, setPage] = useState(1);
   const [offset, setOffset] = useState(0);
   // const {
   //   userPreferences: {paginationCount: limit},
   // } = useMangadexSettings();
-  const limit = 50;
+  const limit = defaultLimit;
 
   const previousPage = useCallback(() => setPage(current => current - 1), []);
   const nextPage = useCallback(() => {
