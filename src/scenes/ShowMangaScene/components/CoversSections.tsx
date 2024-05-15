@@ -63,8 +63,7 @@ function CoverItem({
           <Image
             source={{uri}}
             style={[
-              sharedStyles.fixedSizeThumbnail,
-              sharedStyles.squareAspectRatio,
+              sharedStyles.largeFixedSizeThumbnail,
               {backgroundColor: theme.colors.surfaceDisabled},
             ]}
             onError={e => {

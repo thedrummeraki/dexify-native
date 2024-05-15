@@ -1,4 +1,4 @@
-package com.dexify
+package ca.akinyele.dexify
 
 import android.os.Bundle;
 

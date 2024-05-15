@@ -1,6 +1,7 @@
-package com.dexify
+package ca.akinyele.dexify
 
 import android.app.Application
+import ca.akinyele.dexify.BuildConfig
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactHost
