@@ -49,7 +49,9 @@ function Header({
 
   const {width: screenWidth} = useDimensions();
   const iconSize = 24;
-  const fullIconSize = iconSize + spacing(7);
+
+  // size + margin, padding, etc.
+  const fullIconSize = iconSize + spacing(7.5);
   const widthOccupiedByIcons = [
     fullIconSize,
     onDetailsPress ? fullIconSize : 0,

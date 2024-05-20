@@ -13,8 +13,7 @@ export default function ShowMangaChaptersScene() {
     <SceneContainer
       title="Browse manga chapters"
       subtitle={preferredMangaTitle(manga)}
-      headerIcon="arrow-left"
-      onDetailsPress={() => {}}>
+      headerIcon="arrow-left">
       <ShowMangaChaptersSceneDetails manga={manga} />
     </SceneContainer>
   );
