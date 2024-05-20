@@ -6,6 +6,7 @@ import {
   isSuccess,
 } from '@app/api/mangadex/types';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
+import {useContentRating} from '@app/api/mangadex/utils';
 import {useLazyGetRequest} from '@app/api/utils';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
 import {ChapterFiltersParamsState} from '@app/foundation/state/filters';
@@ -39,12 +40,34 @@ export const useManga = (): Manga => {
 
 export const useMangaDetails = (): MangaProviderState => {
   const context = useContext(MangaContext);
-  if (!context) {
-    throw new Error('Missing <MangaProvider> provider');
+  if (!context || Object.keys(context).length < 1) {
+    throw new Error(
+      'Missing <MangaProvider> or <SimpleMangaProvider> provider',
+    );
   }
 
   return context;
 };
+
+export function SimpleMangaProvider({manga, children}: MangaProviderProps) {
+  return (
+    <MangaContext.Provider
+      value={{
+        manga,
+        aggregate: {result: 'error'},
+        aggregateLoading: false,
+        chapters: [],
+        chaptersData: {result: 'error', errors: []},
+        chaptersLoading: false,
+        chaptersOrder: 'asc',
+        coverArts: [],
+        stats: {result: 'error'},
+        statsLoading: false,
+      }}>
+      {children}
+    </MangaContext.Provider>
+  );
+}
 
 export default function MangaProvider({manga, children}: MangaProviderProps) {
   const [coverArts, setCoverArts] = useState<CoverArt[]>([]);
@@ -57,6 +80,7 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
     statistics: {},
   });
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const contentRating = useContentRating();
 
   const [getStats, {loading: statsLoading}] =
     useLazyGetRequest<Manga.StatisticsResponse>(
@@ -98,7 +122,7 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
         manga,
         sanitizeOptions(
           {
-            contentRating: [manga.attributes.contentRating],
+            contentRating,
             order: {chapter: chaptersOrder},
             ...chapterParams,
           } as Required<ChapterFiltersParamsState>,

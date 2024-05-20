@@ -1,6 +1,5 @@
 import {
   ContentRating,
-  CustomList,
   Manga,
   PagedResultsList,
   isSuccess,
@@ -57,6 +56,7 @@ export default function MDLists() {
       .finally(() => {
         canFetchMangas.current = false;
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mdLists]);
 
   return (

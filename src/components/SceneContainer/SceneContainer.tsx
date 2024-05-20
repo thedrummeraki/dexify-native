@@ -1,4 +1,5 @@
 import {useDexifyNavigation} from '@app/foundation/navigation';
+import {useDimensions} from '@app/utils';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import React, {PropsWithChildren} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
@@ -46,6 +47,16 @@ function Header({
     navigation.goBack();
   };
 
+  const {width: screenWidth} = useDimensions();
+  const iconSize = 24;
+  const fullIconSize = iconSize + spacing(7);
+  const widthOccupiedByIcons = [
+    fullIconSize,
+    onDetailsPress ? fullIconSize : 0,
+  ].reduce((acc, value) => acc + value);
+
+  const titleContainerWidth = screenWidth - widthOccupiedByIcons;
+
   const theme = useTheme();
   return (
     <Appbar.Header
@@ -53,13 +64,18 @@ function Header({
       theme={theme}
       style={[styles.header, {backgroundColor: theme.colors.surface}]}>
       <View style={styles.headerLeft}>
-        <IconButton icon={headerIcon} onPress={handleBackPress} />
+        <IconButton
+          icon={headerIcon}
+          size={iconSize}
+          onPress={handleBackPress}
+        />
         {title ? (
           <View
             style={[
               sharedStyles.container,
               sharedStyles.titleCaptionContainer,
               styles.headerTitleContainer,
+              {width: titleContainerWidth},
             ]}>
             <Text numberOfLines={1} variant="titleMedium">
               {title}
@@ -70,7 +86,11 @@ function Header({
       </View>
       <View style={styles.headerRight}>
         {onDetailsPress ? (
-          <IconButton icon="information-outline" onPress={onDetailsPress} />
+          <IconButton
+            icon="information-outline"
+            size={iconSize}
+            onPress={onDetailsPress}
+          />
         ) : null}
       </View>
     </Appbar.Header>

@@ -1,12 +1,19 @@
-import {Chapter, GroupedChapters} from '@app/api/mangadex/types';
+import {
+  Chapter,
+  GroupedChapters,
+  ScanlationGroup,
+} from '@app/api/mangadex/types';
 import React, {ComponentProps, useState} from 'react';
 import {FlatList, Linking, View} from 'react-native';
 import ChaptersListItem from './ChapterListItem';
 import {spacing} from '@app/utils/styles';
 import {SearchBar} from '@app/components';
+import {findRelationship} from '@app/api/mangadex/utils';
+import {ChaptersState} from '@app/scenes/ShowMangaChaptersScene/ShowMangaChaptersSceneDetails';
 
 export type ChaptersListProps = {
-  groupedChapters: GroupedChapters;
+  // groupedChapters: GroupedChapters | {[key: string]: Chapter[]};
+  groupedChapters: ChaptersState;
   hideSearchBar?: boolean;
   // onChapterPress(chapter: Chapter): void;
 } & Omit<
@@ -22,7 +29,14 @@ export default function ChaptersList({
 }: ChaptersListProps) {
   const [query, setQuery] = useState('');
 
-  const chapterEntries = [...groupedChapters.entries()];
+  // TODO: use this state to show a modal selecting chapters
+  // const [currentChapters, setCurrentChapters] = useState<Chapter[]>();
+
+  const {data, order} = groupedChapters;
+
+  const chapterEntries = Object.entries(data).sort(
+    ([a], [b]) => order.indexOf(a) - order.indexOf(b),
+  );
   const onChapterPress = (chapter: Chapter) => {
     if (chapter.attributes.externalUrl) {
       Linking.openURL(chapter.attributes.externalUrl).catch(console.warn);
@@ -54,8 +68,10 @@ export default function ChaptersList({
       data={chapterEntries}
       renderItem={({item}) => (
         <ChaptersListItem
+          chapterIdentifier={item[0]}
           chapters={sortChapters(item[1])}
           onPress={chapter => onChapterPress(chapter)}
+          onMultipleChapterPress={chapters => onChapterPress(chapters[0])}
         />
       )}
       // contentContainerStyle={{
@@ -89,6 +105,21 @@ function sortChapters(chapters: Chapter[]): Chapter[] {
       return -1;
     } else if (externalUrlRight) {
       return 1;
+    }
+
+    const scanlationLeft = findRelationship<ScanlationGroup>(
+      left,
+      'scanlation_group',
+    );
+    const scanlationRight = findRelationship<ScanlationGroup>(
+      right,
+      'scanlation_group',
+    );
+
+    if (scanlationLeft && scanlationRight) {
+      return scanlationLeft.attributes.name.localeCompare(
+        scanlationRight.attributes.name,
+      );
     }
 
     if (

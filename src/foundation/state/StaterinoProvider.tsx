@@ -6,7 +6,7 @@ import React, {
   useLayoutEffect,
   useReducer,
 } from 'react';
-import {defaultState} from './base';
+import {AppState, defaultState} from './base';
 import staterino from 'staterino';
 import merge from 'mergerino';
 import {
@@ -64,11 +64,16 @@ export const useUserStore = () => {
 
   useEffect(() => {
     return subscribe(
-      state => state.user,
-      user => {
-        if (user.user) {
-          storeSession(user).catch(e =>
-            console.error('Failed to store UserStore', user, '. Details:', e),
+      state => state,
+      state => {
+        if (state.user.user) {
+          storeSession(state.user).catch(e =>
+            console.error(
+              'Failed to store UserStore',
+              state.user,
+              '. Details:',
+              e,
+            ),
           );
         }
       },
@@ -113,13 +118,22 @@ export const useFiltersStore = () => {
 };
 
 export default function StaterinoProvider({children}: StaterinoProviderProps) {
-  const userStore = useUserStore();
+  const {set, subscribe} = useStore;
 
-  return (
-    <StaterinoContext.Provider value={{...userStore}}>
-      {children}
-    </StaterinoContext.Provider>
-  );
+  useEffect(() => {
+    restoreAppState().then(state => {
+      set(state);
+    });
+
+    return subscribe(
+      state => state,
+      state => {
+        storeState(state);
+      },
+    );
+  }, [set, subscribe]);
+
+  return <>{children}</>;
 }
 
 async function blastSession() {
@@ -139,6 +153,36 @@ async function storeSession(session: UserStore) {
   } catch (error) {
     console.error(error);
     return false;
+  }
+}
+
+async function storeState(state: AppState) {
+  try {
+    console.log('Storing the state on update...');
+    await EncryptedStorage.setItem('app_state', JSON.stringify(state));
+    return true;
+  } catch (error) {
+    console.error("There was an issue while saving the app's state:", error);
+    return false;
+  }
+}
+
+async function restoreAppState() {
+  try {
+    const retrieved = await EncryptedStorage.getItem('app_state');
+    if (retrieved) {
+      const parsedAppState = JSON.parse(retrieved) as AppState;
+      return parsedAppState;
+    }
+
+    return defaultState();
+  } catch (error) {
+    console.warn(
+      'Could not restore app state. Clearing stored state and returning default state',
+    );
+    await EncryptedStorage.removeItem('app_state');
+
+    return defaultState();
   }
 }
 

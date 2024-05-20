@@ -109,8 +109,11 @@ export type Order<K extends keyof any> = {
 };
 
 export function isSuccess<T>(
-  result: PagedResultsList<T> | AtHomeResponse | undefined,
-): result is SuccessPagedResults<T> | AtHomeSuccessResponse {
+  result: PagedResultsList<T> | AtHomeResponse | EntityResponse<T> | undefined,
+): result is
+  | SuccessPagedResults<T>
+  | AtHomeSuccessResponse
+  | SuccessEntityResponse<T> {
   return result !== undefined && result.result === 'ok';
 }
 

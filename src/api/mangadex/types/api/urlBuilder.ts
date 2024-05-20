@@ -22,6 +22,16 @@ interface FeedOptions {
   translatedLanguage?: string[];
 }
 
+type RandomMangaParams = Pick<
+  MangaRequestParams,
+  | 'contentRating'
+  | 'includedTags'
+  | 'includedTagsMode'
+  | 'excludedTags'
+  | 'excludedTagsMode'
+  | 'includes'
+>;
+
 export default class UrlBuilder {
   static API_URL = 'https://api.mangadex.org';
 
@@ -39,7 +49,7 @@ export default class UrlBuilder {
     return this.buildProxyUrl('/home/feed', params);
   }
 
-  public static randomManga(params?: ParamsLike) {
+  public static randomManga(params?: RandomMangaParams) {
     return this.buildUrl('/manga/random', params);
   }
 

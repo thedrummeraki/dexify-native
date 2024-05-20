@@ -67,10 +67,12 @@ export namespace Manga {
     relationships: Relationship[];
   }
 
+  export type TagGroup = 'content' | 'format' | 'theme' | 'genre';
+
   export interface TagAttributes {
     name: Title;
     version: number;
-    group: string;
+    group: TagGroup;
     description: any[];
   }
 

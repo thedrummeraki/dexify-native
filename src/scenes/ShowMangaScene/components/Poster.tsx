@@ -1,7 +1,7 @@
 import {CoverSize, coverImage, findRelationship} from '@app/api/mangadex/utils';
 import {useManga} from './MangaProvider';
 import {CoverArt} from '@app/api/mangadex/types';
-import {Image, TouchableNativeFeedback} from 'react-native';
+import {Image} from 'react-native';
 import {useReducer} from 'react';
 import {TouchableRipple} from 'react-native-paper';
 
@@ -11,7 +11,11 @@ enum AspectRatio {
   Large = 0.7,
 }
 
-export default function Poster() {
+export interface PosterProps {
+  defaultSizeIndex?: number;
+}
+
+export default function Poster({defaultSizeIndex = 1}: PosterProps) {
   const manga = useManga();
   const coverArt = findRelationship<CoverArt>(manga, 'cover_art');
 
@@ -22,7 +26,9 @@ export default function Poster() {
   ];
   const [index, dispatch] = useReducer(current => {
     return (current + 1) % 3;
-  }, 0);
+  }, defaultSizeIndex);
+
+  console.log({index});
 
   const aspectRatio = validAspectRatios[index];
 

@@ -24,6 +24,7 @@ export default function ShowMangaLibraryModalScene() {
   const manga = route.params as Manga;
 
   const {subscribe, set} = useStore;
+  const user = useStore(state => state.user.user);
 
   // Must be a string due to the RadioButton API.
   const [readingStatus, setReadingStatus] = useState<
@@ -50,17 +51,25 @@ export default function ShowMangaLibraryModalScene() {
       return;
     }
 
-    post(UrlBuilder.updateReadingStatus(manga.id), {
-      status: readingStatus || null,
-    }).then(res => {
-      if (res?.result === 'ok') {
-        set({
-          library: {data: {statuses: {[manga.id]: readingStatus || undefined}}},
-        });
-      }
-    });
+    if (user) {
+      post(UrlBuilder.updateReadingStatus(manga.id), {
+        status: readingStatus || null,
+      }).then(res => {
+        if (res?.result === 'ok') {
+          set({
+            library: {
+              data: {statuses: {[manga.id]: readingStatus || undefined}},
+            },
+          });
+        }
+      });
+    } else {
+      set({
+        library: {data: {statuses: {[manga.id]: readingStatus || undefined}}},
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [readingStatus, manga.id, set]);
+  }, [readingStatus, manga.id, user, set]);
 
   return (
     <SceneContainer canScroll title="Add to library...">

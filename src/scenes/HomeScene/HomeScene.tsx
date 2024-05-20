@@ -2,7 +2,7 @@ import {Browse} from '@app/scenes';
 import React from 'react';
 import {useState} from 'react';
 import {BottomNavigation} from 'react-native-paper';
-import {Home, Library, Login, MDLists, Settings} from './bottomNavScenes';
+import {Home, Library, MDLists, Settings} from './bottomNavScenes';
 import {useUserStore} from '@app/foundation/state/StaterinoProvider';
 
 export default function HomeScene() {
@@ -18,11 +18,11 @@ export default function HomeScene() {
 function AuthenticatedBottomNavigation() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    // {
-    //   key: 'home',
-    //   title: 'Home',
-    //   focusedIcon: 'home',
-    // },
+    {
+      key: 'home',
+      title: 'Home',
+      focusedIcon: 'home',
+    },
     {
       key: 'library',
       title: 'Library',
@@ -45,7 +45,7 @@ function AuthenticatedBottomNavigation() {
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
-    // home: Home,
+    home: Home,
     browse: Browse,
     lists: MDLists,
     library: Library,
@@ -64,19 +64,38 @@ function AuthenticatedBottomNavigation() {
 function UnauthenticatedBottomNavigation() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    // {
-    //   key: 'home',
-    //   title: 'Home',
-    //   focusedIcon: 'home',
-    // },
+    {
+      key: 'home',
+      title: 'Home',
+      focusedIcon: 'home',
+    },
     {key: 'browse', title: 'Browse...', focusedIcon: 'search-web'},
-    {key: 'login', title: 'Login', focusedIcon: 'account-key'},
+    {
+      key: 'library',
+      title: 'Library',
+      focusedIcon: 'bookmark',
+      unfocusedIcon: 'bookmark-outline',
+    },
+    // {
+    //   key: 'downloads',
+    //   title: 'Downloads',
+    //   focusedIcon: 'cloud-download',
+    //   unfocusedIcon: 'cloud-download-outline',
+    // },
+    {
+      key: 'settings',
+      title: 'Settings',
+      focusedIcon: 'cog',
+      unfocusedIcon: 'cog-outline',
+    },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
-    // home: Home,
+    home: Home,
     browse: Browse,
-    login: Login,
+    // downloads: Downloads,
+    library: Library,
+    settings: Settings,
   });
 
   return (

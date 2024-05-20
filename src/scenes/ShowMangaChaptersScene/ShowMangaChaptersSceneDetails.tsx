@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   Chapter,
   ChapterRequestParams,
+  GroupedChapters,
   Manga,
   PagedResultsList,
   isSuccess,
@@ -26,8 +27,27 @@ import {useDexifyNavigation} from '@app/foundation/navigation';
 import {intersectPrimitives} from '@app/utils';
 import {ChapterFiltersParamsState} from '@app/foundation/state/filters';
 
+import mergerino from 'mergerino';
+
 export interface ShowMangaChaptersSceneDetailsProps {
   manga: Manga;
+}
+
+export interface ChaptersState {
+  order: (string | null)[];
+  data: {[key: string]: Chapter[]};
+}
+
+function mergerinoifyChapters(chapters: Chapter[]): ChaptersState {
+  const groupedChapters = groupChapters(chapters);
+  const chapterEntries = [...groupedChapters.entries()];
+
+  return {
+    data: Object.fromEntries(chapterEntries),
+    order: chapterEntries.map(
+      ([chapterIdentifier, _]) => chapterIdentifier || 'N/A',
+    ),
+  };
 }
 
 export default function ShowMangaChaptersSceneDetails({
@@ -36,8 +56,11 @@ export default function ShowMangaChaptersSceneDetails({
   const navigation = useDexifyNavigation();
 
   const [hasMore, setHasMore] = useState(true);
-  const [chapters, setChapters] = useState<Chapter[]>([]);
-  const groupedChapters = useMemo(() => groupChapters(chapters), [chapters]);
+  const [chapters, setChapters] = useState<ChaptersState>({
+    order: [],
+    data: {},
+  });
+
   const [get, {data, loading}] = useLazyGetRequest<PagedResultsList<Chapter>>();
   const limit = 100;
   const {offset, nextOffset, nextPage, resetPage} = useMangadexPagination(
@@ -71,24 +94,51 @@ export default function ShowMangaChaptersSceneDetails({
 
   useEffect(() => {
     resetPage();
-    setChapters([]);
+    setChapters({data: {}, order: []});
     setHasMore(true);
-  }, [params, resetPage]);
+  }, [order, params, resetPage]);
+
+  useEffect(() => {
+    if (isSuccess(data)) {
+      // setChapters(current => {
+      //   // ;
+      //   // const currentIds = [...current.map(x => x.id)];
+      //   // const result = [...current];
+      //   // data.data.forEach(newChapter => {
+      //   //   if (!currentIds.includes(newChapter.id)) {
+      //   //     currentIds.push(newChapter.id);
+      //   //     result.push(newChapter);
+      //   //   }
+      //   // });
+      //   // return result;
+      //   return mergerino(
+      //     [...data.data, ...current],
+      //     data.data.reduce((acc, value, index) => {
+      //       acc[index] = value;
+      //       return acc;
+      //     }, {} as any),
+      //   );
+      // });
+      setChapters(current => {
+        const newChapters = data.data;
+
+        return mergerino(current, {
+          order: (previousOrder: (string | null)[]) => [
+            ...new Set(
+              previousOrder.concat(
+                newChapters.map(newChapter => newChapter.attributes.chapter),
+              ),
+            ),
+          ],
+          data: Object.fromEntries([...groupChapters(newChapters)]),
+        });
+      });
+    }
+  }, [data]);
 
   useEffect(() => {
     if (isSuccess(data)) {
       setHasMore(data.total > nextOffset);
-      setChapters(current => {
-        const currentIds = [...current.map(x => x.id)];
-        const result = [...current];
-        data.data.forEach(newChapter => {
-          if (!currentIds.includes(newChapter.id)) {
-            currentIds.push(newChapter.id);
-            result.push(newChapter);
-          }
-        });
-        return result;
-      });
     }
   }, [data, nextOffset]);
 
@@ -104,7 +154,7 @@ export default function ShowMangaChaptersSceneDetails({
       </View>
       <ChaptersList
         hideSearchBar
-        groupedChapters={groupedChapters}
+        groupedChapters={chapters}
         contentContainerStyle={[
           sharedStyles.tightContainer,
           {
@@ -112,14 +162,23 @@ export default function ShowMangaChaptersSceneDetails({
             marginTop: spacing(-3),
           },
         ]}
-        ListFooterComponent={
-          <Button
-            disabled={loading || !hasMore}
-            mode="contained-tonal"
-            onPress={() => nextPage()}>
-            Load more...
-          </Button>
-        }
+        initialNumToRender={20}
+        // ListFooterComponent={
+        //   hasMore ? (
+        //     <Button
+        //       disabled={loading}
+        //       mode="contained-tonal"
+        //       onPress={() => nextPage()}>
+        //       Load more...
+        //     </Button>
+        //   ) : null
+        // }
+        onEndReachedThreshold={1}
+        onEndReached={() => {
+          if (!loading && hasMore) {
+            nextPage();
+          }
+        }}
         ListEmptyComponent={
           !loading ? (
             <Banner visible>

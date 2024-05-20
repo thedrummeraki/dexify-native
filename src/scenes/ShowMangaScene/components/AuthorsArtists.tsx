@@ -1,6 +1,7 @@
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useManga} from './MangaProvider';
-import {findRelationships} from '@app/api/mangadex/utils';
+import {findRelationships, preferredTitle} from '@app/api/mangadex/utils';
 import {Artist, Author} from '@app/api/mangadex/types';
 import {useTheme} from 'react-native-paper';
 import {spacing} from '@app/utils/styles';
@@ -12,6 +13,8 @@ export default function AuthorsArtists() {
   const navigation = useDexifyNavigation();
   const styles = useStyles();
   const manga = useManga();
+  const tags = manga.attributes.tags;
+  const formatTag = tags.find(tag => tag.attributes.group === 'format');
 
   const artists = findRelationships<Artist>(manga, 'artist');
   const authors = findRelationships<Author>(manga, 'author');
@@ -23,6 +26,12 @@ export default function AuthorsArtists() {
   return (
     <View style={styles.root}>
       <ContentRatingTextBadge type="manga" manga={manga} />
+      {formatTag ? (
+        <TextBadge
+          icon="information-variant"
+          content={preferredTitle(formatTag.attributes.name)}
+        />
+      ) : null}
       {artistsAndAuthors.map(author => {
         const icon = author.type === 'artist' ? 'palette' : 'account';
         return (

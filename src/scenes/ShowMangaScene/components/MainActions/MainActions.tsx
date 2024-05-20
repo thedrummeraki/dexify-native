@@ -25,10 +25,15 @@ export default function MainActions() {
       <View style={styles.minor}>
         <AuthGuard
           onPress={() => navigation.push('ShowMangaMDListsModal', manga)}>
-          <IconButton
+          {/* <IconButton
             disabled={!user}
             mode={addedToList ? 'contained' : 'outlined'}
             icon={addedToList ? 'bookmark-check' : 'bookmark-outline'}
+          /> */}
+          <IconButton
+            disabled
+            mode={addedToList ? 'contained' : 'outlined'}
+            icon={addedToList ? 'cloud-download' : 'cloud-download-outline'}
           />
         </AuthGuard>
         {/* <IconButton */}
@@ -38,7 +43,6 @@ export default function MainActions() {
       </View>
       <View style={styles.major}>
         <Button
-          disabled={!user}
           mode={readingStatus ? 'contained' : 'outlined'}
           icon={readingStatus ? 'check' : undefined}
           onPress={() => navigation.push('ShowMangaLibraryModal', manga)}>

@@ -12,6 +12,9 @@ const baseStyles = StyleSheet.create({
   roundBorders: {borderRadius: spacing(2)},
   squareAspectRatio: {aspectRatio: 1},
   titleCaptionContainer: {gap: spacing(-1.5)},
+  largeTitleCaptionContainer: {gap: spacing(-0.75)},
+  row: {flexDirection: 'row'},
+  column: {flexDirection: 'column'},
 
   // font
   bold: {fontWeight: 'bold'},
@@ -36,6 +39,10 @@ const customStyles = StyleSheet.create({
     height: 150,
     aspectRatio: 3 / 4,
     ...baseStyles.roundBorders,
+  },
+  rowWrap: {
+    ...baseStyles.row,
+    flexWrap: 'wrap',
   },
 });
 

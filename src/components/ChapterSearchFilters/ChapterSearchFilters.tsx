@@ -52,6 +52,7 @@ export default function ChapterSearchFilters({
             values={manga.attributes.availableTranslatedLanguages}
             onChange={handleTranslatedLanguage}
             selected={fields.translatedLanguage}
+            humanReadableValue={locale => locale.toLocaleUpperCase()}
           />
         </View>
       </ScrollView>

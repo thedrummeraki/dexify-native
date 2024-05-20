@@ -1,3 +1,4 @@
+import {getDeviceMangadexFriendlyLanguage} from '@app/utils';
 import {
   Artist,
   Author,
@@ -21,6 +22,14 @@ export enum CoverSize {
 }
 
 export function preferredMangaTitle(manga: Manga) {
+  const deviceLangInTitle = Object.keys(manga.attributes.title).find(locale =>
+    locale.startsWith(getDeviceMangadexFriendlyLanguage()),
+  );
+
+  if (deviceLangInTitle) {
+    return manga.attributes.title[deviceLangInTitle];
+  }
+
   return (
     manga.attributes.title[manga.attributes.originalLanguage] ||
     preferredTitle(manga.attributes.title)
@@ -32,12 +41,12 @@ export function volumeInfoTitle({volume}: {volume: string | null}) {
 }
 
 export function secondaryMangaTitle(manga: Manga) {
-  const englishTitle = manga.attributes.altTitles.find(title => {
+  const deviceLangTitle = manga.attributes.altTitles.find(title => {
     const lang = Object.keys(title)[0];
-    return lang.startsWith('en');
+    return lang.startsWith(getDeviceMangadexFriendlyLanguage());
   });
-  if (englishTitle) {
-    return preferredTitle(englishTitle);
+  if (deviceLangTitle) {
+    return preferredTitle(deviceLangTitle);
   }
 
   const originalTitle =
@@ -85,7 +94,7 @@ export function preferredChapterTitle(chapter: Chapter) {
   const {title, chapter: number} = chapter.attributes;
 
   if (!number && !title) {
-    return 'N/A';
+    return 'Oneshot';
   }
 
   if (number && !title) {

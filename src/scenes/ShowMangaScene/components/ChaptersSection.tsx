@@ -3,9 +3,9 @@ import {PaddingHorizontal} from '@app/components';
 import {useMangaDetails} from './MangaProvider';
 import {Banner, Button, Caption, Text} from 'react-native-paper';
 import {groupChapters} from '@app/api/mangadex/utils';
-import {isSuccess} from '@app/api/mangadex/types';
+import {Chapter, isSuccess} from '@app/api/mangadex/types';
 import {sharedStyles} from '@app/utils/styles';
-import {View} from 'react-native';
+import {Linking, View} from 'react-native';
 import ChaptersListItem from '@app/scenes/ShowMangaVolumeScene/components/ChapterListItem';
 import {useDexifyNavigation} from '@app/foundation/navigation';
 
@@ -30,6 +30,16 @@ export default function ChaptersSection({showFirst = 5}: ChaptersSectionProps) {
       </PaddingHorizontal>
     );
   }
+
+  const onChapterPress = (chapter: Chapter) => {
+    if (chapter.attributes.externalUrl) {
+      Linking.openURL(chapter.attributes.externalUrl).catch(console.warn);
+    } else {
+      // temporary open on mangadex directly until manga reader is open
+      const mangadexChapterUrl = `https://mangadex.org/chapter/${chapter.id}`;
+      Linking.openURL(mangadexChapterUrl).catch(console.warn);
+    }
+  };
 
   const count = isSuccess(chaptersData) ? chaptersData.total : 0;
   if (isSuccess(chaptersData)) {
@@ -75,8 +85,9 @@ export default function ChaptersSection({showFirst = 5}: ChaptersSectionProps) {
           {entities.slice(0, showFirst).map(([chapterIdentifier, chapters]) => (
             <ChaptersListItem
               key={`chapter-${chapterIdentifier}`}
+              chapterIdentifier={chapterIdentifier}
               chapters={chapters}
-              onPress={() => {}}
+              onPress={onChapterPress}
             />
           ))}
         </View>

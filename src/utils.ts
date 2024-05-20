@@ -114,9 +114,25 @@ export function mergeLists<T extends {id: string}>(
   return mergedItems;
 }
 
+export function niceMerge<T extends object>(
+  current: T[],
+  newList: T[],
+  by: keyof T,
+) {
+  return [];
+}
+
 export function intersectPrimitives<
   T extends string | number | boolean | undefined | null,
 >(a: T[], b: T[]): T[] {
   var setB = new Set(b);
   return [...new Set(a)].filter(x => setB.has(x));
+}
+
+export function unique<T>(items: T[]): T[] {
+  return [...new Set(items)];
+}
+
+export function notEmpty<T>(item: T | null | undefined): item is T {
+  return !!item;
 }

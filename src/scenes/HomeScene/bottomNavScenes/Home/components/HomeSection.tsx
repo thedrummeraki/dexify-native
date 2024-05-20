@@ -7,6 +7,7 @@ export interface HomeSectionProps<T> {
   data: T[];
   title?: string;
   subtitle?: string;
+  vertical?: boolean;
   renderItem: ListRenderItem<T>;
 }
 
@@ -14,6 +15,7 @@ export default function HomeSection<T>({
   data,
   title,
   subtitle,
+  vertical,
   renderItem,
 }: HomeSectionProps<T>) {
   const {
@@ -31,7 +33,7 @@ export default function HomeSection<T>({
         ) : null}
       </View>
       <FlatList
-        horizontal
+        horizontal={!vertical}
         data={data}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.flatListContentContainer}
@@ -42,7 +44,7 @@ export default function HomeSection<T>({
 }
 
 const styles = StyleSheet.create({
-  root: {marginBottom: spacing(2), marginTop: spacing(2)},
+  root: {marginBottom: spacing(0.5), marginTop: spacing(0.5)},
   titleContainer: {padding: spacing(2)},
   flatListContentContainer: {
     gap: spacing(2),

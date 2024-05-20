@@ -4,9 +4,12 @@ import {Chip} from 'react-native-paper';
 import {sanitizeFilters} from '@app/foundation/state/filters';
 import {
   ContentRating,
+  EntityResponse,
+  Manga,
   MangaRequestParams,
   MangaStatus,
   PublicationDemographic,
+  isSuccess,
 } from '@app/api/mangadex/types';
 import {ScrollView, StyleSheet} from 'react-native';
 import {spacing} from '@app/utils/styles';
@@ -15,6 +18,9 @@ import {preferredTagName} from '@app/api/mangadex/utils';
 import {contentRatingHumanReadable} from '@app/components/MangaSearchFilters/components/ContentRatingField';
 import {publicationDemographicsHumanReadableValue} from '@app/components/MangaSearchFilters/components/PublicationDemographicsField';
 import {mangaStatusHumanReadable} from '@app/components/MangaSearchFilters/components/MangaStatusField';
+import {useLazyGetRequest} from '@app/api/utils';
+import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
+import {useDexifyNavigation} from '@app/foundation/navigation';
 
 type PreviewableParams = Pick<
   MangaRequestParams,
@@ -57,7 +63,28 @@ const previewableParamsNamesMap: PreviewableParamsNamesMap = {
 
 export default function FiltersPreview() {
   const {params} = useFiltersStore();
+  const navigation = useDexifyNavigation();
   const sanitized = useMemo(() => sanitizeFilters(params), [params]);
+
+  const [fetchSurpriseManga, {loading: surpriseLoading}] =
+    useLazyGetRequest<EntityResponse<Manga>>();
+
+  const surpriseMe = () => {
+    const url = UrlBuilder.randomManga({
+      includes: ['cover_art', 'artist', 'author', 'tag'],
+      contentRating: params.contentRating,
+      includedTags: params.includedTags,
+      includedTagsMode: params.includedTagsMode,
+      excludedTags: params.excludedTags,
+      excludedTagsMode: params.excludedTagsMode,
+    });
+
+    fetchSurpriseManga(url).then(response => {
+      if (isSuccess(response)) {
+        navigation.push('ShowManga', response.data);
+      }
+    });
+  };
 
   const validEntries: [PreviewableParamsKey, ValueOf<PreviewableParams>][] = [];
   Object.entries(sanitized).map(([key, value]) => {
@@ -69,16 +96,19 @@ export default function FiltersPreview() {
     }
   });
 
-  if (validEntries.length === 0) {
-    return null;
-  }
-
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.scrollViewContentContainer}
       style={styles.root}>
+      <Chip
+        mode="outlined"
+        icon="magic-staff"
+        onPress={surpriseMe}
+        disabled={surpriseLoading}>
+        {surpriseLoading ? "Let's see what we have..." : 'Surprise me!'}
+      </Chip>
       {validEntries.map(([key, value]) => (
         <PreviewChip key={key} clef={key} value={value} />
       ))}

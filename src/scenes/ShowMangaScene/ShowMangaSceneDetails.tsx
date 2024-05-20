@@ -20,6 +20,7 @@ import {spacing} from '@app/utils/styles';
 import ChaptersSection from './components/ChaptersSection';
 import CoversSection from './components/CoversSections';
 import RelatedSections from './components/RelatedSection';
+import {useVariant} from '@unleash/proxy-client-react';
 // import FloatingActions from './components/FloatingActions';
 
 export interface ShowMangaSceneDetailsProps {
@@ -30,13 +31,16 @@ export default function ShowMangaSceneDetails({
   manga,
 }: ShowMangaSceneDetailsProps) {
   const secondaryTitle = secondaryMangaTitle(manga);
+  const {payload} = useVariant('manga.cover.size');
+  const defaultCoverSizeIndex =
+    (payload && payload.type === 'number' && parseInt(payload.value, 10)) || 1;
 
   return (
     <SafeAreaView>
       <MangaProvider manga={manga}>
         <ScrollView>
           <View style={{gap: spacing(3)}}>
-            <Poster />
+            <Poster defaultSizeIndex={defaultCoverSizeIndex} />
             <PaddingHorizontal spacing={2} style={{gap: spacing(1)}}>
               <Text variant="titleLarge">{preferredMangaTitle(manga)}</Text>
               {secondaryTitle && (

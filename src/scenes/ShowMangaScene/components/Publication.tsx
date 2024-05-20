@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useManga} from './MangaProvider';
 import {Text, useTheme} from 'react-native-paper';

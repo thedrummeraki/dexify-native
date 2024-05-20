@@ -16,6 +16,7 @@ import {
   DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
 import {adaptNavigationTheme} from 'react-native-paper';
+import StaterinoProvider from './foundation/state/StaterinoProvider';
 
 export function App() {
   const scheme = useColorScheme();
@@ -27,15 +28,17 @@ export function App() {
 
   return (
     <NavigationContainer theme={scheme === 'dark' ? DarkTheme : LightTheme}>
-      <UnleashProvider>
-        <PaperProvider>
-          <TagsProvider>
-            <LibraryProvider>
-              <Root />
-            </LibraryProvider>
-          </TagsProvider>
-        </PaperProvider>
-      </UnleashProvider>
+      <StaterinoProvider>
+        <UnleashProvider>
+          <PaperProvider>
+            <TagsProvider>
+              <LibraryProvider>
+                <Root />
+              </LibraryProvider>
+            </TagsProvider>
+          </PaperProvider>
+        </UnleashProvider>
+      </StaterinoProvider>
     </NavigationContainer>
   );
 }

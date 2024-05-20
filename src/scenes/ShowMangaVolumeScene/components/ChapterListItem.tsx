@@ -1,4 +1,8 @@
-import {Chapter, ScanlationGroup} from '@app/api/mangadex/types';
+import {
+  Chapter,
+  ChapterAttributes,
+  ScanlationGroup,
+} from '@app/api/mangadex/types';
 import {
   Caption,
   IconButton,
@@ -12,27 +16,33 @@ import {findRelationship, preferredChapterTitle} from '@app/api/mangadex/utils';
 import {spacing} from '@app/utils/styles';
 import React, {PropsWithChildren, useState} from 'react';
 import TextBadge from '@app/components/TextBadge';
-import {timeDifference} from '@app/utils';
+import {notEmpty, timeDifference, unique} from '@app/utils';
 
 interface ChaptersListItemProps {
   chapters: Chapter[];
+  chapterIdentifier: string | null;
   onPress(chapter: Chapter): void;
+  onMultipleChapterPress?(chapters: Chapter[]): void;
 }
 
 interface ChaptersListItemPreviewProps {
-  child: boolean;
-  showingOtherChapters?: boolean;
-  hasOtherChapters?: boolean;
-  chapter: Chapter;
+  chapters: Chapter[];
+  chapterIdentifier: string | null;
   onPress(chapter: Chapter): void;
-  onReadPress(chapter: Chapter): void;
+  // onReadPress(chapter: Chapter): void;
   onExpandPress?(): void;
 }
 
-export default function ChaptersListItem({
+function ChaptersListItem({
   chapters,
+  chapterIdentifier,
   onPress,
+  onMultipleChapterPress,
 }: ChaptersListItemProps) {
+  console.log(
+    'ChaptersListItem',
+    `(${chapters.length} chapters - identifier ${chapterIdentifier})`,
+  );
   const hasOtherChapters = chapters.length > 1;
   const [showingOtherChapters, setShowingOtherChapters] = useState(false);
 
@@ -41,114 +51,141 @@ export default function ChaptersListItem({
 
   const handleParentOnPress = (chapter: Chapter) => {
     if (hasOtherChapters) {
-      handleShowingOtherChapters();
+      onMultipleChapterPress?.(chapters);
     } else {
       onPress(chapter);
     }
   };
 
   return (
-    <>
-      {chapters.map((chapter, index) => (
-        <ChaptersListItemPreview
-          key={chapter.id}
-          chapter={chapter}
-          child={index > 0 && hasOtherChapters}
-          showingOtherChapters={showingOtherChapters}
-          hasOtherChapters={hasOtherChapters}
-          onPress={handleParentOnPress}
-          onReadPress={onPress}
-          onExpandPress={
-            hasOtherChapters ? handleShowingOtherChapters : undefined
-          }
-        />
-      ))}
-    </>
+    <ChaptersListItemPreview
+      chapterIdentifier={chapterIdentifier}
+      chapters={chapters}
+      onPress={handleParentOnPress}
+      onExpandPress={hasOtherChapters ? handleShowingOtherChapters : undefined}
+    />
   );
 }
 
-function ChaptersListItemPreview({
+function ChaptersListItemPreviewWrapper({
   child,
-  showingOtherChapters,
-  hasOtherChapters,
-  chapter,
+  children,
+}: PropsWithChildren<Pick<ChaptersListItemPreviewProps, 'child'>>) {
+  const styles = useStyles();
+  if (child) {
+    return <View style={styles.otherChaptersRoots}>{children}</View>;
+  } else {
+    return <>{children}</>;
+  }
+}
+
+function ChaptersListItemPreview({
+  chapters,
+  chapterIdentifier,
   onPress,
-  onReadPress,
   onExpandPress,
 }: ChaptersListItemPreviewProps) {
   const styles = useStyles();
-  const Wrapper = ({child, children}: PropsWithChildren<{child: boolean}>) =>
-    child ? (
-      <View style={styles.otherChaptersRoots}>{children}</View>
-    ) : (
-      <>{children}</>
-    );
-
-  const group = findRelationship<ScanlationGroup>(chapter, 'scanlation_group');
 
   const rootStyles: ViewStyle[] = [styles.root];
-  if (child) {
-    rootStyles.push(styles.childRoot);
-  }
 
-  if (child && !showingOtherChapters) {
-    return null;
-  }
+  // There should always be at least one chapter when rendering this component.
+  // Get the most recent chapter.
+  const chapter = chapters.sort((a, b) =>
+    a.attributes.publishAt.localeCompare(b.attributes.publishAt),
+  )[0];
 
-  const publishedDate = new Date(chapter.attributes.publishAt);
-  const timeAgo = timeDifference(new Date(), publishedDate);
+  const chapterText =
+    chapters.length === 1
+      ? preferredChapterTitle(chapter)
+      : `Chapter ${chapterIdentifier || 'N/A'}`;
 
-  const volumeText = chapter.attributes.volume
-    ? `Volume ${chapter.attributes.volume}`
+  const volumeText = chapters[0].attributes.volume
+    ? `Volume ${chapters[0].attributes.volume}`
     : 'No volume';
 
+  const translatedLanguages = unique(
+    chapters.map(current => current.attributes.translatedLanguage),
+  );
+
+  const groupIds = unique(
+    chapters
+      .map(current => findRelationship(current, 'scanlation_group')?.id)
+      .filter(notEmpty),
+  );
+
+  const chapterWithGroup = chapters.find(current =>
+    findRelationship<ScanlationGroup>(current, 'scanlation_group'),
+  );
+  const onlyGroup = chapterWithGroup
+    ? findRelationship<ScanlationGroup>(chapterWithGroup, 'scanlation_group')!
+    : null;
+  const oneGroupMarkup =
+    groupIds.length === 1 && onlyGroup ? (
+      <TextBadge
+        icon="account"
+        background="surfaceDisabled"
+        content={onlyGroup.attributes.name}
+      />
+    ) : null;
+
+  const multipleGroupsMarkup =
+    groupIds.length > 1 ? (
+      <TextBadge
+        icon="account"
+        background="surfaceDisabled"
+        content={`${groupIds.length} groups`}
+      />
+    ) : null;
+
+  const groupsMarkup = oneGroupMarkup || multipleGroupsMarkup;
+
+  const publishedDate = new Date(chapter.attributes.publishAt);
+  const timeAgoText = timeDifference(new Date(), publishedDate);
+
   return (
-    <Wrapper child={child}>
-      <TouchableRipple
-        borderless
-        onPress={() => (child ? onReadPress(chapter) : onPress(chapter))}
-        style={sharedStyles.roundBorders}>
-        <View style={rootStyles}>
-          <View style={styles.titleContainer}>
-            <View>
-              <Text>{preferredChapterTitle(chapter)}</Text>
-              {!child ? <Caption>{volumeText}</Caption> : null}
-            </View>
-            <View style={styles.tagsContainer}>
+    <TouchableRipple
+      borderless
+      onPress={() => onPress(chapter)}
+      style={sharedStyles.roundBorders}>
+      <View style={rootStyles}>
+        <View style={styles.titleContainer}>
+          <View>
+            <Text>{chapterText}</Text>
+            <Caption>{volumeText}</Caption>
+          </View>
+          <View style={styles.tagsContainer}>
+            {translatedLanguages.map(translatedLanguage => (
               <TextBadge
+                key={translatedLanguage}
                 icon="translate"
-                content={chapter.attributes.translatedLanguage.toLocaleUpperCase()}
+                content={translatedLanguage.toLocaleUpperCase()}
               />
-              <TextBadge icon="clock-outline" content={timeAgo} />
-              {group ? (
-                <TextBadge
-                  icon="account"
-                  background="surfaceDisabled"
-                  content={group.attributes.name}
-                />
-              ) : null}
-            </View>
+            ))}
+            {groupsMarkup}
+            <TextBadge icon="clock-outline" content={timeAgoText} />
           </View>
-          <View
-            style={[
-              styles.actions,
-              !child && !hasOtherChapters && {marginRight: spacing(0)},
-            ]}>
-            <IconButton
-              icon={chapter.attributes.externalUrl ? 'open-in-new' : 'eye'}
-              style={styles.icon}
-              onPress={() => onReadPress(chapter)}
-            />
-            {onExpandPress && !child && (
-              <IconButton
-                icon={showingOtherChapters ? 'chevron-left' : 'chevron-down'}
-                onPress={onExpandPress}
-              />
-            )}
-          </View>
+          <View></View>
         </View>
-      </TouchableRipple>
-    </Wrapper>
+        {/* <View
+          style={[
+            styles.actions,
+            !child && !hasOtherChapters && {marginRight: spacing(0)},
+          ]}>
+          <IconButton
+            icon={chapter.attributes.externalUrl ? 'open-in-new' : 'eye'}
+            style={styles.icon}
+            onPress={() => onReadPress(chapter)}
+          />
+          {onExpandPress && !child && (
+            <IconButton
+              icon={showingOtherChapters ? 'chevron-left' : 'chevron-down'}
+              onPress={onExpandPress}
+            />
+          )}
+        </View> */}
+      </View>
+    </TouchableRipple>
   );
 }
 
@@ -192,3 +229,8 @@ function useStyles() {
     },
   });
 }
+
+const MemoizedChaptersListItem = React.memo(ChaptersListItem, (prev, next) => {
+  return prev.chapterIdentifier === next.chapterIdentifier;
+});
+export default MemoizedChaptersListItem;
