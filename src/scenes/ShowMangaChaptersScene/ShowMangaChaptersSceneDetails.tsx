@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   Chapter,
   ChapterRequestParams,
-  GroupedChapters,
   Manga,
   PagedResultsList,
   isSuccess,
@@ -10,13 +9,7 @@ import {
 import {groupChapters, preferredMangaTitle} from '@app/api/mangadex/utils';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import {StyleSheet, View} from 'react-native';
-import {
-  Banner,
-  Button,
-  IconButton,
-  ProgressBar,
-  Text,
-} from 'react-native-paper';
+import {Banner, IconButton, ProgressBar, Text} from 'react-native-paper';
 import {useLazyGetRequest} from '@app/api/utils';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
 import ChaptersList from '../ShowMangaVolumeScene/components/ChaptersList';
@@ -36,18 +29,6 @@ export interface ShowMangaChaptersSceneDetailsProps {
 export interface ChaptersState {
   order: (string | null)[];
   data: {[key: string]: Chapter[]};
-}
-
-function mergerinoifyChapters(chapters: Chapter[]): ChaptersState {
-  const groupedChapters = groupChapters(chapters);
-  const chapterEntries = [...groupedChapters.entries()];
-
-  return {
-    data: Object.fromEntries(chapterEntries),
-    order: chapterEntries.map(
-      ([chapterIdentifier, _]) => chapterIdentifier || 'N/A',
-    ),
-  };
 }
 
 export default function ShowMangaChaptersSceneDetails({
@@ -100,25 +81,6 @@ export default function ShowMangaChaptersSceneDetails({
 
   useEffect(() => {
     if (isSuccess(data)) {
-      // setChapters(current => {
-      //   // ;
-      //   // const currentIds = [...current.map(x => x.id)];
-      //   // const result = [...current];
-      //   // data.data.forEach(newChapter => {
-      //   //   if (!currentIds.includes(newChapter.id)) {
-      //   //     currentIds.push(newChapter.id);
-      //   //     result.push(newChapter);
-      //   //   }
-      //   // });
-      //   // return result;
-      //   return mergerino(
-      //     [...data.data, ...current],
-      //     data.data.reduce((acc, value, index) => {
-      //       acc[index] = value;
-      //       return acc;
-      //     }, {} as any),
-      //   );
-      // });
       setChapters(current => {
         const newChapters = data.data;
 
@@ -153,6 +115,7 @@ export default function ShowMangaChaptersSceneDetails({
         />
       </View>
       <ChaptersList
+        manga={manga}
         hideSearchBar
         groupedChapters={chapters}
         contentContainerStyle={[
@@ -163,16 +126,6 @@ export default function ShowMangaChaptersSceneDetails({
           },
         ]}
         initialNumToRender={20}
-        // ListFooterComponent={
-        //   hasMore ? (
-        //     <Button
-        //       disabled={loading}
-        //       mode="contained-tonal"
-        //       onPress={() => nextPage()}>
-        //       Load more...
-        //     </Button>
-        //   ) : null
-        // }
         onEndReachedThreshold={1}
         onEndReached={() => {
           if (!loading && hasMore) {

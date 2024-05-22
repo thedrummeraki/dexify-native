@@ -14,9 +14,10 @@ import {StyleSheet, View, ViewStyle} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
 import {findRelationship, preferredChapterTitle} from '@app/api/mangadex/utils';
 import {spacing} from '@app/utils/styles';
-import React, {PropsWithChildren, useState} from 'react';
+import React, {PropsWithChildren, useMemo, useState} from 'react';
 import TextBadge from '@app/components/TextBadge';
 import {notEmpty, timeDifference, unique} from '@app/utils';
+import {useStore} from '@app/foundation/state/StaterinoProvider';
 
 interface ChaptersListItemProps {
   chapters: Chapter[];
@@ -39,10 +40,6 @@ function ChaptersListItem({
   onPress,
   onMultipleChapterPress,
 }: ChaptersListItemProps) {
-  console.log(
-    'ChaptersListItem',
-    `(${chapters.length} chapters - identifier ${chapterIdentifier})`,
-  );
   const hasOtherChapters = chapters.length > 1;
   const [showingOtherChapters, setShowingOtherChapters] = useState(false);
 
@@ -83,7 +80,6 @@ function ChaptersListItemPreview({
   chapters,
   chapterIdentifier,
   onPress,
-  onExpandPress,
 }: ChaptersListItemPreviewProps) {
   const styles = useStyles();
 
@@ -94,6 +90,20 @@ function ChaptersListItemPreview({
   const chapter = chapters.sort((a, b) =>
     a.attributes.publishAt.localeCompare(b.attributes.publishAt),
   )[0];
+  const chapterIds = chapters.map(currentChapter => currentChapter.id);
+
+  const {
+    reader: {savedPositions},
+  } = useStore();
+  const readingInProgress = useMemo(
+    () =>
+      Boolean(
+        Object.keys(savedPositions).find(chapterId =>
+          chapterIds.includes(chapterId),
+        ),
+      ),
+    [savedPositions, chapterIds],
+  );
 
   const chapterText =
     chapters.length === 1
@@ -123,8 +133,12 @@ function ChaptersListItemPreview({
   const oneGroupMarkup =
     groupIds.length === 1 && onlyGroup ? (
       <TextBadge
-        icon="account"
-        background="surfaceDisabled"
+        icon={chapter.attributes.externalUrl ? 'open-in-new' : 'account'}
+        background={
+          chapter.attributes.externalUrl
+            ? 'primaryContainer'
+            : 'surfaceDisabled'
+        }
         content={onlyGroup.attributes.name}
       />
     ) : null;
@@ -165,25 +179,12 @@ function ChaptersListItemPreview({
             {groupsMarkup}
             <TextBadge icon="clock-outline" content={timeAgoText} />
           </View>
-          <View></View>
         </View>
-        {/* <View
-          style={[
-            styles.actions,
-            !child && !hasOtherChapters && {marginRight: spacing(0)},
-          ]}>
-          <IconButton
-            icon={chapter.attributes.externalUrl ? 'open-in-new' : 'eye'}
-            style={styles.icon}
-            onPress={() => onReadPress(chapter)}
-          />
-          {onExpandPress && !child && (
-            <IconButton
-              icon={showingOtherChapters ? 'chevron-left' : 'chevron-down'}
-              onPress={onExpandPress}
-            />
-          )}
-        </View> */}
+        <View style={[styles.actions]}>
+          {readingInProgress ? (
+            <IconButton icon={'check'} style={styles.icon} onPress={() => {}} />
+          ) : null}
+        </View>
       </View>
     </TouchableRipple>
   );

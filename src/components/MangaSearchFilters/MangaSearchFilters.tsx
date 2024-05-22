@@ -5,8 +5,7 @@ import {
   PublicationDemographic,
 } from '@app/api/mangadex/types';
 
-import merge, {MultipleTopLevelPatch} from 'mergerino';
-import React, {useCallback, useMemo, useReducer} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {ScrollView, View} from 'react-native';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import {useTags} from '@app/providers/TagsProvider';
@@ -21,6 +20,7 @@ import {
   useUserStore,
 } from '@app/foundation/state/StaterinoProvider';
 import MangaStatusField from './components/MangaStatusField';
+import {useMergerinoState} from '@app/utils';
 
 export interface MangaSearchFiltersProps {
   onSubmit?(params: FilterParamsState): void;
@@ -47,10 +47,7 @@ export default function MangaSearchFilters({
     return values;
   }, [user]);
 
-  const [fields, set] = useReducer(
-    (a: typeof state, p: MultipleTopLevelPatch<typeof state>) => merge(a, p),
-    state,
-  );
+  const [fields, set] = useMergerinoState(state);
 
   const allTags = useTags();
   const {

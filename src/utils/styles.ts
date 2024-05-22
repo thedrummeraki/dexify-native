@@ -10,11 +10,14 @@ const baseStyles = StyleSheet.create({
   flex: {flex: 1},
   container: {padding: defaultSpacing * 2, gap: spacing(2)},
   roundBorders: {borderRadius: spacing(2)},
+  noRoundBorders: {borderRadius: 0},
   squareAspectRatio: {aspectRatio: 1},
   titleCaptionContainer: {gap: spacing(-1.5)},
   largeTitleCaptionContainer: {gap: spacing(-0.75)},
   row: {flexDirection: 'row'},
   column: {flexDirection: 'column'},
+  jCenter: {justifyContent: 'center'},
+  aCenter: {alignItems: 'center'},
 
   // font
   bold: {fontWeight: 'bold'},
@@ -31,6 +34,10 @@ const baseStyles = StyleSheet.create({
 });
 
 const customStyles = StyleSheet.create({
+  center: {
+    ...baseStyles.jCenter,
+    ...baseStyles.aCenter,
+  },
   tightContainer: {
     ...baseStyles.container,
     gap: spacing(1),

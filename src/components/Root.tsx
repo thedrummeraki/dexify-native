@@ -6,6 +6,7 @@ import {
   CustomListScene,
   FiltersScene,
   HomeScene,
+  ShowChapterScene,
   ShowMangaChaptersScene,
   ShowMangaDetailsModalScene,
   ShowMangaLibraryModalScene,
@@ -20,7 +21,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export function Root() {
   return (
     <Stack.Navigator>
-      <Stack.Group screenOptions={{headerShown: false}}>
+      <Stack.Group
+        screenOptions={{headerShown: false, orientation: 'portrait'}}>
         <Stack.Screen name="Home" component={HomeScene} />
         <Stack.Screen name="ShowManga" component={ShowMangaScene} />
         <Stack.Screen name="ShowArtist" component={AuthorArtistScene} />
@@ -30,6 +32,7 @@ export function Root() {
           name="ShowMangaChapters"
           component={ShowMangaChaptersScene}
         />
+        <Stack.Screen name="ShowChapter" component={ShowChapterScene} />
       </Stack.Group>
       <Stack.Group
         screenOptions={{presentation: 'fullScreenModal', headerShown: false}}>

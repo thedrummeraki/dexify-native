@@ -6,7 +6,7 @@ import {
 import {CategoryDisplay, ChapterCategory, MangaCategory} from './types';
 
 const defaultMangaQueryParams: MangaRequestParams = {
-  contentRating: [ContentRating.safe],
+  contentRating: [ContentRating.safe, ContentRating.suggestive],
   includes: ['cover_art', 'artist', 'author', 'tag'],
   limit: 30,
   hasAvailableChapters: 'true',
@@ -88,6 +88,7 @@ export const familyFriendly: MangaCategory = {
   display: CategoryDisplay.Collection,
   query: {
     ...defaultMangaQueryParams,
+    contentRating: [ContentRating.safe],
     includedTagsMode: TagMode.OR,
     includedTags: [
       // action

@@ -1,4 +1,5 @@
-import {useEffect} from 'react';
+import merge, {MultipleTopLevelPatch} from 'mergerino';
+import {useEffect, useReducer} from 'react';
 import {Dimensions, Platform, StatusBar} from 'react-native';
 
 import {NativeModules} from 'react-native';
@@ -114,12 +115,11 @@ export function mergeLists<T extends {id: string}>(
   return mergedItems;
 }
 
-export function niceMerge<T extends object>(
-  current: T[],
-  newList: T[],
-  by: keyof T,
-) {
-  return [];
+export function useMergerinoState<S extends object>(defaultState: S) {
+  return useReducer(
+    (a: S, p: MultipleTopLevelPatch<S>) => merge(a, p),
+    defaultState,
+  );
 }
 
 export function intersectPrimitives<

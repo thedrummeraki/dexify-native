@@ -1,8 +1,4 @@
-import {
-  Chapter,
-  GroupedChapters,
-  ScanlationGroup,
-} from '@app/api/mangadex/types';
+import {Chapter, Manga, ScanlationGroup} from '@app/api/mangadex/types';
 import React, {ComponentProps, useState} from 'react';
 import {FlatList, Linking, View} from 'react-native';
 import ChaptersListItem from './ChapterListItem';
@@ -10,9 +6,10 @@ import {spacing} from '@app/utils/styles';
 import {SearchBar} from '@app/components';
 import {findRelationship} from '@app/api/mangadex/utils';
 import {ChaptersState} from '@app/scenes/ShowMangaChaptersScene/ShowMangaChaptersSceneDetails';
+import {useDexifyNavigation} from '@app/foundation/navigation';
 
 export type ChaptersListProps = {
-  // groupedChapters: GroupedChapters | {[key: string]: Chapter[]};
+  manga: Manga;
   groupedChapters: ChaptersState;
   hideSearchBar?: boolean;
   // onChapterPress(chapter: Chapter): void;
@@ -22,11 +19,13 @@ export type ChaptersListProps = {
 >;
 
 export default function ChaptersList({
+  manga,
   groupedChapters,
   hideSearchBar,
   // onChapterPress,
   ...flatListProps
 }: ChaptersListProps) {
+  const navigation = useDexifyNavigation();
   const [query, setQuery] = useState('');
 
   // TODO: use this state to show a modal selecting chapters
@@ -41,9 +40,10 @@ export default function ChaptersList({
     if (chapter.attributes.externalUrl) {
       Linking.openURL(chapter.attributes.externalUrl).catch(console.warn);
     } else {
-      // temporary open on mangadex directly until manga reader is open
-      const mangadexChapterUrl = `https://mangadex.org/chapter/${chapter.id}`;
-      Linking.openURL(mangadexChapterUrl).catch(console.warn);
+      // temporarily open on mangadex directly until manga reader is open
+      // const mangadexChapterUrl = `https://mangadex.org/chapter/${chapter.id}`;
+      // Linking.openURL(mangadexChapterUrl).catch(console.warn);
+      navigation.push('ShowChapter', {chapter, manga});
     }
   };
 

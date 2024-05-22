@@ -10,7 +10,7 @@ import {readingStatusName} from '@app/scenes/HomeScene/bottomNavScenes/Library/L
 
 export default function MainActions() {
   const navigation = useDexifyNavigation();
-  const [library, mdLists, user] = useStore([
+  const [library, mdLists, _user] = useStore([
     state => state.library.data,
     state => state.mdLists.data,
     state => state.user.user,

@@ -35,9 +35,7 @@ export default function ChaptersSection({showFirst = 5}: ChaptersSectionProps) {
     if (chapter.attributes.externalUrl) {
       Linking.openURL(chapter.attributes.externalUrl).catch(console.warn);
     } else {
-      // temporary open on mangadex directly until manga reader is open
-      const mangadexChapterUrl = `https://mangadex.org/chapter/${chapter.id}`;
-      Linking.openURL(mangadexChapterUrl).catch(console.warn);
+      navigation.push('ShowChapter', {chapter, manga});
     }
   };
 

@@ -14,11 +14,13 @@ import {
   defaultLibraryStore,
   defaultMDListsStore,
 } from './library';
+import {ReaderStore, defaultReaderStore} from './reader';
 
 export interface AppState {
   user: UserStore;
   filters: FiltersStore;
   chapterFilters: ChapterFiltersStore;
+  reader: ReaderStore;
   library: LibraryStore;
   mdLists: MDListsStore;
 }
@@ -28,6 +30,7 @@ export function defaultState(): AppState {
     user: defaultUserStore,
     filters: defaultFiltersStore,
     chapterFilters: defaultChapterFiltersStore,
+    reader: defaultReaderStore,
     library: defaultLibraryStore,
     mdLists: defaultMDListsStore,
   };

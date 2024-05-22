@@ -151,7 +151,7 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapterParams, chaptersOrder]);
+  }, [chapterParams, chaptersOrder, contentRating]);
 
   const [getVolumesAndChapters, {loading: aggregateLoading}] =
     useLazyGetRequest<Manga.Aggregate>(

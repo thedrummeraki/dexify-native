@@ -64,13 +64,13 @@ export const useUserStore = () => {
 
   useEffect(() => {
     return subscribe(
-      state => state,
-      state => {
-        if (state.user.user) {
-          storeSession(state.user).catch(e =>
+      state => state.user,
+      userStore => {
+        if (userStore.user) {
+          storeSession(userStore).catch(e =>
             console.error(
               'Failed to store UserStore',
-              state.user,
+              userStore,
               '. Details:',
               e,
             ),
@@ -158,7 +158,7 @@ async function storeSession(session: UserStore) {
 
 async function storeState(state: AppState) {
   try {
-    console.log('Storing the state on update...');
+    // console.log('Storing the state on update...');
     await EncryptedStorage.setItem('app_state', JSON.stringify(state));
     return true;
   } catch (error) {
