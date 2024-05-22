@@ -1,6 +1,12 @@
 import merge, {MultipleTopLevelPatch} from 'mergerino';
 import {useEffect, useReducer} from 'react';
-import {Dimensions, Platform, StatusBar} from 'react-native';
+import {
+  Dimensions,
+  I18nManager,
+  Platform,
+  Settings,
+  StatusBar,
+} from 'react-native';
 
 import {NativeModules} from 'react-native';
 
@@ -57,12 +63,18 @@ export function usePlatformName() {
 
 export function getDeviceLocale(): string {
   if (Platform.OS === 'ios') {
-    return (
-      NativeModules.SettingsManager.settings.AppleLocale ||
-      NativeModules.SettingsManager.settings.AppleLanguages[0]
-    );
+    const settings = Settings.get('AppleLocale');
+    const locale = settings || settings?.[0];
+
+    if (locale) {
+      return locale;
+    }
   } else if (Platform.OS === 'android') {
-    return NativeModules.I18nManager.localeIdentifier;
+    const locale = I18nManager.getConstants().localeIdentifier;
+
+    if (locale) {
+      return locale;
+    }
   }
 
   // return en by default

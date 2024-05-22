@@ -9,7 +9,7 @@ import {Page} from '../../types';
 import {ReadingStatus} from '@app/api/mangadex/types';
 
 export default function LongStripReader() {
-  const {set: globalSet, subscribe: globalSubscribe} = useStore;
+  const {set: globalSet} = useStore;
   const {savedPositions} = useStore(state => state.reader);
   const [progress, setProgress] = useState(0);
   const {pages, chapter, manga} = useChapterStore();
@@ -71,15 +71,12 @@ export default function LongStripReader() {
   const renderItem: ListRenderItem<Page> = useCallback(
     ({item}) => {
       const {
-        image: {height, width},
+        image: {height, width, uri},
       } = item;
       const aspectRatio = width / height;
 
       return (
-        <Image
-          source={{uri: item.image.uri}}
-          style={{aspectRatio, width: dimensions.width}}
-        />
+        <Image source={{uri}} style={{aspectRatio, width: dimensions.width}} />
       );
     },
     [dimensions.width],

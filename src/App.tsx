@@ -17,6 +17,7 @@ import {
 } from '@react-navigation/native';
 import {adaptNavigationTheme} from 'react-native-paper';
 import StaterinoProvider from './foundation/state/StaterinoProvider';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 export function App() {
   const scheme = useColorScheme();
@@ -27,18 +28,20 @@ export function App() {
   });
 
   return (
-    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : LightTheme}>
-      <StaterinoProvider>
-        <UnleashProvider>
-          <PaperProvider>
-            <TagsProvider>
-              <LibraryProvider>
-                <Root />
-              </LibraryProvider>
-            </TagsProvider>
-          </PaperProvider>
-        </UnleashProvider>
-      </StaterinoProvider>
-    </NavigationContainer>
+    <GestureHandlerRootView>
+      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : LightTheme}>
+        <StaterinoProvider>
+          <UnleashProvider>
+            <PaperProvider>
+              <TagsProvider>
+                <LibraryProvider>
+                  <Root />
+                </LibraryProvider>
+              </TagsProvider>
+            </PaperProvider>
+          </UnleashProvider>
+        </StaterinoProvider>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }

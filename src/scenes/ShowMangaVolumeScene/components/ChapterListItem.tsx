@@ -1,8 +1,4 @@
-import {
-  Chapter,
-  ChapterAttributes,
-  ScanlationGroup,
-} from '@app/api/mangadex/types';
+import {Chapter, ScanlationGroup} from '@app/api/mangadex/types';
 import {
   Caption,
   IconButton,
@@ -14,7 +10,7 @@ import {StyleSheet, View, ViewStyle} from 'react-native';
 import {sharedStyles} from '@app/utils/styles';
 import {findRelationship, preferredChapterTitle} from '@app/api/mangadex/utils';
 import {spacing} from '@app/utils/styles';
-import React, {PropsWithChildren, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import TextBadge from '@app/components/TextBadge';
 import {notEmpty, timeDifference, unique} from '@app/utils';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
@@ -41,7 +37,7 @@ function ChaptersListItem({
   onMultipleChapterPress,
 }: ChaptersListItemProps) {
   const hasOtherChapters = chapters.length > 1;
-  const [showingOtherChapters, setShowingOtherChapters] = useState(false);
+  const [_, setShowingOtherChapters] = useState(false);
 
   const handleShowingOtherChapters = () =>
     setShowingOtherChapters(current => !current);
@@ -62,18 +58,6 @@ function ChaptersListItem({
       onExpandPress={hasOtherChapters ? handleShowingOtherChapters : undefined}
     />
   );
-}
-
-function ChaptersListItemPreviewWrapper({
-  child,
-  children,
-}: PropsWithChildren<Pick<ChaptersListItemPreviewProps, 'child'>>) {
-  const styles = useStyles();
-  if (child) {
-    return <View style={styles.otherChaptersRoots}>{children}</View>;
-  } else {
-    return <>{children}</>;
-  }
 }
 
 function ChaptersListItemPreview({

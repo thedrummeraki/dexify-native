@@ -22,7 +22,9 @@ export default function Library() {
   return (
     <SafeAreaView style={[sharedStyles.flex]}>
       <View style={sharedStyles.container}>
-        <Text variant="titleLarge">Library</Text>
+        <View style={[sharedStyles.aCenter, sharedStyles.row]}>
+          <Text variant="titleLarge">Library</Text>
+        </View>
         <FlatList
           horizontal
           data={readingStatuses}

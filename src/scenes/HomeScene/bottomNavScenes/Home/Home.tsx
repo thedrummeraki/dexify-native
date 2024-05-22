@@ -6,7 +6,7 @@ import HomeSection from './components/HomeSection';
 import {useFetchCategoryProvider} from './useFetchHome';
 import {SimpleMangaThumbnail} from '@app/components';
 import {useDexifyNavigation} from '@app/foundation/navigation';
-import {Button, Caption, ProgressBar, Text, useTheme} from 'react-native-paper';
+import {Button, ProgressBar, Text, useTheme} from 'react-native-paper';
 import {useBaseProvider} from '@app/home/providers';
 import {isSuccess} from '@app/api/mangadex/types';
 import ChaptersListItem from '@app/scenes/ShowMangaVolumeScene/components/ChapterListItem';
@@ -14,12 +14,12 @@ import {CategoryDisplay} from '@app/home/types';
 import {
   CoverSize,
   mangaImage,
-  preferredMangaDescription,
   preferredMangaTitle,
 } from '@app/api/mangadex/utils';
 import {SimpleMangaProvider} from '@app/scenes/ShowMangaScene/components/MangaProvider';
 import {
   AuthorsArtists,
+  Description,
   Publication,
 } from '@app/scenes/ShowMangaScene/components';
 
@@ -70,15 +70,11 @@ export default function Home() {
                   style={[sharedStyles.squareAspectRatio, {backgroundColor}]}
                 />
                 <View style={sharedStyles.container}>
-                  <View style={[sharedStyles.largeTitleCaptionContainer]}>
+                  <View>
                     <Text variant="titleLarge">
                       {preferredMangaTitle(manga)}
                     </Text>
-                    <Caption
-                      numberOfLines={3}
-                      style={sharedStyles.noBottomMargin}>
-                      {preferredMangaDescription(manga)}
-                    </Caption>
+                    <Description hideExpandButton />
                   </View>
                 </View>
                 <View style={sharedStyles.tightContainer}>
