@@ -8,8 +8,6 @@ import {
   StatusBar,
 } from 'react-native';
 
-import {NativeModules} from 'react-native';
-
 /**
  * A debounced function, for useEffect.
  *

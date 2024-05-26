@@ -1,12 +1,13 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useChapterStore} from '../../state';
-import {FlatList, Image, ListRenderItem} from 'react-native';
+import {FlatList, Image, ListRenderItem, View} from 'react-native';
 import {useDimensions} from '@app/utils';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
-import {ProgressBar} from 'react-native-paper';
+import {Button, ProgressBar} from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import {Page} from '../../types';
 import {ReadingStatus} from '@app/api/mangadex/types';
+import {sharedStyles} from '@app/utils/styles';
 
 export default function LongStripReader() {
   const {set: globalSet} = useStore;
@@ -99,6 +100,13 @@ export default function LongStripReader() {
           setProgress(currentContentOffset.y / totalHeight);
         }}
         renderItem={renderItem}
+        // ListFooterComponent={
+        //   <View style={sharedStyles.container}>
+        //     <Button mode="contained-tonal" onPress={() => {}}>
+        //       Next chapter
+        //     </Button>
+        //   </View>
+        // }
       />
     </>
   );

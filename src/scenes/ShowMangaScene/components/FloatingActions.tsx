@@ -6,14 +6,19 @@ export default function FloatingActions() {
   return (
     <Portal>
       <FAB.Group
-        open={open}
         visible
+        open={open}
         icon={open ? 'chevron-down' : 'plus'}
         actions={[
           {
-            icon: 'book-open-blank-variant',
+            icon: 'download',
             onPress: () => {},
-            label: 'Read now',
+            label: 'Share...',
+          },
+          {
+            icon: 'download',
+            onPress: () => {},
+            label: 'Download...',
           },
         ]}
         onPress={() => setOpen(current => !current)}

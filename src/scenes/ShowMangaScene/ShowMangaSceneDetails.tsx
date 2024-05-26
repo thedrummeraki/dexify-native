@@ -15,12 +15,13 @@ import {
   Description,
 } from './components';
 import MangaProvider from './components/MangaProvider';
-import {Text} from 'react-native-paper';
-import {spacing} from '@app/utils/styles';
+import {Portal, Text} from 'react-native-paper';
+import {sharedStyles, spacing} from '@app/utils/styles';
 import ChaptersSection from './components/ChaptersSection';
 import CoversSection from './components/CoversSections';
 import RelatedSections from './components/RelatedSection';
 import {useVariant} from '@unleash/proxy-client-react';
+import FloatingActions from './components/FloatingActions';
 // import FloatingActions from './components/FloatingActions';
 
 export interface ShowMangaSceneDetailsProps {
@@ -36,35 +37,37 @@ export default function ShowMangaSceneDetails({
     (payload && payload.type === 'number' && parseInt(payload.value, 10)) || 1;
 
   return (
-    <SafeAreaView>
-      <MangaProvider manga={manga}>
-        <ScrollView>
-          <View style={{gap: spacing(3)}}>
-            <Poster defaultSizeIndex={defaultCoverSizeIndex} />
-            <PaddingHorizontal spacing={2} style={{gap: spacing(1)}}>
-              <Text variant="titleLarge">{preferredMangaTitle(manga)}</Text>
-              {secondaryTitle && (
-                <Text variant="titleSmall">{secondaryTitle}</Text>
-              )}
-              <AuthorsArtists />
-            </PaddingHorizontal>
-            <PaddingHorizontal spacing={2} style={{gap: spacing(2)}}>
-              <Publication />
-              <Stats />
-              <MainActions />
-              <Description />
-            </PaddingHorizontal>
-            <View style={{marginBottom: spacing(8)}}>
-              <ChaptersSection showFirst={3} />
-              <CoversSection />
-              <RelatedSections />
+    <Portal.Host>
+      <SafeAreaView>
+        <MangaProvider manga={manga}>
+          <ScrollView>
+            <View style={{gap: spacing(3), marginBottom: spacing(12)}}>
+              <Poster defaultSizeIndex={defaultCoverSizeIndex} />
+              <PaddingHorizontal spacing={2} style={{gap: spacing(1)}}>
+                <Text variant="titleLarge">{preferredMangaTitle(manga)}</Text>
+                {secondaryTitle && (
+                  <Text variant="titleSmall">{secondaryTitle}</Text>
+                )}
+                <AuthorsArtists />
+              </PaddingHorizontal>
+              <PaddingHorizontal spacing={2} style={{gap: spacing(2)}}>
+                <Publication />
+                <Stats />
+                <MainActions />
+                <Description />
+              </PaddingHorizontal>
+              <View style={{marginBottom: spacing(8)}}>
+                <ChaptersSection showFirst={3} />
+                <CoversSection />
+                <RelatedSections />
+              </View>
             </View>
+          </ScrollView>
+          <View style={sharedStyles.flex}>
+            <FloatingActions />
           </View>
-        </ScrollView>
-        {/* <View style={sharedStyles.flex}>
-          <FloatingActions />
-        </View> */}
-      </MangaProvider>
-    </SafeAreaView>
+        </MangaProvider>
+      </SafeAreaView>
+    </Portal.Host>
   );
 }

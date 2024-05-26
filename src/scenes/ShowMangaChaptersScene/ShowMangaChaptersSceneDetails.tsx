@@ -120,10 +120,10 @@ export default function ShowMangaChaptersSceneDetails({
         groupedChapters={chapters}
         contentContainerStyle={[
           sharedStyles.tightContainer,
-          {
-            // todo: find another way to remove top padding
-            marginTop: spacing(-3),
-          },
+          // {
+          //   // todo: find another way to remove top padding
+          //   marginTop: spacing(-3),
+          // },
         ]}
         initialNumToRender={20}
         onEndReachedThreshold={1}

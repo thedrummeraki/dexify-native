@@ -1,9 +1,10 @@
+import React from 'react';
 import {CoverSize, coverImage, findRelationship} from '@app/api/mangadex/utils';
 import {useManga} from './MangaProvider';
 import {CoverArt} from '@app/api/mangadex/types';
 import {Image} from 'react-native';
 import {useReducer} from 'react';
-import {TouchableRipple} from 'react-native-paper';
+import {TouchableRipple, useTheme} from 'react-native-paper';
 
 enum AspectRatio {
   Small = 1.5,
@@ -16,6 +17,9 @@ export interface PosterProps {
 }
 
 export default function Poster({defaultSizeIndex = 1}: PosterProps) {
+  const {
+    colors: {surfaceVariant},
+  } = useTheme();
   const manga = useManga();
   const coverArt = findRelationship<CoverArt>(manga, 'cover_art');
 
@@ -28,8 +32,6 @@ export default function Poster({defaultSizeIndex = 1}: PosterProps) {
     return (current + 1) % 3;
   }, defaultSizeIndex);
 
-  console.log({index});
-
   const aspectRatio = validAspectRatios[index];
 
   if (!coverArt) {
@@ -41,7 +43,10 @@ export default function Poster({defaultSizeIndex = 1}: PosterProps) {
     <TouchableRipple
       onLongPress={() => dispatch()}
       rippleColor="rgba(0, 0, 0, 0.32)">
-      <Image source={{uri: imageUri}} style={{flex: 1, aspectRatio}} />
+      <Image
+        source={{uri: imageUri}}
+        style={{aspectRatio, backgroundColor: surfaceVariant}}
+      />
     </TouchableRipple>
   );
 }

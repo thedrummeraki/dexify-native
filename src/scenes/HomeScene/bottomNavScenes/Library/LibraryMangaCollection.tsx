@@ -2,7 +2,7 @@ import React from 'react';
 import {
   AllReadingStatusResponse,
   ContentRating,
-  ReadingStatus,
+  LibraryStates,
 } from '@app/api/mangadex/types';
 import {MangaSearchCollection} from '@app/components';
 import {StyleSheet, View} from 'react-native';
@@ -10,7 +10,7 @@ import {ProgressBar, Text} from 'react-native-paper';
 
 export interface LibraryMangaCollectionProps {
   loading?: boolean;
-  readingStatus: ReadingStatus;
+  readingStatus: LibraryStates;
   mapping: AllReadingStatusResponse;
 }
 

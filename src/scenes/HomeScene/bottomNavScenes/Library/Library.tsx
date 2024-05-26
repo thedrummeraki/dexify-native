@@ -1,4 +1,8 @@
-import {ReadingStatus} from '@app/api/mangadex/types';
+import {
+  ReadingStatus,
+  OtherReadingStatuses,
+  LibraryStates,
+} from '@app/api/mangadex/types';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import React, {useState} from 'react';
 import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
@@ -8,14 +12,17 @@ import {useStore} from '@app/foundation/state/StaterinoProvider';
 
 export default function Library() {
   const readingStatuses = Object.values(ReadingStatus);
-  const [currentReadingStatus, setCurrentReadingStatus] = useState(
-    ReadingStatus.Reading,
-  );
+  const otherReadingStatuses: Array<ReadingStatus | OtherReadingStatuses> =
+    Object.values(OtherReadingStatuses);
+  const allReadingStatus = otherReadingStatuses.concat(readingStatuses);
+
+  const [currentReadingStatus, setCurrentReadingStatus] =
+    useState<LibraryStates>(ReadingStatus.Reading);
 
   const {data: mapping, loading} = useStore(state => state.library);
   const allStatuses = Object.values(mapping.statuses).flat();
 
-  const handleReadingStatusSelection = (readingStatus: ReadingStatus) => {
+  const handleReadingStatusSelection = (readingStatus: LibraryStates) => {
     setCurrentReadingStatus(readingStatus);
   };
 
@@ -27,7 +34,7 @@ export default function Library() {
         </View>
         <FlatList
           horizontal
-          data={readingStatuses}
+          data={allReadingStatus}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.chipsContainer}
           renderItem={({item}) => (
@@ -55,7 +62,7 @@ export default function Library() {
   );
 }
 
-export function readingStatusName(readingStatus: ReadingStatus) {
+export function readingStatusName(readingStatus: LibraryStates) {
   switch (readingStatus) {
     case ReadingStatus.Reading:
       return 'Reading';
@@ -69,6 +76,10 @@ export function readingStatusName(readingStatus: ReadingStatus) {
       return 'Plan to Read';
     case ReadingStatus.ReReading:
       return 'Re-reading';
+    case OtherReadingStatuses.MdLists:
+      return 'MdLists';
+    // case OtherReadingStatuses.Downloads:
+    //   return 'Downloads';
   }
 }
 

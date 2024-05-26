@@ -1,12 +1,25 @@
 import React from 'react';
-import AuthGuard from '@app/components/AuthGuard';
 import {spacing} from '@app/utils/styles';
 import {StyleSheet, View} from 'react-native';
 import {Button, IconButton} from 'react-native-paper';
 import {useMangaDetails} from '../MangaProvider';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
 import {useDexifyNavigation} from '@app/foundation/navigation';
-import {readingStatusName} from '@app/scenes/HomeScene/bottomNavScenes/Library/Library';
+import {ReadingStatus} from '@app/api/mangadex/types';
+
+function getReadingNowTextFrom(
+  readingStatus: ReadingStatus | null | undefined,
+): string {
+  switch (readingStatus) {
+    case ReadingStatus.Reading:
+    case ReadingStatus.ReReading:
+      return 'Continue reading...';
+    case ReadingStatus.PlanToRead:
+      return 'Start reading now...';
+    default:
+      return 'Read now...';
+  }
+}
 
 export default function MainActions() {
   const navigation = useDexifyNavigation();
@@ -19,36 +32,32 @@ export default function MainActions() {
 
   const readingStatus = library.statuses[manga.id];
   const addedToList = (mdLists[manga.id] || []).length > 0;
+  const inLibrary = Boolean(readingStatus) || addedToList;
+
+  const mainActionText = getReadingNowTextFrom(readingStatus);
 
   return (
     <View style={styles.root}>
       <View style={styles.minor}>
-        <AuthGuard
-          onPress={() => navigation.push('ShowMangaMDListsModal', manga)}>
-          {/* <IconButton
-            disabled={!user}
-            mode={addedToList ? 'contained' : 'outlined'}
-            icon={addedToList ? 'bookmark-check' : 'bookmark-outline'}
-          /> */}
-          <IconButton
-            disabled
-            mode={addedToList ? 'contained' : 'outlined'}
-            icon={addedToList ? 'cloud-download' : 'cloud-download-outline'}
-          />
-        </AuthGuard>
-        {/* <IconButton */}
-        {/*   mode="contained-tonal" */}
-        {/*   icon="share-variant" */}
-        {/* /> */}
+        {/* <IconButton
+          disabled
+          mode={addedToList ? 'contained' : 'outlined'}
+          icon={addedToList ? 'cloud-download' : 'cloud-download-outline'}
+          style={styles.icon}
+        /> */}
+        <IconButton
+          mode={inLibrary ? 'contained' : 'outlined'}
+          icon={inLibrary ? 'bookmark-check' : 'bookmark-outline'}
+          style={styles.icon}
+          onPress={() => navigation.push('ShowMangaLibraryModal', manga)}
+        />
       </View>
       <View style={styles.major}>
         <Button
-          mode={readingStatus ? 'contained' : 'outlined'}
-          icon={readingStatus ? 'check' : undefined}
+          mode="contained-tonal"
+          icon="book-play"
           onPress={() => navigation.push('ShowMangaLibraryModal', manga)}>
-          {readingStatus
-            ? readingStatusName(readingStatus)
-            : 'Add to library...'}
+          {mainActionText}
         </Button>
       </View>
     </View>
@@ -62,9 +71,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   minor: {
-    marginLeft: spacing(-2),
     flexDirection: 'row',
     flexShrink: 1,
+    gap: spacing(2),
+    marginLeft: spacing(2),
+  },
+  icon: {
+    marginLeft: spacing(-2),
   },
   major: {
     flexGrow: 1,

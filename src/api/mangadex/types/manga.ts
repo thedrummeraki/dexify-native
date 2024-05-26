@@ -169,6 +169,13 @@ export enum ReadingStatus {
   Completed = 'completed',
 }
 
+export enum OtherReadingStatuses {
+  MdLists = 'mdlists',
+  // Downloads = 'downloads',
+}
+
+export type LibraryStates = ReadingStatus | OtherReadingStatuses;
+
 interface BasicReadingStatusResponse {
   result: 'ok' | 'error';
 }
