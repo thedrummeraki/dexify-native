@@ -28,7 +28,6 @@ export const trendingNow: MangaCategory = {
     return {
       ...defaultMangaQueryParams,
       createdAtSince,
-      offset: 1,
       order: {followedCount: 'desc'},
     };
   },
@@ -46,11 +45,14 @@ export const featuredManga: MangaCategory = {
       today.getDate(),
     );
     const createdAtSince = oneMonthAgo.toISOString().split('.')[0];
+
+    // grab random top 10 manga
+    const offset = Math.floor(Math.random() * 10);
     return {
       ...defaultMangaQueryParams,
       createdAtSince,
       limit: 1,
-      offset: 0,
+      offset,
       order: {followedCount: 'desc'},
     };
   },

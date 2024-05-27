@@ -3,15 +3,12 @@ import {useShowChapterRoute} from '@app/foundation/navigation';
 import {StatusBar} from 'react-native';
 import {ChapterGuard, useChapterStore} from './components/state';
 import ShowChapterSceneDetails from './ShowChapterSceneDetails';
-import {useStore} from '@app/foundation/state/StaterinoProvider';
-import {ReadingStatus} from '@app/api/mangadex/types';
 
 export default function ShowChapterScene() {
   const {
     params: {chapter, manga, jumpToPage},
   } = useShowChapterRoute();
 
-  const {subscribe: globalSubscribe, set: globalSet} = useStore;
   const {set, subscribe} = useChapterStore;
   const {headerShown} = useChapterStore(state => state);
 

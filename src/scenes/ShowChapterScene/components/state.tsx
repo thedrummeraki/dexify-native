@@ -5,6 +5,15 @@ import {PropsWithChildren, useLayoutEffect, useReducer} from 'react';
 import staterino from 'staterino';
 import {Page} from './types';
 
+export enum ReadingDirection {
+  LeftToRight = 'ltr',
+  RightToLeft = 'rtl',
+}
+
+export interface RegularOnlySettings {
+  diretion: ReadingDirection;
+}
+
 export interface BaseChapterSceneStateWithOptionalMetadata {
   chapter: Chapter | null;
   manga: Manga | null;
@@ -13,6 +22,7 @@ export interface BaseChapterSceneStateWithOptionalMetadata {
   pages: Page[];
   page: number;
   headerShown: boolean;
+  regular: RegularOnlySettings;
 }
 
 export interface CompleteChapterSceneState
@@ -40,6 +50,9 @@ export const defaultState: ChapterSceneState = {
   page: 1,
   headerShown: false,
   progress: 0,
+  regular: {
+    diretion: ReadingDirection.LeftToRight,
+  },
 };
 
 export const useChapterStore = staterino({

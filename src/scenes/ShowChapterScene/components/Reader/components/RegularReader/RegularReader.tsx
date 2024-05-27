@@ -1,48 +1,59 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {ProgressBar} from 'react-native-paper';
-import {useChapterStore} from '../../../state';
-import {FlatList, Image, ListRenderItem, SafeAreaView} from 'react-native';
+import {ReadingDirection, useChapterStore} from '../../../state';
+import {FlatList, ListRenderItem, SafeAreaView, StyleSheet} from 'react-native';
 import {Page} from '../../../types';
+import RegularReaderPage from './components/RegularReaderPage';
 import {useDimensions} from '@app/utils';
 
 export default function RegularReader() {
-  const dimensions = useDimensions();
-  const {pages: unsortedPages} = useChapterStore();
+  const {
+    pages: unsortedPages,
+    regular: {diretion},
+  } = useChapterStore();
   const pages = useMemo(
     () => unsortedPages.sort((a, b) => a.position - b.position),
     [unsortedPages],
   );
+  const [progress, setProgress] = useState(0);
+
+  const dimensions = useDimensions();
+
+  // Image dimesions are irrelevant, we know the width will be the device's width
+  const totalWidth =
+    pages.reduce(acc => acc + dimensions.width, 0) - dimensions.width;
 
   const renderItem: ListRenderItem<Page> = useCallback(
-    ({item}) => {
-      const {
-        image: {height, width, uri},
-      } = item;
-      const aspectRatio = width / height;
-
-      return (
-        <Image
-          source={{uri}}
-          style={{aspectRatio, height: dimensions.height}}
-        />
-      );
-    },
-    [dimensions.height],
+    ({item}) => <RegularReaderPage page={item} />,
+    [],
   );
 
   return (
     <SafeAreaView>
-      <ProgressBar animatedValue={0} />
+      <ProgressBar animatedValue={progress} style={styles[diretion]} />
       <FlatList
         horizontal
         pagingEnabled
         disableIntervalMomentum
-        removeClippedSubviews
         snapToAlignment="center"
-        // snapToInterval={dimensions.width}
         data={pages}
         renderItem={renderItem}
+        style={styles[diretion]}
+        onScroll={event => {
+          const {
+            nativeEvent: {contentOffset: currentContentOffset},
+          } = event;
+          // contentOffset.current = currentContentOffset;
+          setProgress(currentContentOffset.x / totalWidth);
+        }}
       />
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  [ReadingDirection.LeftToRight]: {transform: [{scaleX: 1}]},
+  [ReadingDirection.RightToLeft]: {
+    transform: [{scaleX: -1}],
+  },
+});
