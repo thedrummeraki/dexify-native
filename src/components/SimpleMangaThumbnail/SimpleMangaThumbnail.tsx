@@ -45,7 +45,7 @@ export function SimpleMangaThumbnail({
   onLongPress,
 }: SimpleMangaThumbnailProps) {
   const {
-    colors: {primary, surfaceVariant, secondary, onSecondary},
+    colors: {primary, surfaceDisabled, secondary, onSecondary},
   } = useTheme();
 
   const blurRadius =
@@ -90,7 +90,7 @@ export function SimpleMangaThumbnail({
                     {
                       borderColor: primary,
                       borderWidth: spacing(selected ? 1 : 0),
-                      backgroundColor: surfaceVariant,
+                      backgroundColor: surfaceDisabled,
                     },
                   ]
             }

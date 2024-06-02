@@ -90,6 +90,11 @@ export function preferredMangaDescription(manga: Manga) {
   );
 }
 
+export function hasDescription(manga: Manga): boolean {
+  const descriptionText = preferredMangaDescription(manga);
+  return (descriptionText || '').length > 0;
+}
+
 export function preferredChapterTitle(chapter: Chapter) {
   const {title, chapter: number} = chapter.attributes;
 

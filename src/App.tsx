@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {PropsWithChildren} from 'react';
 import {Root} from './components';
-import {PaperProvider} from 'react-native-paper';
 import TagsProvider from './providers/TagsProvider';
 import {
   NavigationContainer,
   // DarkTheme,
   // DefaultTheme,
 } from '@react-navigation/native';
-import {useColorScheme} from 'react-native';
+import {
+  PaperProvider,
+  MD3DarkTheme as PaperDarkTheme,
+  DefaultTheme as PaperDefaultTheme,
+} from 'react-native-paper';
 import LibraryProvider from './providers/LibraryProvider';
 import UnleashProvider from './providers/UnleashProvider';
 
@@ -16,32 +19,47 @@ import {
   DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
 import {adaptNavigationTheme} from 'react-native-paper';
-import StaterinoProvider from './foundation/state/StaterinoProvider';
+import StaterinoProvider, {
+  useStore,
+} from './foundation/state/StaterinoProvider';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import merge from 'mergerino';
 
 export function App() {
-  const scheme = useColorScheme();
+  return (
+    <GestureHandlerRootView>
+      <StaterinoProvider>
+        <AppearanceProvider>
+          <UnleashProvider>
+            <TagsProvider>
+              <LibraryProvider>
+                <Root />
+              </LibraryProvider>
+            </TagsProvider>
+          </UnleashProvider>
+        </AppearanceProvider>
+      </StaterinoProvider>
+    </GestureHandlerRootView>
+  );
+}
+
+function AppearanceProvider({children}: PropsWithChildren<unknown>) {
+  const scheme = useStore(store => store.settings.appearance.scheme);
 
   const {LightTheme, DarkTheme} = adaptNavigationTheme({
     reactNavigationLight: NavigationDefaultTheme,
     reactNavigationDark: NavigationDarkTheme,
   });
 
+  const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
+  const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
+
   return (
-    <GestureHandlerRootView>
-      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : LightTheme}>
-        <StaterinoProvider>
-          <UnleashProvider>
-            <PaperProvider>
-              <TagsProvider>
-                <LibraryProvider>
-                  <Root />
-                </LibraryProvider>
-              </TagsProvider>
-            </PaperProvider>
-          </UnleashProvider>
-        </StaterinoProvider>
-      </NavigationContainer>
-    </GestureHandlerRootView>
+    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : LightTheme}>
+      <PaperProvider
+        theme={scheme === 'dark' ? CombinedDarkTheme : CombinedDefaultTheme}>
+        {children}
+      </PaperProvider>
+    </NavigationContainer>
   );
 }

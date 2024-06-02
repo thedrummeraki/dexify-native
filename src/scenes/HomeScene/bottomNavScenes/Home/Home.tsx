@@ -25,13 +25,12 @@ import {
 
 export default function Home() {
   const navigation = useDexifyNavigation();
-  // const {data} = useFetchHome();
 
   const homeProvider = useBaseProvider();
   const {loading, responses} = useFetchCategoryProvider(homeProvider);
 
   const {
-    colors: {backdrop: backgroundColor},
+    colors: {backdrop: backgroundColor, surfaceDisabled},
   } = useTheme();
 
   if (loading) {
@@ -113,7 +112,10 @@ export default function Home() {
                           sharedStyles.fixedSizeThumbnail.height *
                           sharedStyles.fixedSizeThumbnail.aspectRatio,
                       }}
-                      imageStyle={sharedStyles.fixedSizeThumbnail}
+                      imageStyle={[
+                        sharedStyles.fixedSizeThumbnail,
+                        {backgroundColor: surfaceDisabled},
+                      ]}
                     />
                   );
                 } else if (item?.type === 'chapter') {

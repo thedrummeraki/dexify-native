@@ -15,6 +15,7 @@ import {
   defaultMDListsStore,
 } from './library';
 import {ReaderStore, defaultReaderStore} from './reader';
+import {SettingsStore, defaultSettingsStore} from './settings';
 
 export interface AppState {
   user: UserStore;
@@ -23,6 +24,7 @@ export interface AppState {
   reader: ReaderStore;
   library: LibraryStore;
   mdLists: MDListsStore;
+  settings: SettingsStore;
 }
 
 export function defaultState(): AppState {
@@ -33,6 +35,7 @@ export function defaultState(): AppState {
     reader: defaultReaderStore,
     library: defaultLibraryStore,
     mdLists: defaultMDListsStore,
+    settings: defaultSettingsStore,
   };
 }
 

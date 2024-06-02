@@ -1,7 +1,10 @@
 import React from 'react';
 import {Text, useTheme} from 'react-native-paper';
 import {useManga} from './MangaProvider';
-import {preferredMangaDescription} from '@app/api/mangadex/utils';
+import {
+  hasDescription,
+  preferredMangaDescription,
+} from '@app/api/mangadex/utils';
 import {useEffect, useRef, useState} from 'react';
 import TextBadge from '@app/components/TextBadge';
 import {Platform, View} from 'react-native';
@@ -36,7 +39,9 @@ export default function Description({
     }
   }, [showingMore, lines, numberOfLines]);
 
-  console.log({shouldShowMore, visibleNumberOfLines, lines, numberOfLines});
+  if (!hasDescription(manga)) {
+    return null;
+  }
 
   return (
     <View style={[sharedStyles.flex, sharedStyles.jCenter, {gap: spacing(2)}]}>

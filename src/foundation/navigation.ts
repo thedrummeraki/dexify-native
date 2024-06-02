@@ -12,6 +12,11 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 type MangaParams = Partial<Omit<Manga, 'type' | 'id'>> & {id: string};
 type AuthorArtistParams = Partial<Omit<Author | Artist, 'id'>> & {id: string};
 
+export type SettingsStackParamList = {
+  Home: undefined;
+  ItemsPerPage: undefined;
+};
+
 export type RootStackParamList = {
   Home: undefined;
 
@@ -49,8 +54,17 @@ export type DexifyNavigationProp = NativeStackNavigationProp<
   'Home'
 >;
 
+type DexifySettingsNavigationProp = NativeStackNavigationProp<
+  SettingsStackParamList,
+  'Home'
+>;
+
 export function useDexifyNavigation() {
   return useNavigation<DexifyNavigationProp>();
+}
+
+export function useDexifySettingsNavigation() {
+  return useNavigation<DexifySettingsNavigationProp>();
 }
 
 export function useShowMangaRoute() {
