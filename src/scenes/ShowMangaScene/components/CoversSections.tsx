@@ -156,7 +156,9 @@ function CoverItem({
             }}
           />
         </Surface>
-        <TextBadge content={volumeText} />
+        <View style={sharedStyles.rowWrap}>
+          <TextBadge content={volumeText} />
+        </View>
         <View style={[sharedStyles.rowWrap, {gap: spacing(0.5)}]}>
           {mainLocaleMarkup}
           {secondLocaleMarkup}

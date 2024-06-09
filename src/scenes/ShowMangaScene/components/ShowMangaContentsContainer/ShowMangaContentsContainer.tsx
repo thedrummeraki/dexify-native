@@ -1,18 +1,18 @@
-import {Banner, Chip, ProgressBar, Text} from 'react-native-paper';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {Banner, ProgressBar} from 'react-native-paper';
+// import {FlatList, StyleSheet, View} from 'react-native';
 import React, {useMemo, useState} from 'react';
-import {PaddingHorizontal, ViewSelector} from '@app/components';
+// import {PaddingHorizontal, ViewSelector} from '@app/components';
 import {useMangaDetails} from '../MangaProvider';
 import VolumesContainer, {
   VolumeInfo,
   VolumeView,
   VolumesContainerFlatListProps,
 } from './VolumesContainer';
-import {spacing} from '@app/utils/styles';
+// import {spacing} from '@app/utils/styles';
 import {useDexifyNavigation} from '@app/foundation/navigation';
 import ChaptersList from '@app/scenes/ShowMangaVolumeScene/components/ChaptersList';
 import {groupChapters} from '@app/api/mangadex/utils';
-import {useFlag} from '@unleash/proxy-client-react';
+// import {useFlag} from '@unleash/proxy-client-react';
 
 export type VolumesProps = VolumesContainerFlatListProps;
 
@@ -39,7 +39,7 @@ export default function ShowMangaContentsContainer(props: VolumesProps) {
   // );
 
   // const {enabled, name} = useVariant('showVolumes');
-  const enabled = useFlag('showVolumes');
+  const enabled = false; // useFlag('showVolumes');
   const currentVisibleContent = useMemo(
     () =>
       // enabled && name === 'volumes'

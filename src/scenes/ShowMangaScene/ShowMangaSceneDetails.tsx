@@ -32,9 +32,9 @@ export default function ShowMangaSceneDetails({
   manga,
 }: ShowMangaSceneDetailsProps) {
   const secondaryTitle = secondaryMangaTitle(manga);
-  const {payload} = useVariant('manga.cover.size');
-  const defaultCoverSizeIndex =
-    (payload && payload.type === 'number' && parseInt(payload.value, 10)) || 1;
+  // const {payload} = useVariant('manga.cover.size');
+  const defaultCoverSizeIndex = 1;
+  // (payload && payload.type === 'number' && parseInt(payload.value, 10)) || 1;
 
   return (
     <Portal.Host>

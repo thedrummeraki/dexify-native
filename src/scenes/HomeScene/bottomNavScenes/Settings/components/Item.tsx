@@ -8,13 +8,14 @@ import {
 } from '@app/foundation/navigation';
 import {AppState} from '@app/foundation/state/base';
 import {
-  BaseSetting,
   NavigatableSetting,
+  PressableSetting,
   SettingsKey,
   ToggleSetting,
-  ToggleValueType,
+  SettingValueType,
 } from '../types';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
+import {useSettingValue} from '../settings';
 
 export type ItemType = 'navigatable' | 'toggle';
 
@@ -42,7 +43,12 @@ export type ItemWrapperProps = PropsWithChildren<{
   last?: boolean;
   onPress?(): void;
 }> &
-  Partial<Pick<NavigatableSetting<SettingsKey>, 'to'>>;
+  Partial<
+    Pick<
+      NavigatableSetting<SettingsKey, SettingValueType>,
+      'to' | 'screenParams'
+    >
+  >;
 
 function useStyles() {
   const styles = StyleSheet.create({
@@ -64,26 +70,37 @@ function useStyles() {
   return styles;
 }
 
-function useSettingValue(setting: BaseSetting<SettingsKey>) {
-  const {
-    [setting.store]: {[setting.for]: currentValue},
-  } = useStore(state => state.settings);
-
-  return currentValue;
-}
-
-export function Navigatable({...setting}: NavigatableSetting<SettingsKey>) {
+export function Navigatable({
+  ...setting
+}: NavigatableSetting<SettingsKey, SettingValueType>) {
   const styles = useStyles();
   const {title, showPreview} = setting;
 
-  const currentValue = useSettingValue(setting);
+  const [currentValue] = useSettingValue(setting);
+  const valueText = setting.humanFriendlyPreview
+    ? setting.humanFriendlyPreview(currentValue)
+    : String(currentValue);
 
   return (
     <View style={[styles.root, sharedStyles.row, sharedStyles.aCenter]}>
       <Text variant="bodyLarge">{title}</Text>
       <View style={[sharedStyles.row, sharedStyles.aCenter]}>
-        {showPreview ? <Text>{currentValue}</Text> : null}
+        {showPreview ? <Text>{valueText}</Text> : null}
         <List.Icon icon="chevron-right" />
+      </View>
+    </View>
+  );
+}
+
+export function PressableItem({...setting}: PressableSetting) {
+  const styles = useStyles();
+  const {title, icon} = setting;
+
+  return (
+    <View style={[styles.root, sharedStyles.row, sharedStyles.aCenter]}>
+      <Text variant="bodyLarge">{title}</Text>
+      <View style={[sharedStyles.row, sharedStyles.aCenter]}>
+        {icon ? <List.Icon icon={icon} /> : null}
       </View>
     </View>
   );
@@ -91,15 +108,15 @@ export function Navigatable({...setting}: NavigatableSetting<SettingsKey>) {
 
 export function Toggle({
   ...setting
-}: ToggleSetting<SettingsKey, ToggleValueType>) {
+}: ToggleSetting<SettingsKey, SettingValueType>) {
   const {set, get} = useStore;
   const styles = useStyles();
   const {title} = setting;
 
-  const currentValue = useSettingValue(setting);
+  const [currentValue] = useSettingValue(setting);
 
   const switchValue = setting.truthCondition
-    ? setting.truthCondition(currentValue)
+    ? setting.truthCondition(currentValue as SettingValueType)
     : Boolean(currentValue);
 
   return (
@@ -113,7 +130,7 @@ export function Toggle({
               [setting.store]: {[setting.for]: previousValue},
             },
           } = get();
-          const value = setting.onToggle(previousValue);
+          const value = setting.onToggle(previousValue as SettingValueType);
           set({settings: {[setting.store]: {[setting.for]: value}}});
         }}
       />
@@ -126,6 +143,7 @@ export function ItemWrapper({
   first,
   last,
   to,
+  screenParams,
   onPress,
 }: ItemWrapperProps) {
   const styles = useStyles();
@@ -134,7 +152,7 @@ export function ItemWrapper({
   const handlePress = onPress
     ? onPress
     : to
-    ? () => navigation.push(to)
+    ? () => navigation.push(to, screenParams)
     : undefined;
 
   return (

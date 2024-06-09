@@ -258,12 +258,21 @@ export function groupChapters(chapters: Chapter[]): GroupedChapters {
   return groupedChapters;
 }
 
-export function useContentRating(): ContentRating[] | undefined {
-  const user = useStore(state => state.user.user);
-  if (user) {
-    return Object.values(ContentRating);
+export function useContentRating(): ContentRating[] {
+  const [contentRatings, user] = useStore([
+    state => state.settings.content.contentRating,
+    state => state.user.user,
+  ]);
+
+  const defaultContentRatings = user
+    ? Object.values(ContentRating)
+    : [ContentRating.safe, ContentRating.suggestive, ContentRating.erotica];
+
+  if (!contentRatings || contentRatings.length === 0) {
+    return defaultContentRatings;
   }
-  return undefined;
+
+  return contentRatings;
 }
 
 export function isLongStrip(manga: Manga): boolean {

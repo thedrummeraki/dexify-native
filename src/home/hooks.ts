@@ -4,12 +4,6 @@ import {Chapter, Manga, PagedResultsList} from '@app/api/mangadex/types';
 import {urlForCategory} from './utils';
 
 export type ValidHomeResource = Manga | Chapter;
-// type ValidCategoryResource<T extends CategoryResource> =
-//   T extends MangaCategoryResource
-//     ? Manga
-//     : T extends ChapterCategoryResource
-//     ? Chapter
-//     : never;
 
 export function useMangaCategory(category: MangaCategory) {
   return useTypedCategory<Manga, typeof category>(category);

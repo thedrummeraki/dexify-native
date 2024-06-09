@@ -5,20 +5,17 @@ import {
   PublicationDemographic,
 } from '@app/api/mangadex/types';
 
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback} from 'react';
 import {ScrollView, View} from 'react-native';
 import {sharedStyles, spacing} from '@app/utils/styles';
 import {useTags} from '@app/providers/TagsProvider';
 import TagsFields from './components/TagsField';
-import {preferredTagName} from '@app/api/mangadex/utils';
+import {preferredTagName, useContentRating} from '@app/api/mangadex/utils';
 import PublicationDemographicsField from './components/PublicationDemographicsField';
 import ContentRatingField from './components/ContentRatingField';
 import {Button, useTheme} from 'react-native-paper';
 import {FilterParamsState, useIsDirty} from '@app/foundation/state/filters';
-import {
-  useFiltersStore,
-  useUserStore,
-} from '@app/foundation/state/StaterinoProvider';
+import {useFiltersStore} from '@app/foundation/state/StaterinoProvider';
 import MangaStatusField from './components/MangaStatusField';
 import {useMergerinoState} from '@app/utils';
 
@@ -32,20 +29,9 @@ export default function MangaSearchFilters({
   onClose,
 }: MangaSearchFiltersProps) {
   const {params: state} = useFiltersStore();
-  const {user} = useUserStore();
 
-  const contentRatings = useMemo(() => {
-    const values = [
-      ContentRating.safe,
-      ContentRating.suggestive,
-      ContentRating.erotica,
-    ];
-    if (user) {
-      values.push(ContentRating.pornographic);
-    }
-
-    return values;
-  }, [user]);
+  const contentRatings = useContentRating();
+  console.log({contentRatings});
 
   const [fields, set] = useMergerinoState(state);
 

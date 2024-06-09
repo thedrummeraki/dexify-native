@@ -12,7 +12,7 @@ import {
   DefaultTheme as PaperDefaultTheme,
 } from 'react-native-paper';
 import LibraryProvider from './providers/LibraryProvider';
-import UnleashProvider from './providers/UnleashProvider';
+// import UnleashProvider from './providers/UnleashProvider';
 
 import {
   DarkTheme as NavigationDarkTheme,
@@ -24,19 +24,20 @@ import StaterinoProvider, {
 } from './foundation/state/StaterinoProvider';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import merge from 'mergerino';
+import {StatusBar} from 'react-native';
 
 export function App() {
   return (
     <GestureHandlerRootView>
       <StaterinoProvider>
         <AppearanceProvider>
-          <UnleashProvider>
-            <TagsProvider>
-              <LibraryProvider>
-                <Root />
-              </LibraryProvider>
-            </TagsProvider>
-          </UnleashProvider>
+          {/* <UnleashProvider> */}
+          <TagsProvider>
+            <LibraryProvider>
+              <Root />
+            </LibraryProvider>
+          </TagsProvider>
+          {/* </UnleashProvider> */}
         </AppearanceProvider>
       </StaterinoProvider>
     </GestureHandlerRootView>
@@ -55,11 +56,16 @@ function AppearanceProvider({children}: PropsWithChildren<unknown>) {
   const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
 
   return (
-    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : LightTheme}>
-      <PaperProvider
-        theme={scheme === 'dark' ? CombinedDarkTheme : CombinedDefaultTheme}>
-        {children}
-      </PaperProvider>
-    </NavigationContainer>
+    <>
+      <StatusBar
+        barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
+      />
+      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : LightTheme}>
+        <PaperProvider
+          theme={scheme === 'dark' ? CombinedDarkTheme : CombinedDefaultTheme}>
+          {children}
+        </PaperProvider>
+      </NavigationContainer>
+    </>
   );
 }

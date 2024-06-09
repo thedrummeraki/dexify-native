@@ -5,12 +5,12 @@ import {FlatList, ListRenderItem, SafeAreaView, StyleSheet} from 'react-native';
 import {Page} from '../../../types';
 import RegularReaderPage from './components/RegularReaderPage';
 import {useDimensions} from '@app/utils';
+import {useStore} from '@app/foundation/state/StaterinoProvider';
 
 export default function RegularReader() {
-  const {
-    pages: unsortedPages,
-    regular: {diretion},
-  } = useChapterStore();
+  const direction = useStore(state => state.settings.reader.direction);
+
+  const {pages: unsortedPages} = useChapterStore();
   const pages = useMemo(
     () => unsortedPages.sort((a, b) => a.position - b.position),
     [unsortedPages],
@@ -30,7 +30,10 @@ export default function RegularReader() {
 
   return (
     <SafeAreaView>
-      <ProgressBar animatedValue={progress} style={styles[diretion]} />
+      <ProgressBar
+        animatedValue={progress}
+        style={regularReaderStyles[direction]}
+      />
       <FlatList
         horizontal
         pagingEnabled
@@ -38,7 +41,7 @@ export default function RegularReader() {
         snapToAlignment="center"
         data={pages}
         renderItem={renderItem}
-        style={styles[diretion]}
+        style={regularReaderStyles[direction]}
         onScroll={event => {
           const {
             nativeEvent: {contentOffset: currentContentOffset},
@@ -51,7 +54,7 @@ export default function RegularReader() {
   );
 }
 
-const styles = StyleSheet.create({
+export const regularReaderStyles = StyleSheet.create({
   [ReadingDirection.LeftToRight]: {transform: [{scaleX: 1}]},
   [ReadingDirection.RightToLeft]: {
     transform: [{scaleX: -1}],

@@ -3,7 +3,7 @@ import {sharedStyles} from '@app/utils/styles';
 import {PropsWithChildren} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Caption, Text, useTheme} from 'react-native-paper';
-import {ItemWrapper, Navigatable, Toggle} from './Item';
+import {ItemWrapper, Navigatable, PressableItem, Toggle} from './Item';
 
 interface BaseSettingsSectionWrapperProps {
   title?: string;
@@ -67,6 +67,7 @@ function SettingsSectionWrapper({
   );
 }
 
+SettingsSectionWrapper.Pressable = PressableItem;
 SettingsSectionWrapper.Navigatable = Navigatable;
 SettingsSectionWrapper.Toggle = Toggle;
 

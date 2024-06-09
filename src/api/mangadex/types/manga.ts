@@ -25,6 +25,16 @@ export enum ContentRating {
   pornographic = 'pornographic',
 }
 
+export namespace ContentRating {
+  export function defaultSFWValues() {
+    return [
+      ContentRating.safe,
+      ContentRating.suggestive,
+      ContentRating.erotica,
+    ];
+  }
+}
+
 export interface Manga {
   id: string;
   type: 'manga';

@@ -1,12 +1,12 @@
 import {
   Chapter,
+  ContentRating,
   CoverArt,
   Manga,
   PagedResultsList,
   isSuccess,
 } from '@app/api/mangadex/types';
 import UrlBuilder from '@app/api/mangadex/types/api/urlBuilder';
-import {useContentRating} from '@app/api/mangadex/utils';
 import {useLazyGetRequest} from '@app/api/utils';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
 import {ChapterFiltersParamsState} from '@app/foundation/state/filters';
@@ -80,7 +80,7 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
     statistics: {},
   });
   const [chapters, setChapters] = useState<Chapter[]>([]);
-  const contentRating = useContentRating();
+  const contentRating = ContentRating.defaultSFWValues();
 
   const [getStats, {loading: statsLoading}] =
     useLazyGetRequest<Manga.StatisticsResponse>(

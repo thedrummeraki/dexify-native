@@ -45,7 +45,7 @@ export default function Home() {
 
   return (
     <SafeAreaView style={sharedStyles.flex}>
-      <ScrollView>
+      <ScrollView style={sharedStyles.flex}>
         {/* <View
           style={[
             sharedStyles.flex,

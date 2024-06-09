@@ -146,3 +146,8 @@ export function unique<T>(items: T[]): T[] {
 export function notEmpty<T>(item: T | null | undefined): item is T {
   return !!item;
 }
+
+export function appVersion(): string {
+  const pkg = require('../package.json');
+  return pkg.version;
+}

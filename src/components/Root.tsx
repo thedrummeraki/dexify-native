@@ -6,6 +6,7 @@ import {
   CustomListScene,
   FiltersScene,
   HomeScene,
+  SettingView,
   ShowChapterScene,
   ShowMangaChaptersScene,
   ShowMangaDetailsModalScene,
@@ -49,6 +50,13 @@ export function Root() {
         <Stack.Screen
           name="ShowMangaMDListsModal"
           component={ShowMangaMDListsModalScene}
+        />
+      </Stack.Group>
+      <Stack.Group>
+        <Stack.Screen
+          name="SettingView"
+          component={SettingView}
+          options={({route}) => ({title: route.params.setting.title})}
         />
       </Stack.Group>
     </Stack.Navigator>

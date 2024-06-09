@@ -12,3 +12,5 @@ export {default as ShowMangaLibraryModalScene} from './ShowMangaLibraryModalScen
 export {default as ShowMangaMDListsModalScene} from './ShowMangaMDListsModalScene';
 export {default as AuthorArtistScene} from './AuthorArtistScene';
 export {default as CustomListScene} from './CustomListScene';
+
+export {default as SettingView} from './SettingView';

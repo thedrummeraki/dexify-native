@@ -5,6 +5,11 @@ import {
   CustomList,
   Manga,
 } from '@app/api/mangadex/types';
+import {
+  NavigatableSetting,
+  SettingsKey,
+  SettingValueType,
+} from '@app/scenes/HomeScene/bottomNavScenes/Settings/types';
 import {VolumeInfo} from '@app/scenes/ShowMangaScene/components/ShowMangaContentsContainer/VolumesContainer';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -15,6 +20,7 @@ type AuthorArtistParams = Partial<Omit<Author | Artist, 'id'>> & {id: string};
 export type SettingsStackParamList = {
   Home: undefined;
   ItemsPerPage: undefined;
+  SettingView: {setting: NavigatableSetting<SettingsKey, SettingValueType>};
 };
 
 export type RootStackParamList = {
@@ -47,7 +53,7 @@ export type RootStackParamList = {
   ShowCustomList: Partial<Omit<CustomList, 'id'>> & {id: string};
   // ShowMangaByTags: {tags: Manga.Tag[]};
   // ShowSettings: undefined;
-};
+} & SettingsStackParamList;
 
 export type DexifyNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -61,10 +67,6 @@ type DexifySettingsNavigationProp = NativeStackNavigationProp<
 
 export function useDexifyNavigation() {
   return useNavigation<DexifyNavigationProp>();
-}
-
-export function useDexifySettingsNavigation() {
-  return useNavigation<DexifySettingsNavigationProp>();
 }
 
 export function useShowMangaRoute() {
@@ -97,4 +99,12 @@ export function useShowCustomListRoute() {
 
 export function useShowChapterRoute() {
   return useRoute<RouteProp<RootStackParamList, 'ShowChapter'>>();
+}
+
+export function useDexifySettingsNavigation() {
+  return useNavigation<DexifySettingsNavigationProp>();
+}
+
+export function useSettingShowRoute() {
+  return useRoute<RouteProp<SettingsStackParamList, 'SettingView'>>();
 }

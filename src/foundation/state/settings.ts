@@ -2,6 +2,16 @@ import {ContentRating} from '@app/api/mangadex/types';
 
 export type AppThemeAppearance = 'dark' | 'light';
 
+export enum RegularReadingDirection {
+  LeftToRight = 'ltr',
+  RightToLeft = 'rtl',
+}
+
+export enum LongStripReadingDirection {
+  TopToBottom = 'ttb',
+  BottomToTop = 'btt',
+}
+
 export interface AppearanceSettingsStore {
   scheme: AppThemeAppearance;
   itemsPerPage: number;
@@ -23,6 +33,7 @@ export interface LanguageSettingsStore {
 export interface ReaderSettingsStore {
   atHomeHttps: boolean;
   dataSaver: boolean;
+  direction: RegularReadingDirection;
 }
 
 export interface SettingsStore {
@@ -55,5 +66,6 @@ export const defaultSettingsStore: SettingsStore = {
   reader: {
     atHomeHttps: true,
     dataSaver: false,
+    direction: RegularReadingDirection.LeftToRight,
   },
 };

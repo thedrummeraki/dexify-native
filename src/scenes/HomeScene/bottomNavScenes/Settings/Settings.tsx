@@ -4,6 +4,7 @@ import {SafeAreaView, ScrollView, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {useSettingsPresenters} from './settings';
 import SettingsSection from './components/SettingsSection';
+import Version from './components/Version';
 
 export default function Settings() {
   const presenters = useSettingsPresenters();
@@ -17,6 +18,7 @@ export default function Settings() {
         {presenters.map(presenter => (
           <SettingsSection key={presenter.slug} presenter={presenter} />
         ))}
+        <Version />
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import {SettingSectionPresenter} from '../settings';
 import SettingsSectionWrapper from './SettingsSectionWrapper';
-import {isNavigatable, isToggle} from '../types';
+import {isNavigatable, isPressable, isToggle} from '../types';
 
 export interface SettingsSectionProps {
   presenter: SettingSectionPresenter;
@@ -24,6 +24,14 @@ export default function SettingsSection({presenter}: SettingsSectionProps) {
         } else if (isNavigatable(setting)) {
           return (
             <SettingsSectionWrapper.Navigatable
+              key={setting.title}
+              screenParams={{setting}}
+              {...setting}
+            />
+          );
+        } else if (isPressable(setting)) {
+          return (
+            <SettingsSectionWrapper.Pressable
               key={setting.title}
               {...setting}
             />
