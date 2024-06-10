@@ -11,7 +11,13 @@ import {useLazyGetRequest} from '@app/api/utils';
 import {useStore} from '@app/foundation/state/StaterinoProvider';
 import {ChapterFiltersParamsState} from '@app/foundation/state/filters';
 import {sanitizeOptions} from '@app/scenes/ShowMangaChaptersScene/ShowMangaChaptersSceneDetails';
-import React, {PropsWithChildren, useContext, useEffect, useState} from 'react';
+import React, {
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 export type MangaProviderProps = PropsWithChildren<{
   manga: Manga;
@@ -80,7 +86,7 @@ export default function MangaProvider({manga, children}: MangaProviderProps) {
     statistics: {},
   });
   const [chapters, setChapters] = useState<Chapter[]>([]);
-  const contentRating = ContentRating.defaultSFWValues();
+  const contentRating = useMemo(() => ContentRating.defaultSFWValues(), []);
 
   const [getStats, {loading: statsLoading}] =
     useLazyGetRequest<Manga.StatisticsResponse>(

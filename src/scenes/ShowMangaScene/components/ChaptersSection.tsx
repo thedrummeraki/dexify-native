@@ -1,7 +1,7 @@
 import React from 'react';
 import {PaddingHorizontal} from '@app/components';
 import {useMangaDetails} from './MangaProvider';
-import {Banner, Button, Caption, Text} from 'react-native-paper';
+import {Banner, Button, Caption, Card, Text} from 'react-native-paper';
 import {groupChapters} from '@app/api/mangadex/utils';
 import {Chapter, isSuccess} from '@app/api/mangadex/types';
 import {sharedStyles} from '@app/utils/styles';
@@ -20,14 +20,22 @@ export default function ChaptersSection({showFirst = 5}: ChaptersSectionProps) {
 
   if (!chaptersData) {
     return (
-      <PaddingHorizontal spacing={2}>
+      <View style={[sharedStyles.tightContainer]}>
         <Text variant="titleMedium">Relevant chapters</Text>
         {chaptersLoading ? (
-          <Text>Loading...</Text>
+          <Card>
+            <Card.Content>
+              <Text>Loading...</Text>
+            </Card.Content>
+          </Card>
         ) : (
-          <Text>No chapters {':('}</Text>
+          <Card>
+            <Card.Content>
+              <Text>No chapters {':('}</Text>
+            </Card.Content>
+          </Card>
         )}
-      </PaddingHorizontal>
+      </View>
     );
   }
 
