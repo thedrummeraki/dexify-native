@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   AllReadingStatusResponse,
   ContentRating,
@@ -23,6 +23,8 @@ export default function LibraryMangaCollection({
     .filter(([_, status]) => status === readingStatus)
     .map(([mangaId, _]) => mangaId);
 
+  const contentRating = useMemo(() => ContentRating.defaultSFWValues(), []);
+
   if (loading) {
     return <ProgressBar indeterminate />;
   }
@@ -40,7 +42,7 @@ export default function LibraryMangaCollection({
       hidePreview
       hideSearchbar
       hideThumbnailInfo={['readingStatus']}
-      override={{ids: mangaIds, contentRating: Object.values(ContentRating)}}
+      override={{ids: mangaIds, contentRating}}
     />
   );
 }
