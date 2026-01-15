@@ -1,4 +1,5 @@
 import React, {PropsWithChildren} from 'react';
+import {NewAppScreen} from '@react-native/new-app-screen'
 import {Root} from './components';
 import TagsProvider from './providers/TagsProvider';
 import {
