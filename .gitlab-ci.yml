@@ -17,7 +17,7 @@ build:
   artifacts:
     access: developer
     paths:
-      - builds/
+      - android/build/reports/problems/
   script:
     - apt update -y && apt install -y curl nodejs npm
     - npm install
