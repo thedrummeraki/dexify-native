@@ -3,4 +3,5 @@ test:
   stage: test
   script:
     - cd android/
-    - fastlane test
+    - bundle install
+    - bundle exec fastlane test
