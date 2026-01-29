@@ -9,7 +9,14 @@ test:
 build:
   image: fabernovel/android:api-33-v1.7.0
   stage: build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - android/vendor/bundle
   script:
+    - apt update -y && apt install -y curl nodejs npm
+    - npm install
     - cd android/
     - bundle install
     - apt update -y && apt install -y curl
