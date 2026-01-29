@@ -14,6 +14,10 @@ build:
     paths:
       - node_modules/
       - android/vendor/bundle
+  artifacts:
+    access: developer
+    paths:
+      - builds/
   script:
     - apt update -y && apt install -y curl nodejs npm
     - npm install
