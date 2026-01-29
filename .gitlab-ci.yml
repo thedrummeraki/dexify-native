@@ -1,24 +1,11 @@
-test:
+.setup:
   image: fabernovel/android:api-35-v1.10.1
-  stage: test
-  script:
-    - cd android/
-    - bundle install
-    - bundle exec fastlane test
-
-build:
-  image: fabernovel/android:api-35-v1.10.1
-  stage: build
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - node_modules/
       - android/vendor/bundle
-  artifacts:
-    access: developer
-    paths:
-      - android/build/reports/problems/
-  script:
+  before_script:
     - apt update -y && apt install -y curl ca-certificates gnupg
     - mkdir -p /etc/apt/keyrings
     - curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
@@ -28,9 +15,19 @@ build:
     - npm install
     - cd android/
     - bundle install
-    - apt update -y && apt install -y curl
     - wget https://gitlab.com/gitlab-org/cli/-/releases/v1.74.0/downloads/glab_1.74.0_linux_amd64.deb
-    - apt install ./glab_1.74.0_linux_amd64.deb
+    - apt install -y ./glab_1.74.0_linux_amd64.deb
     - glab auth login --hostname $CI_SERVER_FQDN --job-token $CI_JOB_TOKEN
     - glab securefile download --all --output-dir app/.secure_files/
+
+test:
+  extends: .setup
+  stage: test
+  script:
+    - bundle exec fastlane test
+
+build:
+  extends: .setup
+  stage: build
+  script:
     - bundle exec fastlane build
