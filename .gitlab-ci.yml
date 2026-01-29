@@ -32,5 +32,5 @@ build:
     - wget https://gitlab.com/gitlab-org/cli/-/releases/v1.74.0/downloads/glab_1.74.0_linux_amd64.deb
     - apt install ./glab_1.74.0_linux_amd64.deb
     - glab auth login --hostname $CI_SERVER_FQDN --job-token $CI_JOB_TOKEN
-    - glab securefile download --all --output-dir .secure_files/
+    - glab securefile download --all --output-dir app/.secure_files/
     - bundle exec fastlane build
