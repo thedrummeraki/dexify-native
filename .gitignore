@@ -35,6 +35,10 @@ local.properties
 *.keystore
 !debug.keystore
 
+# Release files in use on GitLab
+android/**/release-keystore.jks
+android/**/release-keystore.properties
+
 # node.js
 #
 node_modules/
