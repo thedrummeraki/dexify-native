@@ -1,0 +1,6 @@
+test:
+  image: fabernovel/android:api-33-v1.7.0
+  stage: test
+  script:
+    - cd android/
+    - fastlane test

@@ -1,0 +1,2 @@
+json_key_file("/Users/akinyele/Downloads/dexify-native-c89b178e603f.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("ca.akinyele.dexify") # e.g. com.krausefx.app
