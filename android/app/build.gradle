@@ -73,7 +73,7 @@ def enableProguardInReleaseBuilds = false
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('.secure_files/release-keystore.properties')
+def keystorePropertiesFile = rootProject.file('app/.secure_files/release-keystore.properties')
 if (keystorePropertiesFile.exists()) {
   keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
