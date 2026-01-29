@@ -25,6 +25,7 @@ build:
     - echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
     - apt update -y && apt install -y nodejs
     - node --version
+    - npm install
     - cd android/
     - bundle install
     - apt update -y && apt install -y curl
