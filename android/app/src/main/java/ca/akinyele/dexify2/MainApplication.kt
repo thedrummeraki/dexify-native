@@ -1,4 +1,4 @@
-package ca.akinyele.dexify
+package ca.akinyele.dexify2
 
 import android.app.Application
 import com.facebook.react.PackageList

@@ -605,7 +605,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ca.akinyele.dexify;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.akinyele.dexify2;
 				PRODUCT_NAME = Dexify;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -635,7 +635,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ca.akinyele.dexify;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.akinyele.dexify2;
 				PRODUCT_NAME = Dexify;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
