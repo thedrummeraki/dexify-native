@@ -1,0 +1,72 @@
+stages:
+  - build
+  - test
+  - release
+
+.setup:
+  image: fabernovel/android:api-35-ndk-v1.10.1
+  cache:
+    key:
+      files:
+        - android/build.gradle
+        - package-lock.json
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+      - node_modules/
+  before_script:
+    - apt update -y && apt install -y curl ca-certificates gnupg
+    - mkdir -p /etc/apt/keyrings
+    - curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+    - echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+    - apt update -y && apt install -y nodejs
+    - node --version
+    - npm install
+
+.android_setup:
+  extends: .setup
+  before_script:
+    - !reference [.setup, before_script]
+    - cd android/
+    - bundle install
+    - wget https://gitlab.com/gitlab-org/cli/-/releases/v1.74.0/downloads/glab_1.74.0_linux_amd64.deb
+    - apt install -y ./glab_1.74.0_linux_amd64.deb
+    - glab auth login --hostname $CI_SERVER_FQDN --job-token $CI_JOB_TOKEN
+    - glab securefile download --all --output-dir app/.secure_files/
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+
+test:android:
+  extends: .android_setup
+  stage: test
+  script:
+    - bundle exec fastlane test
+
+android:release:build:
+  extends: .android_setup
+  stage: build
+  script:
+    - bundle exec fastlane ci_build_release_release
+
+# This job will only pass when a new version code is updated
+# Otherwise, Google Play will reject the draft.
+android:release:play_store_beta:
+  extends: .android_setup
+  stage: release
+  needs:
+    - job: android:release:build
+      artifacts: true
+  allow_failure: true
+  script:
+    - bundle exec fastlane beta
+
+android:release:draft:
+  extends: .android_setup
+  stage: build
+  needs:
+    - job: android:release:build
+      artifacts: true
+    - android:release:play_store_beta
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - bundle exec ci_release.rb

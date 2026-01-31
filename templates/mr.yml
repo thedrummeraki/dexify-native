@@ -1,0 +1,59 @@
+.setup:
+  image: fabernovel/android:api-35-ndk-v1.10.1
+  cache:
+    key:
+      files:
+        - android/build.gradle
+        - package-lock.json
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+      - node_modules/
+  before_script:
+    - apt update -y && apt install -y curl ca-certificates gnupg
+    - mkdir -p /etc/apt/keyrings
+    - curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+    - echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+    - apt update -y && apt install -y nodejs
+    - node --version
+    - npm install
+
+.android_setup:
+  extends: .setup
+  before_script:
+    - !reference [.setup, before_script]
+    - cd android/
+    - bundle install
+    - wget https://gitlab.com/gitlab-org/cli/-/releases/v1.74.0/downloads/glab_1.74.0_linux_amd64.deb
+    - apt install -y ./glab_1.74.0_linux_amd64.deb
+    - glab auth login --hostname $CI_SERVER_FQDN --job-token $CI_JOB_TOKEN
+    - glab securefile download --all --output-dir app/.secure_files/
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+
+build:android:debug:
+  extends: .android_setup
+  stage: build
+  script:
+    - bundle exec fastlane android ci_build_release_debug
+
+build:ios:
+  stage: build
+  script:
+    - echo "This is a placeholder job."
+    - echo "Build iOS artifacts..."
+
+test:android:
+  extends: .android_setup
+  stage: test
+  needs:
+    - build:android:debug
+  script:
+    - bundle exec fastlane test
+
+test:ios:
+  stage: test
+  needs:
+    - build:ios
+  script:
+    - echo "This is a placeholder job."
+    - echo "Running iOS tests..."
