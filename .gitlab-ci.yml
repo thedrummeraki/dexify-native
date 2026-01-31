@@ -5,10 +5,14 @@ stages:
 .setup:
   image: fabernovel/android:api-35-v1.10.1
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
+    key:
+      files:
+        - android/build.gradle
+        - package-lock.json
     paths:
+     - .gradle/wrapper
+     - .gradle/caches
       - node_modules/
-      - android/vendor/bundle
   before_script:
     - apt update -y && apt install -y curl ca-certificates gnupg
     - mkdir -p /etc/apt/keyrings
@@ -23,13 +27,11 @@ stages:
     - apt install -y ./glab_1.74.0_linux_amd64.deb
     - glab auth login --hostname $CI_SERVER_FQDN --job-token $CI_JOB_TOKEN
     - glab securefile download --all --output-dir app/.secure_files/
+    - export GRADLE_USER_HOME=`pwd`/.gradle
 
 test:android:
   extends: .setup
   stage: test
-  needs:
-    - job: build:android
-      artifacts: true
   script:
     - bundle exec fastlane test
 
@@ -42,9 +44,6 @@ test:ios:
 build:android:
   extends: .setup
   stage: build
-  artifacts:
-    paths:
-      - android/app/build/outputs/
   script:
     - bundle exec fastlane android ci_build_release
 
