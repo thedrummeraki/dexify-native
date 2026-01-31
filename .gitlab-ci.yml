@@ -45,11 +45,15 @@ stages:
 test:android:
   extends: .android_setup
   stage: test
+  needs:
+    - build:android:debug
   script:
     - bundle exec fastlane test
 
 test:ios:
   stage: test
+  needs:
+    - build:ios
   script:
     - echo "This is a placeholder job."
     - echo "Running iOS tests..."
