@@ -31,10 +31,10 @@ Runs all the tests
 
 Create and sign a new build (local)
 
-### android ci_build_release
+### android ci_build_release_release
 
 ```sh
-[bundle exec] fastlane android ci_build_release
+[bundle exec] fastlane android ci_build_release_release
 ```
 
 Create and sign a CI build
