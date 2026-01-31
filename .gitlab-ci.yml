@@ -1,3 +1,7 @@
+stages:
+  - build
+  - test
+
 .setup:
   image: fabernovel/android:api-35-v1.10.1
   cache:
@@ -20,14 +24,32 @@
     - glab auth login --hostname $CI_SERVER_FQDN --job-token $CI_JOB_TOKEN
     - glab securefile download --all --output-dir app/.secure_files/
 
-test:
+test:android:
   extends: .setup
   stage: test
+  needs:
+    - job: build:android
+      artifacts: true
   script:
     - bundle exec fastlane test
 
-build:
+test:ios:
+  stage: test
+  script:
+    - echo "This is a placeholder job."
+    - echo "Running iOS tests..."
+
+build:android:
   extends: .setup
   stage: build
+  artifacts:
+    paths:
+      - android/app/build/outputs/
   script:
     - bundle exec fastlane build
+
+build:ios:
+  stage: build
+  script:
+    - echo "This is a placeholder job."
+    - echo "Build iOS artifacts..."
