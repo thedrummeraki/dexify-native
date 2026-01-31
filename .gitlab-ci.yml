@@ -94,6 +94,10 @@ draft:android:release:
 
 build:ios:
   stage: build
+  rules:
+    - <<: *rule-is-main
+      when: never
+    - *rule-is-mr
   script:
     - echo "This is a placeholder job."
     - echo "Build iOS artifacts..."
