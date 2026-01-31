@@ -13,6 +13,12 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+def no_daemon_gradle(*keys, **options)
+  existing_flags = options.fetch(:flags, '').split(' ')
+  existing_flags.append('--no-daemon') unless options.include?('--no-daemon')
+  gradle(*keys, **options)
+end
+
 default_platform(:android)
 
 platform :android do
@@ -27,8 +33,13 @@ platform :android do
   end
 
   desc "Create and sign a CI build"
-  lane :ci_build_release do
+  lane :ci_build_release_release do
     gradle(tasks: ["assembleRelease", "bundleRelease"])
+  end
+
+  desc "Create a debug build for the CI"
+  lane :ci_build_release_debug do
+    no_daemon_gradle(tasks: ["assembleDebug"])
   end
 
   desc "Submit a new Beta build to the Google Play store"

@@ -23,13 +23,29 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Runs all the tests
 
-### android build
+### android clean_build_release
 
 ```sh
-[bundle exec] fastlane android build
+[bundle exec] fastlane android clean_build_release
 ```
 
-Create and sign a new build
+Create and sign a new build (local)
+
+### android ci_build_release
+
+```sh
+[bundle exec] fastlane android ci_build_release
+```
+
+Create and sign a CI build
+
+### android ci_build_release_debug
+
+```sh
+[bundle exec] fastlane android ci_build_release_debug
+```
+
+Create a debug build for the CI
 
 ### android beta
 
