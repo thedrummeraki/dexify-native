@@ -46,7 +46,7 @@ build:android:
     paths:
       - android/app/build/outputs/
   script:
-    - bundle exec fastlane build
+    - bundle exec fastlane android ci_build_release
 
 build:ios:
   stage: build
